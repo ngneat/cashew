@@ -17,6 +17,11 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@ngneat/http-cache": [
+        "projects/ngneat/http-cache/src/public-api.ts"
+      ]
+    }
   }
 }

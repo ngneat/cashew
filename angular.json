@@ -134,6 +134,41 @@
           }
         }
       }
+    },
+    "@ngneat/http-cache": {
+      "root": "projects/ngneat/http-cache",
+      "sourceRoot": "projects/ngneat/http-cache/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngneat/http-cache/tsconfig.lib.json",
+            "project": "projects/ngneat/http-cache/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngneat/http-cache/src/test.ts",
+            "tsConfig": "projects/ngneat/http-cache/tsconfig.spec.json",
+            "karmaConfig": "projects/ngneat/http-cache/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngneat/http-cache/tsconfig.lib.json",
+              "projects/ngneat/http-cache/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "http-cache"
