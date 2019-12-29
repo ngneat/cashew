@@ -8,14 +8,26 @@ import { HttpCacheGuard } from './httpCacheGuard';
 @Injectable()
 export class HttpCacheFacade {
   constructor(
-    public guard: HttpCacheGuard,
-    public storage: HttpCacheStorage,
-    public ttlManager: TTLManager,
+    private guard: HttpCacheGuard,
+    private storage: HttpCacheStorage,
+    private ttlManager: TTLManager,
     @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig,
   ) {}
 
   set(request: HttpRequest<any>, response: HttpResponse<any>) {
     this.storage.set(request, response);
     this.ttlManager.set(request);
+  }
+
+  isCached(request: HttpRequest<any>) {
+    return this.storage.has(request) && this.ttlManager.isValid(request);
+  }
+
+  get(request: HttpRequest<any>) {
+    return this.storage.get(request);
+  }
+
+  isCacheable(request: HttpRequest<any>) {
+    return this.guard.isCacheable(request);
   }
 }
