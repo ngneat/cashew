@@ -6,9 +6,9 @@ import {
   HttpRequest,
   HttpResponse,
 } from '@angular/common/http';
+import {Observable, of} from 'rxjs';
+import {tap} from 'rxjs/operators';
 
-import { tap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
 import { HttpCacheFacade } from './httpCache';
 
 @Injectable()
