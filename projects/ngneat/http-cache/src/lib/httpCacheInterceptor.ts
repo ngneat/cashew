@@ -11,33 +11,28 @@ export class HttpCacheInterceptor implements HttpInterceptor {
   constructor(private cacheFacade: HttpCacheFacade) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const allowCacheGlobal = this.cacheFacade.isCacheable(request);
-    const allowCacheLocal = request.params.get('cache$') as any;
+    const isRequestCacheable = this.cacheFacade.isCacheable(request);
 
-    const filteredParams = filterParams(request);
-    const clone = request.clone({
-      params: new HttpParams({
-        fromObject: filteredParams
-      })
-    });
-
-    // allowCacheLocal !== false => because it can be null which means we allow it
-    if (allowCacheLocal === true || (allowCacheGlobal && allowCacheLocal !== false)) {
-      const ttl = request.params.get('ttl$');
-
-      if (this.cacheFacade.isCached(request)) {
+    if (isRequestCacheable && !!request.params.get('cache$') === true) {
+      if (this.cacheFacade.validate(request)) {
         return of(this.cacheFacade.get(request));
       }
+
+      const filteredParams = filterParams(request);
+      const clone = request.clone({
+        params: new HttpParams({ fromObject: filteredParams })
+      });
 
       return next.handle(clone).pipe(
         tap(event => {
           if (event instanceof HttpResponse) {
+            const ttl = request.params.get('ttl$');
             this.cacheFacade.set(request, event, +ttl);
           }
         })
       );
-    } else {
-      return next.handle(clone);
     }
+
+    return next.handle(request);
   }
 }

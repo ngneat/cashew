@@ -19,8 +19,13 @@ export class HttpCacheFacade {
     this.ttlManager.set(request, ttl);
   }
 
-  isCached(request: HttpRequest<any>) {
-    return this.storage.has(request) && this.ttlManager.isValid(request);
+  validate(request: HttpRequest<any>) {
+    const has = this.storage.has(request);
+    const isValid = this.ttlManager.isValid(request);
+    if (has && isValid) return true;
+
+    this.storage.delete(request);
+    return false;
   }
 
   get(request: HttpRequest<any>) {
