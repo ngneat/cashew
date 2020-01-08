@@ -11,12 +11,12 @@ export class HttpCacheFacade {
     private guard: HttpCacheGuard,
     private storage: HttpCacheStorage,
     private ttlManager: TTLManager,
-    @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig,
+    @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
   ) {}
 
-  set(request: HttpRequest<any>, response: HttpResponse<any>) {
+  set(request: HttpRequest<any>, response: HttpResponse<any>, ttl: number) {
     this.storage.set(request, response);
-    this.ttlManager.set(request);
+    this.ttlManager.set(request, ttl);
   }
 
   isCached(request: HttpRequest<any>) {
@@ -25,6 +25,10 @@ export class HttpCacheFacade {
 
   get(request: HttpRequest<any>) {
     return this.storage.get(request);
+  }
+
+  delete(url: string | RegExp): void {
+    return this.storage.delete(url);
   }
 
   isCacheable(request: HttpRequest<any>) {

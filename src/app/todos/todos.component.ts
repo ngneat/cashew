@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpCacheFacade } from '@ngneat/http-cache';
+import { HttpCacheFacade, withCache } from '@ngneat/http-cache';
 
 @Component({
   selector: 'app-todos',
@@ -8,13 +8,12 @@ import { HttpCacheFacade } from '@ngneat/http-cache';
   styleUrls: ['./todos.component.scss']
 })
 export class TodosComponent implements OnInit {
-
-  constructor(private http: HttpClient, private h: HttpCacheFacade) { }
+  constructor(private http: HttpClient, private h: HttpCacheFacade) {}
 
   ngOnInit() {
-    this.http.get('https://jsonplaceholder.typicode.com/todos?hello=3').subscribe(res => {
+    const tenSec = 10000;
+    this.http.get('https://jsonplaceholder.typicode.com/todos', withCache({ id: 1 })).subscribe(res => {
       console.log(res);
     });
   }
-
 }

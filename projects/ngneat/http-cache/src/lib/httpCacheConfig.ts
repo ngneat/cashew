@@ -5,15 +5,15 @@ export interface HttpCacheConfig {
     default: number;
     custom: {
       [key: string]: number;
-    }
-  }
+    };
+  };
 }
 
 export const defaultConfig: HttpCacheConfig = {
   ttl: {
-    default: 60, // seconds (change to one hour)
-    custom: {},
-  },
+    default: 3600000, // One hour
+    custom: {}
+  }
 };
 
 export function mergeConfig(config: Partial<HttpCacheConfig>) {
@@ -24,7 +24,23 @@ export function mergeConfig(config: Partial<HttpCacheConfig>) {
       ...defaultConfig.ttl,
       ...config.ttl
     }
-  }
+  };
+}
+
+type Params = {
+  cache$?: boolean;
+  ttl$?: number;
+  [key: string]: any;
+};
+
+export function withCache(params: Params = {}): any {
+  return {
+    params: {
+      cache$: true,
+      ttl$: params.ttl$,
+      ...params
+    }
+  };
 }
 
 export const HTTP_CACHE_CONFIG = new InjectionToken<HttpCacheConfig>('HTTP_CAACHE_CONFIG');

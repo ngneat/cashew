@@ -6,7 +6,7 @@ export abstract class HttpCacheStorage {
   abstract has(request: HttpRequest<any>): boolean;
   abstract get(request: HttpRequest<any>): HttpResponse<any>;
   abstract set(request: HttpRequest<any>, response: HttpResponse<any>): void;
-  abstract delete(key: string): void;
+  abstract delete(key: string | RegExp): void;
 }
 
 @Injectable()
