@@ -13,7 +13,15 @@ export class TodosComponent implements OnInit {
   ngOnInit() {
     const tenSec = 10000;
 
-    this.http.get('https://jsonplaceholder.typicode.com/todos', withCache({ cache$: false })).subscribe(res => {
+    this.http.get('https://jsonplaceholder.typicode.com/todos', withCache()).subscribe(res => {
+      console.log(res);
+    });
+
+    this.http.get('https://jsonplaceholder.typicode.com/todos', withCache()).subscribe(res => {
+      console.log(res);
+    });
+
+    this.http.get('https://jsonplaceholder.typicode.com/todos', withCache({ id: 1 })).subscribe(res => {
       console.log(res);
     });
 

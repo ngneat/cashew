@@ -2,7 +2,7 @@
   "name": "http-cache",
   "version": "0.0.0",
   "scripts": {
-    "build:lib": "ng build @ngneat/http-cache && npm run copy",
+    "build:lib": "ng build @ngneat/http-cache",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",

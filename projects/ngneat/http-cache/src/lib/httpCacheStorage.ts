@@ -6,7 +6,7 @@ export abstract class HttpCacheStorage {
   abstract has(request: HttpRequest<any>): boolean;
   abstract get(request: HttpRequest<any>): HttpResponse<any>;
   abstract set(request: HttpRequest<any>, response: HttpResponse<any>): void;
-  abstract delete(key: string | RegExp | HttpRequest<any>): void;
+  abstract delete(key?: string | RegExp | HttpRequest<any>): void;
 }
 
 @Injectable()
@@ -27,7 +27,12 @@ export class DefaultHttpCacheStorage implements HttpCacheStorage {
     this.cache.set(this.keySerializer.serialize(request), response);
   }
 
-  delete(url: string | RegExp | HttpRequest<any>): void {
+  delete(url?: string | RegExp): void {
+    if (!url) {
+      this.cache.clear();
+      return;
+    }
+
     let _url = url;
 
     if (url instanceof HttpRequest) {

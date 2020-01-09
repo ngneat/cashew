@@ -4,19 +4,25 @@ import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
 import { HttpCacheStorage } from './httpCacheStorage';
 import { TTLManager } from './ttlManager';
 import { HttpCacheGuard } from './httpCacheGuard';
+import { KeySerializer } from './keySerializer';
+import { RequestsQueue } from './requestsQueue';
 
 @Injectable()
 export class HttpCacheFacade {
   constructor(
+    public queue: RequestsQueue,
+    public storage: HttpCacheStorage,
+
     private guard: HttpCacheGuard,
-    private storage: HttpCacheStorage,
     private ttlManager: TTLManager,
+    private keySerializer: KeySerializer,
     @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
   ) {}
 
   set(request: HttpRequest<any>, response: HttpResponse<any>, ttl: number) {
     this.storage.set(request, response);
     this.ttlManager.set(request, ttl);
+    this.queue.delete(request);
   }
 
   validate(request: HttpRequest<any>) {
@@ -32,8 +38,8 @@ export class HttpCacheFacade {
     return this.storage.get(request);
   }
 
-  delete(url: string | RegExp): void {
-    return this.storage.delete(url);
+  delete(url?: string | RegExp): void {
+    this.storage.delete(url);
   }
 
   isCacheable(cache: any) {

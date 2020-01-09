@@ -6,6 +6,6 @@ export abstract class KeySerializer {
 
 export class DefaultKeySerializer extends KeySerializer {
   serialize(request: HttpRequest<any>) {
-    return request.url;
+    return request.urlWithParams;
   }
 }

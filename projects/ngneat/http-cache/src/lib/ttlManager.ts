@@ -21,13 +21,8 @@ export class DefaultTTLManager {
 
   set(request: HttpRequest<any>, ttl?: number): void {
     const key = this.keySerializer.serialize(request);
-    const [baseUrl] = key.split('?');
-    let _ttl = ttl || this.config.ttl.default;
+    let resolveTTL = ttl || this.config.ttl.default;
 
-    if (!_ttl && this.config.ttl.custom.hasOwnProperty(baseUrl)) {
-      _ttl = this.config.ttl.custom[baseUrl];
-    }
-
-    this.cache.set(key, new Date().setMilliseconds(_ttl));
+    this.cache.set(key, new Date().setMilliseconds(resolveTTL));
   }
 }

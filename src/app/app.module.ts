@@ -16,17 +16,8 @@ import { HttpCacheInterceptorModule } from '@ngneat/http-cache';
     HttpCacheInterceptorModule.forRoot({
       ttl: {
         default: 10000
-      },
-      strategy: 'implicit'
+      }
     })
-    // HttpCacheInterceptorModule.forRoot({
-    //   ttl: {
-    //     default: 60,
-    //     custom: {
-    //       'https://jsonplaceholder.typicode.com/todos': 120
-    //     }
-    //   }
-    // })
   ],
   bootstrap: [AppComponent]
 })
