@@ -8,16 +8,17 @@ import { TodosComponent } from './todos/todos.component';
 import { HttpCacheInterceptorModule } from '@ngneat/http-cache';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    TodosComponent
-  ],
+  declarations: [AppComponent, HomeComponent, TodosComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    HttpCacheInterceptorModule.forRoot(),
+    HttpCacheInterceptorModule.forRoot({
+      ttl: {
+        default: 10000
+      },
+      strategy: 'implicit'
+    })
     // HttpCacheInterceptorModule.forRoot({
     //   ttl: {
     //     default: 60,
@@ -29,4 +30,4 @@ import { HttpCacheInterceptorModule } from '@ngneat/http-cache';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

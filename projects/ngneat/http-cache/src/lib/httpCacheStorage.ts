@@ -34,7 +34,7 @@ export class DefaultHttpCacheStorage implements HttpCacheStorage {
       _url = this.keySerializer.serialize(url);
     }
 
-    if (typeof url === 'string') {
+    if (typeof _url === 'string') {
       this.cache.delete(_url as string);
       return;
     }

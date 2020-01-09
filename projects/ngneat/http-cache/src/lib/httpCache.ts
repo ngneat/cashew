@@ -36,7 +36,20 @@ export class HttpCacheFacade {
     return this.storage.delete(url);
   }
 
-  isCacheable(request: HttpRequest<any>) {
-    return this.guard.isCacheable(request);
+  isCacheable(cache: any) {
+    const strategy = this.config.strategy;
+    if (strategy === 'explicit') {
+      return cache;
+    }
+
+    if (strategy === 'implicit') {
+      return cache !== false;
+    }
+
+    return false;
+  }
+
+  canActivate(request: HttpRequest<any>) {
+    return this.guard.canActivate(request);
   }
 }

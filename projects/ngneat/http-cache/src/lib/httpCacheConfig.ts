@@ -1,15 +1,17 @@
 import { InjectionToken } from '@angular/core';
 
 export interface HttpCacheConfig {
+  strategy: 'implicit' | 'explicit';
   ttl: {
-    default: number;
-    custom: {
+    default?: number;
+    custom?: {
       [key: string]: number;
     };
   };
 }
 
 export const defaultConfig: HttpCacheConfig = {
+  strategy: 'explicit',
   ttl: {
     default: 3600000, // One hour
     custom: {}

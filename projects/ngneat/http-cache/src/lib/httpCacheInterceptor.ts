@@ -1,38 +1,34 @@
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { HttpCacheFacade } from './httpCache';
-import { filterParams } from './filterParams';
+import { cloneWithoutParams } from './cloneWithoutParams';
 
 @Injectable()
 export class HttpCacheInterceptor implements HttpInterceptor {
   constructor(private cacheFacade: HttpCacheFacade) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const isRequestCacheable = this.cacheFacade.isCacheable(request);
+    const canActivate = this.cacheFacade.canActivate(request);
+    const cache = request.params.get('cache$');
+    const ttl = request.params.get('ttl$');
 
-    if (isRequestCacheable && !!request.params.get('cache$') === true) {
+    if (canActivate && this.cacheFacade.isCacheable(cache)) {
       if (this.cacheFacade.validate(request)) {
         return of(this.cacheFacade.get(request));
       }
 
-      const filteredParams = filterParams(request);
-      const clone = request.clone({
-        params: new HttpParams({ fromObject: filteredParams })
-      });
-
-      return next.handle(clone).pipe(
+      return next.handle(cloneWithoutParams(request)).pipe(
         tap(event => {
           if (event instanceof HttpResponse) {
-            const ttl = request.params.get('ttl$');
             this.cacheFacade.set(request, event, +ttl);
           }
         })
       );
     }
 
-    return next.handle(request);
+    return next.handle(cache !== undefined || ttl !== undefined ? cloneWithoutParams(request) : request);
   }
 }
