@@ -4,7 +4,7 @@ import { HttpCacheInterceptor } from './httpCacheInterceptor';
 import { DefaultKeySerializer, KeySerializer } from './keySerializer';
 import { DefaultHttpCacheStorage, HttpCacheStorage } from './httpCacheStorage';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig, mergeConfig } from './httpCacheConfig';
-import { HttpCacheFacade } from './httpCache';
+import { HttpCacheManager } from './httpCacheManager.service';
 import { DefaultTTLManager, TTLManager } from './ttlManager';
 import { DefaultHttpCacheGuard, HttpCacheGuard } from './httpCacheGuard';
 import { RequestsQueue } from './requestsQueue';
@@ -20,7 +20,7 @@ export class HttpCacheInterceptorModule {
         { provide: TTLManager, useClass: DefaultTTLManager },
         { provide: HttpCacheGuard, useClass: DefaultHttpCacheGuard },
         { provide: HTTP_INTERCEPTORS, useClass: HttpCacheInterceptor, multi: true },
-        HttpCacheFacade,
+        HttpCacheManager,
         RequestsQueue
       ],
       ngModule: HttpCacheInterceptorModule

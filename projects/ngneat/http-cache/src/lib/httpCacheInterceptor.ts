@@ -3,39 +3,49 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } fr
 import { Observable, of } from 'rxjs';
 import { share, tap } from 'rxjs/operators';
 
-import { HttpCacheFacade } from './httpCache';
+import { HttpCacheManager } from './httpCacheManager.service';
 import { cloneWithoutParams } from './cloneWithoutParams';
+import { KeySerializer } from './keySerializer';
+import { CacheBucket } from './cacheBucket';
 
 @Injectable()
 export class HttpCacheInterceptor implements HttpInterceptor {
-  constructor(private cacheFacade: HttpCacheFacade) {}
+  constructor(private cacheFacade: HttpCacheManager, private keySerializer: KeySerializer) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const canActivate = this.cacheFacade.canActivate(request);
+    const canActivate = this.cacheFacade._canActivate(request);
     const cache = request.params.get('cache$');
     const ttl = request.params.get('ttl$');
-    const key = request.params.get('key$');
-    const clone = cloneWithoutParams(request, key);
+    const customKey = request.params.get('key$');
+    const bucket: any = request.params.get('bucket$');
 
-    if (canActivate && this.cacheFacade.isCacheable(cache)) {
-      if (this.cacheFacade.queue.has(clone)) {
-        return this.cacheFacade.queue.get(clone);
+    const clone = cloneWithoutParams(request, customKey);
+    const key = this.keySerializer.serialize(clone);
+
+    if (this.cacheFacade._isCacheable(canActivate, cache)) {
+      bucket && (bucket as CacheBucket).add(key);
+
+      // @ts-ignore
+      if (this.cacheFacade.queue.has(key)) {
+        // @ts-ignore
+        return this.cacheFacade.queue.get(key);
       }
 
-      if (this.cacheFacade.validate(clone)) {
-        return of(this.cacheFacade.get(clone));
+      if (this.cacheFacade.validate(key)) {
+        return of(this.cacheFacade.get(key));
       }
 
       const shared = next.handle(clone).pipe(
         tap(event => {
           if (event instanceof HttpResponse) {
-            this.cacheFacade.set(clone, event, +ttl);
+            this.cacheFacade._set(key, event, +ttl);
           }
         }),
         share()
       );
 
-      this.cacheFacade.queue.set(clone, shared);
+      // @ts-ignore
+      this.cacheFacade.queue.set(key, shared);
 
       return shared;
     }

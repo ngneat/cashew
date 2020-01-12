@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { CacheBucket } from './cacheBucket';
 
 export interface HttpCacheConfig {
   strategy: 'implicit' | 'explicit';
@@ -29,6 +30,7 @@ type Params = {
   cache$?: boolean;
   ttl$?: number;
   key$?: string;
+  bucket$?: CacheBucket,
   [key: string]: any;
 };
 
@@ -36,7 +38,6 @@ export function withCache(params: Params = {}): any {
   return {
     params: {
       cache$: true,
-      key$: null,
       ttl$: params.ttl$,
       ...params
     }

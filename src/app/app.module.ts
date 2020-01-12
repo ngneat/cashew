@@ -14,9 +14,9 @@ import { HttpCacheInterceptorModule } from '@ngneat/http-cache';
     AppRoutingModule,
     HttpClientModule,
     HttpCacheInterceptorModule.forRoot({
-      ttl: {
-        default: 10000
-      }
+      // ttl: {
+        // default: 10000
+      // }
     })
   ],
   bootstrap: [AppComponent]

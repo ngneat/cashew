@@ -1,6 +1,6 @@
 import { HttpCacheRequest } from './types';
 
-const filterKeys = ['ttl$', 'cache$', 'key$'];
+const filterKeys = ['ttl$', 'cache$', 'key$', 'bucket$'];
 
 export function filterParams(request: HttpCacheRequest) {
   return request.params.keys().reduce((acc, key) => {

@@ -1,28 +1,24 @@
 import { Injectable } from '@angular/core';
-import { KeySerializer } from './keySerializer';
 import { HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { HttpCacheRequest } from './types';
 
 @Injectable()
 export class RequestsQueue {
   private queue = new Map();
 
-  constructor(private keySerializer: KeySerializer) {}
-
-  get(request: HttpCacheRequest) {
-    return this.queue.get(this.keySerializer.serialize(request));
+  get(key: string) {
+    return this.queue.get(key);
   }
 
-  has(request: HttpCacheRequest) {
-    return this.queue.has(this.keySerializer.serialize(request));
+  has(key: string) {
+    return this.queue.has(key);
   }
 
-  set(request: HttpCacheRequest, shared: Observable<HttpEvent<any>>) {
-    this.queue.set(this.keySerializer.serialize(request), shared);
+  set(key: string, shared: Observable<HttpEvent<any>>) {
+    this.queue.set(key, shared);
   }
 
-  delete(request: HttpCacheRequest) {
-    this.queue.delete(this.keySerializer.serialize(request));
+  delete(key: string) {
+    this.queue.delete(key);
   }
 }
