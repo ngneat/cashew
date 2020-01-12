@@ -1,11 +1,11 @@
-import { HttpRequest } from '@angular/common/http';
+import { HttpCacheRequest } from './types';
 
 export abstract class HttpCacheGuard {
-  abstract canActivate(request: HttpRequest<any>): boolean;
+  abstract canActivate(request: HttpCacheRequest): boolean;
 }
 
 export class DefaultHttpCacheGuard implements HttpCacheGuard {
-  canActivate(request: HttpRequest<any>): boolean {
+  canActivate(request: HttpCacheRequest): boolean {
     return request.method === 'GET' && request.responseType === 'json';
   }
 }

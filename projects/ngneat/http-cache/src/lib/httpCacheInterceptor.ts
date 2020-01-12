@@ -14,7 +14,8 @@ export class HttpCacheInterceptor implements HttpInterceptor {
     const canActivate = this.cacheFacade.canActivate(request);
     const cache = request.params.get('cache$');
     const ttl = request.params.get('ttl$');
-    const clone = cloneWithoutParams(request);
+    const key = request.params.get('key$');
+    const clone = cloneWithoutParams(request, key);
 
     if (canActivate && this.cacheFacade.isCacheable(cache)) {
       if (this.cacheFacade.queue.has(clone)) {

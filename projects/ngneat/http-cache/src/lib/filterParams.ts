@@ -1,8 +1,10 @@
-import { HttpRequest } from '@angular/common/http';
+import { HttpCacheRequest } from './types';
 
-export function filterParams(request: HttpRequest<any>) {
+const filterKeys = ['ttl$', 'cache$', 'key$'];
+
+export function filterParams(request: HttpCacheRequest) {
   return request.params.keys().reduce((acc, key) => {
-    if (key !== 'ttl$' && key !== 'cache$') {
+    if (filterKeys.includes(key) === false) {
       acc[key] = request.params.get(key);
     }
 

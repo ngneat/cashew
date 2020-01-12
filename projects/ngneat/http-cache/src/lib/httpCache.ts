@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
 import { HttpCacheStorage } from './httpCacheStorage';
@@ -6,6 +6,7 @@ import { TTLManager } from './ttlManager';
 import { HttpCacheGuard } from './httpCacheGuard';
 import { KeySerializer } from './keySerializer';
 import { RequestsQueue } from './requestsQueue';
+import { HttpCacheRequest } from './types';
 
 @Injectable()
 export class HttpCacheFacade {
@@ -19,13 +20,13 @@ export class HttpCacheFacade {
     @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
   ) {}
 
-  set(request: HttpRequest<any>, response: HttpResponse<any>, ttl: number) {
+  set(request: HttpCacheRequest, response: HttpResponse<any>, ttl: number) {
     this.storage.set(request, response);
     this.ttlManager.set(request, ttl);
     this.queue.delete(request);
   }
 
-  validate(request: HttpRequest<any>) {
+  validate(request: HttpCacheRequest) {
     const has = this.storage.has(request);
     const isValid = this.ttlManager.isValid(request);
     if (has && isValid) return true;
@@ -34,7 +35,7 @@ export class HttpCacheFacade {
     return false;
   }
 
-  get(request: HttpRequest<any>) {
+  get(request: HttpCacheRequest) {
     return this.storage.get(request);
   }
 
@@ -55,7 +56,7 @@ export class HttpCacheFacade {
     return false;
   }
 
-  canActivate(request: HttpRequest<any>) {
+  canActivate(request: HttpCacheRequest) {
     return this.guard.canActivate(request);
   }
 }

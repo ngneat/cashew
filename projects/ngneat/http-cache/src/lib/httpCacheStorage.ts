@@ -1,12 +1,13 @@
 import { HttpRequest, HttpResponse } from '@angular/common/http';
 import { KeySerializer } from './keySerializer';
 import { Injectable } from '@angular/core';
+import { HttpCacheRequest } from './types';
 
 export abstract class HttpCacheStorage {
-  abstract has(request: HttpRequest<any>): boolean;
-  abstract get(request: HttpRequest<any>): HttpResponse<any>;
-  abstract set(request: HttpRequest<any>, response: HttpResponse<any>): void;
-  abstract delete(key?: string | RegExp | HttpRequest<any>): void;
+  abstract has(request: HttpCacheRequest): boolean;
+  abstract get(request: HttpCacheRequest): HttpResponse<any>;
+  abstract set(request: HttpCacheRequest, response: HttpResponse<any>): void;
+  abstract delete(key?: string | RegExp | HttpCacheRequest): void;
 }
 
 @Injectable()
@@ -15,15 +16,15 @@ export class DefaultHttpCacheStorage implements HttpCacheStorage {
 
   constructor(private keySerializer: KeySerializer) {}
 
-  has(request: HttpRequest<any>): boolean {
+  has(request: HttpCacheRequest): boolean {
     return this.cache.has(this.keySerializer.serialize(request));
   }
 
-  get(request: HttpRequest<any>) {
+  get(request: HttpCacheRequest) {
     return this.cache.get(this.keySerializer.serialize(request));
   }
 
-  set(request: HttpRequest<any>, response: HttpResponse<any>): void {
+  set(request: HttpCacheRequest, response: HttpResponse<any>): void {
     this.cache.set(this.keySerializer.serialize(request), response);
   }
 

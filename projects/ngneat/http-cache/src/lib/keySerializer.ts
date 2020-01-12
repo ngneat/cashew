@@ -1,11 +1,11 @@
-import { HttpRequest } from '@angular/common/http';
+import { HttpCacheRequest } from './types';
 
 export abstract class KeySerializer {
-  abstract serialize(request: HttpRequest<any>): string;
+  abstract serialize(request: HttpCacheRequest): string;
 }
 
 export class DefaultKeySerializer extends KeySerializer {
-  serialize(request: HttpRequest<any>) {
-    return request.urlWithParams;
+  serialize(request: HttpCacheRequest) {
+    return request.customKey || request.urlWithParams;
   }
 }
