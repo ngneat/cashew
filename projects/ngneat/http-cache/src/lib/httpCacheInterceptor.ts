@@ -10,10 +10,10 @@ import { CacheBucket } from './cacheBucket';
 
 @Injectable()
 export class HttpCacheInterceptor implements HttpInterceptor {
-  constructor(private cacheFacade: HttpCacheManager, private keySerializer: KeySerializer) {}
+  constructor(private httpCacheManager: HttpCacheManager, private keySerializer: KeySerializer) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const canActivate = this.cacheFacade._canActivate(request);
+    const canActivate = this.httpCacheManager._canActivate(request);
     const cache = request.params.get('cache$');
     const ttl = request.params.get('ttl$');
     const customKey = request.params.get('key$');
@@ -22,30 +22,30 @@ export class HttpCacheInterceptor implements HttpInterceptor {
     const clone = cloneWithoutParams(request, customKey);
     const key = this.keySerializer.serialize(clone);
 
-    if (this.cacheFacade._isCacheable(canActivate, cache)) {
+    if (this.httpCacheManager._isCacheable(canActivate, cache)) {
       bucket && (bucket as CacheBucket).add(key);
 
       // @ts-ignore
-      if (this.cacheFacade.queue.has(key)) {
+      if (this.httpCacheManager.queue.has(key)) {
         // @ts-ignore
-        return this.cacheFacade.queue.get(key);
+        return this.httpCacheManager.queue.get(key);
       }
 
-      if (this.cacheFacade.validate(key)) {
-        return of(this.cacheFacade.get(key));
+      if (this.httpCacheManager.validate(key)) {
+        return of(this.httpCacheManager.get(key));
       }
 
       const shared = next.handle(clone).pipe(
         tap(event => {
           if (event instanceof HttpResponse) {
-            this.cacheFacade._set(key, event, +ttl);
+            this.httpCacheManager._set(key, event, +ttl);
           }
         }),
         share()
       );
 
       // @ts-ignore
-      this.cacheFacade.queue.set(key, shared);
+      this.httpCacheManager.queue.set(key, shared);
 
       return shared;
     }
