@@ -13,7 +13,6 @@ export class HttpCacheManager {
   constructor(
     private queue: RequestsQueue,
     private storage: HttpCacheStorage,
-
     private guard: HttpCacheGuard,
     private ttlManager: TTLManager,
     @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
@@ -36,7 +35,7 @@ export class HttpCacheManager {
     return this.storage.has(key);
   }
 
-  add(key: string, body: HttpResponse<any> | any, { ttl, bucket }: { ttl?: number; bucket?: CacheBucket }) {
+  add(key: string, body: HttpResponse<any> | any, { ttl, bucket }: { ttl?: number; bucket?: CacheBucket } = {}) {
     let response = body;
 
     if (!(body instanceof HttpResponse)) {
@@ -48,9 +47,7 @@ export class HttpCacheManager {
     }
 
     this._set(key, response, ttl);
-    if (bucket) {
-      bucket.add(key);
-    }
+    bucket && bucket.add(key);
   }
 
   delete(key?: string | RegExp | CacheBucket): void {
@@ -64,6 +61,7 @@ export class HttpCacheManager {
     this.ttlManager.delete(key);
   }
 
+  //TODO: add types
   _isCacheable(canActivate: boolean, cache: any) {
     const strategy = this.config.strategy;
     if (strategy === 'explicit') {
@@ -80,6 +78,7 @@ export class HttpCacheManager {
   _set(key: string, response: HttpResponse<any>, ttl: number) {
     this.storage.set(key, response);
     this.ttlManager.set(key, ttl);
+    //TODO: I would move it out to the interceptor
     this.queue.delete(key);
   }
 

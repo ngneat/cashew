@@ -1,4 +1,5 @@
 export class CacheBucket {
+  // TODO: add Type.
   private keys = new Set();
 
   add(key: string) {

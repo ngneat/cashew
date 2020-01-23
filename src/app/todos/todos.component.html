@@ -1,2 +1,28 @@
-<p>todos works!</p>
-<button (click)="clear()">Clear Bucket</button>
+<h1>Examples</h1>
+<button (click)="clearCache()">Clear All Cache</button>
+
+<hr />
+
+<h2>Todos</h2>
+<button (click)="loadTodos()">Load Todos</button>
+
+<hr />
+
+<h2>Inline TTL</h2>
+<button (click)="loadTodoFour()">Load Todo 4 with 10sec ttl</button>
+
+<hr />
+
+<h2>Custom key (should load todos again as it's a different key)</h2>
+<button (click)="loadCustomKey()">Load Todos with a different key</button>
+
+<hr />
+
+<h2>Bucket of Ids</h2>
+<button (click)="getById(1)">Todo 1</button>
+<button (click)="getById(2)">Todo 2</button>
+<button (click)="getById(3)">Todo 3</button>
+<button (click)="addTodoFive()">Add Todo5 call to the bucket and click the button below</button>
+<button (click)="getById(5)">Todo 5</button>
+
+<button (click)="clearTodosCache()">Clear Todos Bucket</button>

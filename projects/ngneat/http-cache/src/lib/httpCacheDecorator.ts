@@ -17,7 +17,11 @@ export function HttpCache<T = any>(config = { bufferSize: 1, refCount: false }, 
 
       const call$ = method.apply(this, arguments).pipe(shareReplay(config));
       cache.set(key, call$);
-      ttl && setTimeout(() => cache.delete(key), ttl);
+      if(ttl) {
+        setTimeout(() => {
+          cache.delete(key);
+        }, ttl);
+      }
 
       return call$;
     };
