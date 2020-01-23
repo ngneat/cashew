@@ -73,13 +73,13 @@ describe('HttpCacheInterceptor', () => {
   }));
 
   it('should return a cached request', fakeAsync(() => {
-    const cacheSpy = spyOn((httpCacheInterceptor as any).cacheFacade, 'get');
+    const cacheSpy = spyOn((httpCacheInterceptor as any).httpCacheManager, 'get');
     call(request({cache$: true, paramA: true}));
     expect(cacheSpy).toHaveBeenCalledTimes(1);
   }));
 
   it('should return a queued request', fakeAsync(() => {
-    const cacheSpy = spyOn((httpCacheInterceptor as any).cacheFacade.queue, 'get').and.callThrough();
+    const cacheSpy = spyOn((httpCacheInterceptor as any).httpCacheManager.queue, 'get').and.callThrough();
     call(request({cache$: true}), 2, 0);
     expect(cacheSpy).toHaveBeenCalledTimes(1);
     tick(frame);
