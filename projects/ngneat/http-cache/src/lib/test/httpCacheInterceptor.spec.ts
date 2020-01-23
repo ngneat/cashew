@@ -1,55 +1,124 @@
-// import { Injectable } from '@angular/core';
-// import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
-// import { Observable, of } from 'rxjs';
-// import { share, tap } from 'rxjs/operators';
-//
-// import { HttpCacheManager } from './httpCacheManager.service';
-// import { cloneWithoutParams } from './cloneWithoutParams';
-// import { KeySerializer } from './keySerializer';
-// import { CacheBucket } from './cacheBucket';
-//
-// @Injectable()
-// export class HttpCacheInterceptor implements HttpInterceptor {
-//   constructor(private cacheFacade: HttpCacheManager, private keySerializer: KeySerializer) {}
-//
-//   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-//     const canActivate = this.cacheFacade._canActivate(request);
-//     const cache = request.params.get('cache$');
-//     const ttl = request.params.get('ttl$');
-//     const customKey = request.params.get('key$');
-//     const bucket: any = request.params.get('bucket$');
-//
-//     const clone = cloneWithoutParams(request, customKey);
-//     const key = this.keySerializer.serialize(clone);
-//
-//     if (this.cacheFacade._isCacheable(canActivate, cache)) {
-//       bucket && (bucket as CacheBucket).add(key);
-//
-//       // @ts-ignore
-//       if (this.cacheFacade.queue.has(key)) {
-//         // @ts-ignore
-//         return this.cacheFacade.queue.get(key);
-//       }
-//
-//       if (this.cacheFacade.validate(key)) {
-//         return of(this.cacheFacade.get(key));
-//       }
-//
-//       const shared = next.handle(clone).pipe(
-//         tap(event => {
-//           if (event instanceof HttpResponse) {
-//             this.cacheFacade._set(key, event, +ttl);
-//           }
-//         }),
-//         share()
-//       );
-//
-//       // @ts-ignore
-//       this.cacheFacade.queue.set(key, shared);
-//
-//       return shared;
-//     }
-//
-//     return next.handle(clone);
-//   }
-// }
+import {HttpHandler, HttpResponse, HttpParams} from '@angular/common/http';
+import {fakeAsync, tick} from '@angular/core/testing';
+import {timer} from 'rxjs';
+import {mapTo} from 'rxjs/operators';
+import {HttpCacheInterceptor} from '../httpCacheInterceptor';
+import {httpCacheManager, keySerializer, httpRequest, config, frame, ttl, cacheBucket} from './mocks.spec';
+
+describe('HttpCacheInterceptor', () => {
+  let httpCacheInterceptor: HttpCacheInterceptor;
+  let handler: HttpHandler;
+  let request = (params, method = 'GET', url = 'api/mock') => httpRequest(
+    method,
+    {params: new HttpParams({fromObject: params})},
+    url
+  );
+  const httpHandler = (response = {}): HttpHandler => ({
+    handle: jest.fn(() => timer(frame).pipe(mapTo(new HttpResponse({body: response}))))
+  });
+  const call = (req, times = 2, delay = frame) => {
+    for(let i = 0; i < times; i++) {
+      httpCacheInterceptor.intercept(req, handler).subscribe();
+      tick(delay);
+    }
+  };
+
+  beforeEach(() => {
+    handler = httpHandler();
+    httpCacheInterceptor = new HttpCacheInterceptor(httpCacheManager(), keySerializer());
+    expect.hasAssertions();
+  });
+
+  it('should cache a request', fakeAsync(() => {
+    call(request({cache$: true}));
+    expect(handler.handle).toHaveBeenCalledTimes(1);
+  }));
+
+  it('should not cache when cache$ is falsy', fakeAsync(() => {
+    call(request({cache$: false}));
+    expect(handler.handle).toHaveBeenCalledTimes(2);
+  }));
+
+  it('should not cache request of type POST', fakeAsync(() => {
+    call(request({}, 'POST'));
+    expect(handler.handle).toHaveBeenCalledTimes(2);
+  }));
+
+  it('should cache request of type POST when cache$ is implicitly true', fakeAsync(() => {
+    call(request({cache$: true}, 'POST'));
+    expect(handler.handle).toHaveBeenCalledTimes(1);
+  }));
+
+  it('should not cache the request by default on explicit strategy', fakeAsync(() => {
+    call(request({}));
+    expect(handler.handle).toHaveBeenCalledTimes(2);
+  }));
+
+  it('should cache the request by default on implicit strategy', fakeAsync(() => {
+    httpCacheInterceptor = new HttpCacheInterceptor(
+      httpCacheManager({...config, strategy: 'implicit'}),
+      keySerializer()
+    );
+    call(request({}));
+    expect(handler.handle).toHaveBeenCalledTimes(1);
+  }));
+
+  it('should not cache the request on implicit strategy and cache$ if falsy', fakeAsync(() => {
+    httpCacheInterceptor = new HttpCacheInterceptor(
+        httpCacheManager({...config, strategy: 'implicit'}),
+        keySerializer()
+    );
+    call(request({cache$: false}));
+    expect(handler.handle).toHaveBeenCalledTimes(2);
+  }));
+
+  it('should return a cached request', fakeAsync(() => {
+    const cacheSpy = spyOn((httpCacheInterceptor as any).cacheFacade, 'get');
+    call(request({cache$: true, paramA: true}));
+    expect(cacheSpy).toHaveBeenCalledTimes(1);
+  }));
+
+  it('should return a queued request', fakeAsync(() => {
+    const cacheSpy = spyOn((httpCacheInterceptor as any).cacheFacade.queue, 'get').and.callThrough();
+    call(request({cache$: true}), 2, 0);
+    expect(cacheSpy).toHaveBeenCalledTimes(1);
+    tick(frame);
+  }));
+
+  it('should refetch after ttl has passed', fakeAsync(() => {
+    call(request({cache$: true}), 2, ttl + frame);
+    expect(handler.handle).toHaveBeenCalledTimes(2);
+  }));
+
+  it('should not cache a request of same url and different params', fakeAsync(() => {
+    call(request({cache$: true, paramA: true}), 1);
+    call(request({cache$: true, paramA: false}), 1);
+    expect(handler.handle).toHaveBeenCalledTimes(2);
+  }));
+
+  it('should cache a request of same url and same params', fakeAsync(() => {
+    call(request({cache$: true, paramA: true}), 2);
+    expect(handler.handle).toHaveBeenCalledTimes(1);
+  }));
+
+  it('should cache a request of same url and same params in queue ', fakeAsync(() => {
+    call(request({cache$: true, paramA: true}), 2, 0);
+    expect(handler.handle).toHaveBeenCalledTimes(1);
+    tick(frame);
+  }));
+
+  it('should fetch twice for different url', fakeAsync(() => {
+    call(request({cache$: true}, 'GET', 'url1'), 1);
+    call(request({cache$: true}, 'GET', 'url2'), 1);
+    tick(frame);
+    expect(handler.handle).toHaveBeenCalledTimes(2);
+  }));
+
+  it('should add a request to cacheBucket', fakeAsync(() => {
+    const bucket = cacheBucket();
+    spyOn(bucket, 'add');
+    call(request({cache$: true, bucket$: bucket, key$: 'foo'}), 1);
+    expect(bucket.add).toHaveBeenCalledWith('foo');
+  }));
+
+});

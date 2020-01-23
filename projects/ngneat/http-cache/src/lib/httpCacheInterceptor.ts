@@ -24,7 +24,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
 
     if (this.cacheFacade._isCacheable(canActivate, cache)) {
       bucket && (bucket as CacheBucket).add(key);
-
+      // TODO: wouldn't _queue be better instead of ts-ignore it.
       // @ts-ignore
       if (this.cacheFacade.queue.has(key)) {
         // @ts-ignore
@@ -34,7 +34,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
       if (this.cacheFacade.validate(key)) {
         return of(this.cacheFacade.get(key));
       }
-
+      //TODO: I would split that to function (for readability sake).
       const shared = next.handle(clone).pipe(
         tap(event => {
           if (event instanceof HttpResponse) {

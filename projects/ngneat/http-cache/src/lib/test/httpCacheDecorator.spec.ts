@@ -1,6 +1,6 @@
 import {fakeAsync, tick} from '@angular/core/testing';
 import {timer} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, take, switchMap, delay} from 'rxjs/operators';
 import {HttpCache} from '../httpCacheDecorator';
 
 const frame = 1000;
@@ -26,22 +26,23 @@ describe('HttpCache', () => {
     dummyClass = new DummyClass();
   });
 
-  it('should cache the request', () => {
+  it('should cache the request', fakeAsync(() => {
     dummyClass.get().subscribe(data => {
       dummyClass.get().subscribe(data2 => {
         expect(data).toBe(data2);
       })
     });
-  });
+    tick(frame);
+  }));
 
-  fit('should bust the cache when ttl arrive', fakeAsync(() => {
-    dummyClass.getWithTTL().subscribe(data => {
+  it('should bust the cache when ttl arrive', fakeAsync(() => {
+    dummyClass.getWithTTL().pipe(delay(frame * 2)).subscribe(data => {
       dummyClass.getWithTTL().subscribe(data2 => {
-        console.log(data === data2);
         expect(data).not.toBe(data2);
+        tick(frame * 4);
       })
     });
-    tick(1000);
-  }))
+    tick(frame * 4);
+  }));
 
 });

@@ -1,40 +1,56 @@
-// import { Inject, Injectable } from '@angular/core';
-// import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
-// import { deleteByRegex } from './deleteByRegex';
-//
-// export abstract class TTLManager {
-//   abstract isValid(key: string): boolean;
-//   abstract set(key: string, ttl?: number): void;
-//   abstract delete(key: string | RegExp): void;
-// }
-//
-// @Injectable()
-// export class DefaultTTLManager {
-//   private cache = new Map<string, number>();
-//
-//   constructor(@Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig) {}
-//
-//   isValid(key: string): boolean {
-//     return this.cache.get(key) > new Date().getTime();
-//   }
-//
-//   set(key: string, ttl?: number): void {
-//     let resolveTTL = ttl || this.config.ttl.default;
-//
-//     this.cache.set(key, new Date().setMilliseconds(resolveTTL));
-//   }
-//
-//   delete(key?: string | RegExp): void {
-//     if (!key) {
-//       this.cache.clear();
-//       return;
-//     }
-//
-//     if (typeof key === 'string') {
-//       this.cache.delete(key as string);
-//       return;
-//     }
-//
-//     deleteByRegex(key as RegExp, this.cache);
-//   }
-// }
+import {fakeAsync, tick} from '@angular/core/testing';
+import {TTLManager, DefaultTTLManager} from '../ttlManager';
+import {httpResponse, config} from './mocks.spec';
+
+describe('ttlManager', () => {
+
+  let ttlManager: TTLManager;
+  const ttl = 1000;
+
+  beforeEach(() => {
+    ttlManager = new DefaultTTLManager(config);
+  });
+
+  describe('valid', () => {
+    it('should not be valid if a key does not exist', () => {
+      expect(ttlManager.isValid('notExistingKey')).toBeFalsy();
+    });
+  });
+
+  describe('set', () => {
+    it('should be valid', () => {
+      ttlManager.set('key', 1000);
+      expect(ttlManager.isValid('key')).toBeTruthy();
+    });
+    it('should not be valid after ttl is over', fakeAsync(() => {
+      ttlManager.set('key', 1000);
+      tick(1001);
+      expect(ttlManager.isValid('key')).toBeFalsy();
+    }));
+    it('should use the config ttl if non has been passed', () => {
+      spyOn(Date.prototype, 'setMilliseconds');
+      ttlManager.set('key');
+      expect(Date.prototype.setMilliseconds).toHaveBeenCalledWith(config.ttl.default);
+    });
+  });
+
+  describe('delete', () => {
+    it('should clear storage when call without a key', () => {
+      spyOn((ttlManager as any).cache, 'clear');
+      ttlManager.delete();
+      expect((ttlManager as any).cache.clear).toHaveBeenCalled();
+    });
+    it('should call delete when given key', () => {
+      spyOn((ttlManager as any).cache, 'delete');
+      ttlManager.delete('key');
+      expect((ttlManager as any).cache.delete).toHaveBeenCalled();
+    });
+    it('should delete by regex', () => {
+      const key = 'aaa';
+      ttlManager.set(key, ttl);
+      const regex = new RegExp('aa');
+      ttlManager.delete(regex);
+      expect(ttlManager.isValid(key)).toBeFalsy();
+    });
+  })
+});
