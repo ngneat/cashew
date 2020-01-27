@@ -1,9 +1,8 @@
-import {fakeAsync, tick} from '@angular/core/testing';
-import {TTLManager, DefaultTTLManager} from '../ttlManager';
-import {httpResponse, config} from './mocks.spec';
+import { fakeAsync, tick } from '@angular/core/testing';
+import { TTLManager, DefaultTTLManager } from '../ttlManager';
+import { httpResponse, config } from './mocks.spec';
 
 describe('ttlManager', () => {
-
   let ttlManager: TTLManager;
   const ttl = 1000;
 
@@ -52,5 +51,5 @@ describe('ttlManager', () => {
       ttlManager.delete(regex);
       expect(ttlManager.isValid(key)).toBeFalsy();
     });
-  })
+  });
 });

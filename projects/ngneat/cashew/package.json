@@ -1,5 +1,5 @@
 {
-  "name": "@ngneat/http-cache",
+  "name": "@ngneat/cashew",
   "version": "0.0.1",
   "scripts": {
     "test": "jest --watch"

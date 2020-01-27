@@ -1,8 +1,7 @@
-import {DefaultHttpCacheStorage} from '../httpCacheStorage';
-import {httpResponse} from './mocks.spec';
+import { DefaultHttpCacheStorage } from '../httpCacheStorage';
+import { httpResponse } from './mocks.spec';
 
 describe('httpCacheStorage', () => {
-
   let storage: DefaultHttpCacheStorage;
   const existingKey = 'existingKey';
   const notExistingKey = 'notExistingKey';
@@ -10,7 +9,7 @@ describe('httpCacheStorage', () => {
 
   beforeEach(() => {
     storage = new DefaultHttpCacheStorage();
-    storage.set(existingKey, response)
+    storage.set(existingKey, response);
   });
 
   describe('has', () => {
@@ -46,5 +45,5 @@ describe('httpCacheStorage', () => {
       storage.delete(regex);
       expect(storage.has(key)).toBeFalsy();
     });
-  })
+  });
 });

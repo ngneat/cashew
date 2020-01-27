@@ -30,7 +30,7 @@ type Params = {
   cache$?: boolean;
   ttl$?: number;
   key$?: string;
-  bucket$?: CacheBucket,
+  bucket$?: CacheBucket;
   [key: string]: any;
 };
 

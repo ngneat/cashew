@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "http-cache": {
+    "cashew": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -17,18 +17,13 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/http-cache",
+            "outputPath": "dist/cashew",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": [],
             "es5BrowserSupport": true
           },
@@ -62,18 +57,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "http-cache:build"
+            "browserTarget": "cashew:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "http-cache:build:production"
+              "browserTarget": "cashew:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "http-cache:build"
+            "browserTarget": "cashew:build"
           }
         },
         "test": {
@@ -83,31 +78,21 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "scripts": [],
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ]
+            "assets": ["src/favicon.ico", "src/assets"]
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
     },
-    "http-cache-e2e": {
+    "cashew-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "prefix": "",
@@ -116,11 +101,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "http-cache:serve"
+            "devServerTarget": "cashew:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "http-cache:serve:production"
+              "devServerTarget": "cashew:serve:production"
             }
           }
         },
@@ -128,48 +113,41 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
     },
-    "@ngneat/http-cache": {
-      "root": "projects/ngneat/http-cache",
-      "sourceRoot": "projects/ngneat/http-cache/src",
+    "@ngneat/cashew": {
+      "root": "projects/ngneat/cashew",
+      "sourceRoot": "projects/ngneat/cashew/src",
       "projectType": "library",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/ngneat/http-cache/tsconfig.lib.json",
-            "project": "projects/ngneat/http-cache/ng-package.json"
+            "tsConfig": "projects/ngneat/cashew/tsconfig.lib.json",
+            "project": "projects/ngneat/cashew/ng-package.json"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngneat/http-cache/src/test.ts",
-            "tsConfig": "projects/ngneat/http-cache/tsconfig.spec.json",
-            "karmaConfig": "projects/ngneat/http-cache/karma.conf.js"
+            "main": "projects/ngneat/cashew/src/test.ts",
+            "tsConfig": "projects/ngneat/cashew/tsconfig.spec.json",
+            "karmaConfig": "projects/ngneat/cashew/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "projects/ngneat/http-cache/tsconfig.lib.json",
-              "projects/ngneat/http-cache/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["projects/ngneat/cashew/tsconfig.lib.json", "projects/ngneat/cashew/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
     }
   },
-  "defaultProject": "http-cache"
+  "defaultProject": "cashew"
 }

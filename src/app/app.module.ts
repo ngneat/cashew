@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { TodosComponent } from './todos/todos.component';
-import { HttpCacheInterceptorModule } from '@ngneat/http-cache';
+import { HttpCacheInterceptorModule } from '@ngneat/cashew';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, TodosComponent],
@@ -15,7 +15,7 @@ import { HttpCacheInterceptorModule } from '@ngneat/http-cache';
     HttpClientModule,
     HttpCacheInterceptorModule.forRoot({
       // ttl: {
-        // default: 10000
+      // default: 10000
       // }
     })
   ],
