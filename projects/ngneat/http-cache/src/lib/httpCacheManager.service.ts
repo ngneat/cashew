@@ -27,7 +27,7 @@ export class HttpCacheManager {
     return false;
   }
 
-  get(key: string) {
+  get<T = any>(key: string): HttpResponse<T> {
     return this.storage.get(key);
   }
 
@@ -35,7 +35,7 @@ export class HttpCacheManager {
     return this.storage.has(key);
   }
 
-  add(key: string, body: HttpResponse<any> | any, { ttl, bucket }: { ttl?: number; bucket?: CacheBucket } = {}) {
+  set(key: string, body: HttpResponse<any> | any, { ttl, bucket }: { ttl?: number; bucket?: CacheBucket } = {}) {
     let response = body;
 
     if (!(body instanceof HttpResponse)) {
@@ -61,7 +61,6 @@ export class HttpCacheManager {
     this.ttlManager.delete(key);
   }
 
-  //TODO: add types
   _isCacheable(canActivate: boolean, cache: any) {
     const strategy = this.config.strategy;
     if (strategy === 'explicit') {
@@ -78,7 +77,6 @@ export class HttpCacheManager {
   _set(key: string, response: HttpResponse<any>, ttl: number) {
     this.storage.set(key, response);
     this.ttlManager.set(key, ttl);
-    //TODO: I would move it out to the interceptor
     this.queue.delete(key);
   }
 

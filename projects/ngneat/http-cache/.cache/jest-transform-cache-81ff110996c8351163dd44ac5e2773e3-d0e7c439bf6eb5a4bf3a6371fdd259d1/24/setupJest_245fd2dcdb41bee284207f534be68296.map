@@ -1,1 +1,0 @@
-{"file":"C:\\Users\\Itay\\projects\\opensources\\http-cache\\projects\\ngneat\\http-cache\\setupJest.ts","mappings":";;AAAA,+BAA6B","names":[],"sources":["C:\\Users\\Itay\\projects\\opensources\\http-cache\\projects\\ngneat\\http-cache\\setupJest.ts"],"sourcesContent":["import 'jest-preset-angular';\n"],"version":3}

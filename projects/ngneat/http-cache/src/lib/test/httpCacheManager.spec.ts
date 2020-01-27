@@ -1,14 +1,19 @@
-import {HttpCacheGuard} from '../httpCacheGuard';
-import {HttpCacheManager} from '../httpCacheManager.service';
-import {HttpCacheStorage} from '../httpCacheStorage';
-import {RequestsQueue} from '../requestsQueue';
-import {TTLManager} from '../ttlManager';
-import {config, requestQueue, httpCacheStorage, httpCacheGuard, ttlManager as makeTTL, cacheBucket} from './mocks.spec';
+import { HttpCacheGuard } from '../httpCacheGuard';
+import { HttpCacheManager } from '../httpCacheManager.service';
+import { HttpCacheStorage } from '../httpCacheStorage';
+import { RequestsQueue } from '../requestsQueue';
+import { TTLManager } from '../ttlManager';
+import {
+  config,
+  requestQueue,
+  httpCacheStorage,
+  httpCacheGuard,
+  ttlManager as makeTTL,
+  cacheBucket
+} from './mocks.spec';
 import Spy = jasmine.Spy;
 
-
 describe('HttpCacheManager', () => {
-
   let httpCache: HttpCacheManager;
   let queue: RequestsQueue;
   let storage: HttpCacheStorage;
@@ -21,13 +26,7 @@ describe('HttpCacheManager', () => {
     guard = httpCacheGuard();
     ttlManager = makeTTL();
 
-    httpCache = new HttpCacheManager(
-      queue,
-      storage,
-      guard,
-        ttlManager,
-      config
-    );
+    httpCache = new HttpCacheManager(queue, storage, guard, ttlManager, config);
   });
 
   afterEach(() => {
@@ -65,21 +64,21 @@ describe('HttpCacheManager', () => {
       isValid.and.returnValue(false);
       httpCache.validate('valid key');
       expect(storage.delete).toHaveBeenCalledWith('valid key');
-    })
+    });
   });
 
   describe('add', () => {
     it('should add key to bucket', () => {
       const bucket = cacheBucket();
       spyOn(bucket, 'add');
-      httpCache.add('key', {}, {bucket: bucket});
+      httpCache.set('key', {}, { bucket: bucket });
       expect(bucket.add).toHaveBeenCalledWith('key');
     });
     it('should set the key', () => {
       spyOn(storage, 'set');
       spyOn(ttlManager, 'set');
       spyOn(queue, 'delete');
-      httpCache.add('key', {}, {});
+      httpCache.set('key', {}, {});
       expect(storage.set).toHaveBeenCalled();
       expect(ttlManager.set).toHaveBeenCalled();
       expect(queue.delete).toHaveBeenCalled();
@@ -110,5 +109,4 @@ describe('HttpCacheManager', () => {
       expect(httpCache.delete).toHaveBeenCalledTimes(4);
     });
   });
-
 });

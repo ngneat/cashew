@@ -69,6 +69,6 @@ export class TodosComponent {
 
   addTodoFive() {
     const response = { id: 5 };
-    this.manager.add(`https://jsonplaceholder.typicode.com/todos?id=5`, response);
+    this.manager.set(`https://jsonplaceholder.typicode.com/todos?id=5`, response);
   }
 }
