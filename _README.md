@@ -2,7 +2,7 @@
  <img width="20%" height="20%" src="./logo.svg">
 </p>
 
-> Cache your application for free.
+> Caching is nut a problem!
     
 <br />
 
