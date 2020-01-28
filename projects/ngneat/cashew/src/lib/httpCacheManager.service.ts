@@ -28,7 +28,7 @@ export class HttpCacheManager {
   }
 
   get<T = any>(key: string): HttpResponse<T> {
-    return this.storage.get(key);
+    return this._resolveResponse<T>(this.storage.get(key));
   }
 
   has(key: string) {
@@ -82,5 +82,9 @@ export class HttpCacheManager {
 
   _canActivate(request: HttpCacheRequest) {
     return this.guard.canActivate(request);
+  }
+
+  _resolveResponse<T = any>(event: HttpResponse<T>): HttpResponse<T> {
+    return this.config.responseSerializer ? event.clone({ body: this.config.responseSerializer(event.body) }) : event;
   }
 }

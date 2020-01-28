@@ -34,11 +34,11 @@ export class HttpCacheInterceptor implements HttpInterceptor {
       if (this.httpCacheManager.validate(key)) {
         return of(this.httpCacheManager.get(key));
       }
-      //TODO: I would split that to function (for readability sake).
       const shared = next.handle(clone).pipe(
         tap(event => {
           if (event instanceof HttpResponse) {
-            this.httpCacheManager._set(key, event, +ttl);
+            const cache = this.httpCacheManager._resolveResponse(event);
+            this.httpCacheManager._set(key, cache, +ttl);
           }
         }),
         share()

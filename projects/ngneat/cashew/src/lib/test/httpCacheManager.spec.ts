@@ -109,4 +109,21 @@ describe('HttpCacheManager', () => {
       expect(httpCache.delete).toHaveBeenCalledTimes(4);
     });
   });
+
+  describe('get', () => {
+    it('should return the cached value by default', () => {
+      httpCache.set('a', 'value');
+      expect(httpCache.get('a').body).toBe('value');
+    });
+    it('should pass the cached value through the serializer', () => {
+      const responseSerializer = jest.fn(v => 'serialized');
+      const httpCache: any = new HttpCacheManager(queue, storage, guard, ttlManager, { ...config, responseSerializer });
+      httpCache.set('a', 'value');
+      const serialized = httpCache.get('a');
+      const newResponse = serialized !== httpCache.storage.get('a');
+      expect(responseSerializer).toHaveBeenCalledTimes(1);
+      expect(serialized.body).toBe('serialized');
+      expect(newResponse).toBe(true);
+    });
+  });
 });

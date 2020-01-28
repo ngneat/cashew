@@ -6,6 +6,7 @@ export interface HttpCacheConfig {
   ttl: {
     default?: number;
   };
+  responseSerializer?: (value: any) => any;
 }
 
 export const defaultConfig: HttpCacheConfig = {

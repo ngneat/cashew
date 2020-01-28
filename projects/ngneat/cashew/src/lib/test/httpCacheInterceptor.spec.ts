@@ -51,6 +51,17 @@ describe('HttpCacheInterceptor', () => {
     expect(handler.handle).toHaveBeenCalledTimes(2);
   }));
 
+  it('should cache a return a serialized request when passing a serializer', fakeAsync(() => {
+    const responseSerializer = jest.fn(v => 'serialized');
+    const cacheManager: any = httpCacheManager({ ...config, responseSerializer });
+    httpCacheInterceptor = new HttpCacheInterceptor(cacheManager, keySerializer());
+    call(request({ cache$: true }));
+    expect(handler.handle).toHaveBeenCalledTimes(1);
+    /* The serializer is called when adding the value to the cache and when retrieving it */
+    expect(responseSerializer).toHaveBeenCalledTimes(2);
+    expect(cacheManager.storage.get('api/mock').body).toBe('serialized');
+  }));
+
   it('should cache the request by default on implicit strategy', fakeAsync(() => {
     httpCacheInterceptor = new HttpCacheInterceptor(
       httpCacheManager({ ...config, strategy: 'implicit' }),
