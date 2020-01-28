@@ -9,7 +9,7 @@
     "build:lib": "ng build @ngneat/cashew",
     "start": "ng serve",
     "e2e": "ng e2e",
-    "test": "npm run test:lib:watch",
+    "test": "npm run test:lib",
     "test:lib": "npm run test --prefix projects/ngneat/cashew",
     "test:lib:watch": "npm run test:watch --prefix projects/ngneat/cashew",
     "test:headless": "cross-env CI=true npm run test:lib",
