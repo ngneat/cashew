@@ -2,7 +2,8 @@
   "name": "@ngneat/cashew",
   "version": "0.0.1",
   "scripts": {
-    "test": "jest --watch"
+    "test:watch": "jest --watch",
+    "test": "jest"
   },
   "peerDependencies": {
     "@angular/common": "^7.2.0",
