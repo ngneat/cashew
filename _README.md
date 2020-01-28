@@ -2,66 +2,117 @@
  <img width="20%" height="20%" src="./logo.svg">
 </p>
 
+> Cache your application for free.
+    
 <br />
 
 [![MIT](https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat-square)]()
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
 [![ngneat](https://img.shields.io/badge/@-ngneat-383636?style=flat-square&labelColor=8f68d4)](https://github.com/ngneat/)
 
-> The Library Slogan
-
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid assumenda atque blanditiis cum delectus eligendi ipsam iste iure, maxime modi molestiae nihil obcaecati odit officiis pariatur quibusdam suscipit temporibus unde.
-Accusantium aliquid corporis cupiditate dolores eum exercitationem illo iure laborum minus nihil numquam odit officiis possimus quas quasi quos similique, temporibus veritatis? Exercitationem, iure magni nulla quo sapiente soluta. Esse?
 
 ## Features
 
-- ✅ One
-- ✅ Two
-- ✅ Three
+✅ Easy to Use <br>
+✅ Automatic & Manual Cache Busting <br>
+✅ Cache Bucket <br>
+✅ Hackable <br>
+✅ Configurable <br>
 
 ## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [FAQ](#faq)
+
+An Http cache library for angular that provides a light-wight straight forward API to cache your Http requests. 
 
 ## Installation
 
-### NPM
+#### NPM
 
-`npm install <%= scopeWithName %> --save-dev`
+```shell script
+$ npm install @ngneat/http-cache
+```
 
-### Yarn
+#### Yarn
 
-`yarn add <%= scopeWithName %> --dev`
+```shell script
+yarn add @ngneat/http-cache
+```
 
 ## Usage
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid assumenda atque blanditiis cum delectus eligendi ipsam iste iure, maxime modi molestiae nihil obcaecati odit officiis pariatur quibusdam suscipit temporibus unde.
+First, inject `HttpCacheInterceptorModule` along with `HttpClientModule` into you root module:
 
-```ts
-function helloWorld() {}
+```typescript
+import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpCacheInterceptorModule } from '@ngneat/http-cache';
+
+@NgModule({
+  imports: [
+    HttpClientModule,
+    HttpCacheInterceptorModule.forRoot({})
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
 ```
 
-## FAQ
+Now, you can use the cache in your API `service` using `withCache` function: 
 
-## How to ...
+```typescript
+import {HttpClient} from '@angular/common/http'; 
+import { Injectable } from '@angular/core'; import {withCache} from '@ngneat/http-cache';
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid assumenda atque blanditiis cum delectus eligendi ips
+@Injectable()
+export class ApiService {
 
-## Contributors ✨
+ constructor(private http: HttpClient) { }
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+ getUsers() {
+   // this will save the http response in a cache storage.
+   return this.http.get('api/users', withCache()) 
+ }
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
+}
+```
 
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+## Config Options
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+Using the library, you might need to change the default behaviour of the caching mechanism, you could do that by passing a configuration object to the static `forRoot` method of the `HttpCacheInterceptorModule` module.
+
+Let's go over and explain each of the configuration options:
+
+#### `strategy`
+Define the default caching behaviour, http-cache declare two different strategies:
+
+* `implicit` - (default) will only cache API requests when that uses the `withCache` function.
+* `explicit` - will cache API requests by default.
+
+#### `ttl`
+Define the cache's time to leave (the cache life time) **in seconds**.
+```typescript
+  ttl: {
+    // the default set to 3600 (One hour).
+    default?: number;
+  };
+```
+
+## API
+
+### WithCache
+...
+
+### CacheManager
+...
+
+## Hack the Library
+...
+
+## CacheReplay Decorator
+...
+
