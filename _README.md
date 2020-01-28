@@ -2,7 +2,7 @@
  <img width="20%" height="20%" src="./logo.svg">
 </p>
 
-> Caching is nut a problem!
+> Caching is nut a problem
     
 <br />
 
