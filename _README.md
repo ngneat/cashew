@@ -21,19 +21,6 @@
 ✅ Automatic & Manual Cache Busting <br>
 ✅ Hackable <br>
 
-## Table of Contents
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Config Options](#config-options)
-  - [strategy](#strategy)
-  - [ttl](#ttl)
-- [API](#api)
-  - [withCache](#with-cache)
-  - [CacheManager](#cache-manager)
-  - [CacheBucket](#cache-bucket)
-- [Hack the Library](hack-the-library)
-
 A light-weight straight forward API to cache HTTP requests in Angular applications
 
 ## Installation
