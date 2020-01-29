@@ -110,7 +110,7 @@ HttpCacheInterceptorModule.forRoot({
 })
 ```
 
-### `responseSerializer`
+#### `responseSerializer`
 By default, the registry returns the `original` response object. It can be dangerous if, for some reason, you mutate it. To change this behavior, you can clone the response before getting it:
 
 ```ts
