@@ -7,13 +7,16 @@ export interface HttpCacheConfig {
     default?: number;
   };
   responseSerializer?: (value: any) => any;
+  localStorageKey?: string;
+  storage: 'memory' | 'localStorage';
 }
 
 export const defaultConfig: HttpCacheConfig = {
   strategy: 'explicit',
   ttl: {
     default: 3600000 // One hour
-  }
+  },
+  storage: 'memory'
 };
 
 export function mergeConfig(config: Partial<HttpCacheConfig>) {
@@ -45,4 +48,4 @@ export function withCache(params: Params = {}): any {
   };
 }
 
-export const HTTP_CACHE_CONFIG = new InjectionToken<HttpCacheConfig>('HTTP_CAACHE_CONFIG');
+export const HTTP_CACHE_CONFIG = new InjectionToken<HttpCacheConfig>('HTTP_CACHE_CONFIG');
