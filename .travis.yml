@@ -6,6 +6,7 @@ notifications:
   email: true
 node_js:
   - '10'
+script: npm run test:headless
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/

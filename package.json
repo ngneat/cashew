@@ -1,6 +1,5 @@
 {
-  "name": "cashew",
-  "version": "0.0.0",
+  "name": "cashew-playground",
   "scripts": {
     "release": "cd projects/@ngneat/cashew && standard-version --infile ../../../CHANGELOG.md",
     "contributors:add": "all-contributors add",
