@@ -18,7 +18,7 @@ export interface HttpOptions {
 
 export const frame = 1000;
 export const config = defaultConfig;
-export const ttl = config.ttl.default;
+export const ttl = config.ttl;
 
 export const httpRequest = (method: string = 'GET', options: HttpOptions = {}, url: string = 'api/mock') =>
   new HttpRequest(method, url, {}, options);

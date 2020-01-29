@@ -77,11 +77,9 @@ describe('HttpCacheManager', () => {
     it('should set the key', () => {
       spyOn(storage, 'set');
       spyOn(ttlManager, 'set');
-      spyOn(queue, 'delete');
       httpCache.set('key', {}, {});
       expect(storage.set).toHaveBeenCalled();
       expect(ttlManager.set).toHaveBeenCalled();
-      expect(queue.delete).toHaveBeenCalled();
     });
   });
 

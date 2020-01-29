@@ -21,14 +21,13 @@ export class HttpCacheInterceptor implements HttpInterceptor {
 
     const clone = cloneWithoutParams(request, customKey);
     const key = this.keySerializer.serialize(clone);
+    const queue = this.httpCacheManager._getQueue();
 
     if (this.httpCacheManager._isCacheable(canActivate, cache)) {
       bucket && (bucket as CacheBucket).add(key);
-      // TODO: wouldn't _queue be better instead of ts-ignore it.
-      // @ts-ignore
-      if (this.httpCacheManager.queue.has(key)) {
-        // @ts-ignore
-        return this.httpCacheManager.queue.get(key);
+
+      if (queue.has(key)) {
+        return queue.get(key);
       }
 
       if (this.httpCacheManager.validate(key)) {
@@ -39,13 +38,13 @@ export class HttpCacheInterceptor implements HttpInterceptor {
           if (event instanceof HttpResponse) {
             const cache = this.httpCacheManager._resolveResponse(event);
             this.httpCacheManager._set(key, cache, +ttl);
+            queue.delete(key);
           }
         }),
         share()
       );
 
-      // @ts-ignore
-      this.httpCacheManager.queue.set(key, shared);
+      queue.set(key, shared);
 
       return shared;
     }
