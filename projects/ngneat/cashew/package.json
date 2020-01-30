@@ -6,6 +6,10 @@
   "publishConfig": {
     "access": "public"
   },
+  "scripts": {
+    "test:watch": "jest --watch",
+    "test": "jest"
+  },
   "bugs": {
     "url": "https://github.com/ngneat/cashew/issues"
   },
