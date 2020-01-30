@@ -19,7 +19,7 @@ export class DefaultTTLManager {
   }
 
   set(key: string, ttl?: number): void {
-    let resolveTTL = ttl || this.config.ttl.default;
+    let resolveTTL = ttl || this.config.ttl;
 
     this.cache.set(key, new Date().setMilliseconds(resolveTTL));
   }

@@ -1,6 +1,6 @@
 import { fakeAsync, tick } from '@angular/core/testing';
 import { TTLManager, DefaultTTLManager } from '../ttlManager';
-import { httpResponse, config } from './mocks.spec';
+import { config } from './mocks.spec';
 
 describe('ttlManager', () => {
   let ttlManager: TTLManager;
@@ -29,7 +29,7 @@ describe('ttlManager', () => {
     it('should use the config ttl if non has been passed', () => {
       spyOn(Date.prototype, 'setMilliseconds');
       ttlManager.set('key');
-      expect(Date.prototype.setMilliseconds).toHaveBeenCalledWith(config.ttl.default);
+      expect(Date.prototype.setMilliseconds).toHaveBeenCalledWith(config.ttl);
     });
   });
 

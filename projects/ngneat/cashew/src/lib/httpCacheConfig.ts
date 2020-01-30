@@ -3,9 +3,7 @@ import { CacheBucket } from './cacheBucket';
 
 export interface HttpCacheConfig {
   strategy: 'implicit' | 'explicit';
-  ttl: {
-    default?: number;
-  };
+  ttl: number;
   responseSerializer?: (value: any) => any;
   localStorageKey?: string;
   storage: 'memory' | 'localStorage';
@@ -13,20 +11,14 @@ export interface HttpCacheConfig {
 
 export const defaultConfig: HttpCacheConfig = {
   strategy: 'explicit',
-  ttl: {
-    default: 3600000 // One hour
-  },
+  ttl: 3600000, // One hour
   storage: 'memory'
 };
 
 export function mergeConfig(config: Partial<HttpCacheConfig>) {
   return {
     ...defaultConfig,
-    ...config,
-    ttl: {
-      ...defaultConfig.ttl,
-      ...config.ttl
-    }
+    ...config
   };
 }
 
@@ -42,7 +34,6 @@ export function withCache(params: Params = {}): any {
   return {
     params: {
       cache$: true,
-      ttl$: params.ttl$,
       ...params
     }
   };

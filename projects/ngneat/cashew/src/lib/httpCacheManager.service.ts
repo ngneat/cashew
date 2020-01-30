@@ -61,6 +61,10 @@ export class HttpCacheManager {
     this.ttlManager.delete(key);
   }
 
+  _getQueue(): RequestsQueue {
+    return this.queue;
+  }
+
   _isCacheable(canActivate: boolean, cache: any) {
     const strategy = this.config.strategy;
     if (strategy === 'explicit') {
@@ -77,7 +81,6 @@ export class HttpCacheManager {
   _set(key: string, response: HttpResponse<any>, ttl: number) {
     this.storage.set(key, response);
     this.ttlManager.set(key, ttl);
-    this.queue.delete(key);
   }
 
   _canActivate(request: HttpCacheRequest) {
