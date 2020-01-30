@@ -1,7 +1,7 @@
 {
   "name": "cashew-playground",
   "scripts": {
-    "release": "cd projects/@ngneat/cashew && standard-version --infile ../../../CHANGELOG.md",
+    "release": "cd projects/ngneat/cashew && standard-version --infile ../../../CHANGELOG.md",
     "contributors:add": "all-contributors add",
     "hooks:pre-commit": "node hooks/pre-commit.js",
     "build": "ng build",

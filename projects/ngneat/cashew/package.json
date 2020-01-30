@@ -1,12 +1,29 @@
 {
   "name": "@ngneat/cashew",
-  "version": "0.0.1",
-  "scripts": {
-    "test:watch": "jest --watch",
-    "test": "jest"
+  "description": "A simple and flexible library that caches HTTP requests in Angular applications",
+  "version": "1.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
   },
-  "peerDependencies": {
-    "@angular/common": "^7.2.0",
-    "@angular/core": "^7.2.0"
+  "bugs": {
+    "url": "https://github.com/ngneat/cashew/issues"
+  },
+  "homepage": "https://github.com/ngneat/cashew#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngneat/cashew"
+  },
+  "keywords": [
+    "angular",
+    "angular 2",
+    "cache",
+    "http",
+    "cache http"
+  ],
+  "author": {
+    "name": "Netanel Basal",
+    "email": "netanel7799@gmail.com",
+    "url": "https://netbasal.com"
   }
 }

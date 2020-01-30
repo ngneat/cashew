@@ -22,7 +22,7 @@
 ✅ Automatic & Manual Cache Busting <br>
 ✅ Hackable <br>
 
-A lightweight, flexible library that caches HTTP requests in Angular applications
+A simple and flexible library that caches HTTP requests in Angular applications
 
 ## Installation
 
