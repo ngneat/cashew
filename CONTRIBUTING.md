@@ -14,7 +14,6 @@ Run the tests:
 
 ```bash
 npm test
-npm run e2e
 ```
 
 Run the playground app:
