@@ -2,7 +2,7 @@
  <img width="20%" height="20%" src="./logo.svg">
 </p>
 
-> Caching is nut a problem
+> Caching is nut a problem!
     
 <br />
 
@@ -87,6 +87,18 @@ Defines the caching behavior. The library supports two different strategies:
 ```ts
 HttpCacheInterceptorModule.forRoot({
   strategy: 'explicit'
+})
+```
+
+#### `storage`
+Defines the caching destination. The library supports two different locations:
+
+* `memory (default)` - app memory
+* `localStorage` - global local storage
+
+```ts
+HttpCacheInterceptorModule.forRoot({
+  strategy: 'localStorage'
 })
 ```
 
