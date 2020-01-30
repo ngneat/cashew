@@ -77,8 +77,8 @@ Let's go over each of the configuration options:
 
 Defines the caching behavior. The library supports two different strategies:
 
-- `implicit (default)` - **only** caches API requests when explicitly uses the `withCache` function
-- `explicit` - caches API requests that are of type `GET` and the response type is `JSON`. You can change this behavior by overriding the `HttpCacheGuard` provider. (See the [Hackable](#hackable) section)
+- `explicit` (default) - **only** caches API requests that explicitly use the `withCache` function
+- `implicit` - caches API requests that are of type `GET` and the response type is `JSON`. You can change this behavior by overriding the `HttpCacheGuard` provider. (See the [Hackable](#hackable) section)
 
 ```ts
 HttpCacheInterceptorModule.forRoot({
