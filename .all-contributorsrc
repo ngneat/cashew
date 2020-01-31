@@ -49,6 +49,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "raisiqueira",
+      "name": "Raí Siqueira",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2914170?v=4",
+      "profile": "https://raisiqueira.dev",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7
