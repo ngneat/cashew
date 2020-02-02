@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from '@ngneat/cashew';
-import { HttpResponse } from '@angular/common/http';
 import { deleteByRegex } from './deleteByRegex';
+import { getLocalStorage } from './getLocalStorage';
 
 @Injectable()
 export class LocalStorageTtlManager {
@@ -12,13 +12,13 @@ export class LocalStorageTtlManager {
   }
 
   isValid(key: string): boolean {
-    const storage = this.getLocalTtlStorage();
+    const storage = getLocalStorage(this.ttlStorageKey);
     return !!storage[key] && storage[key] > new Date().getTime();
   }
 
   set(key: string, ttl?: number) {
     const resolveTTL = ttl || this.config.ttl;
-    const storage = this.getLocalTtlStorage();
+    const storage = getLocalStorage(this.ttlStorageKey);
     storage[key] = resolveTTL;
     localStorage.setItem(this.ttlStorageKey, JSON.stringify(storage));
   }
@@ -30,19 +30,14 @@ export class LocalStorageTtlManager {
     }
 
     if (typeof key === 'string') {
-      const storage = this.getLocalTtlStorage();
+      const storage = getLocalStorage(this.ttlStorageKey);
       delete storage[key];
       localStorage.setItem(this.ttlStorageKey, JSON.stringify(storage));
       return;
     }
 
-    const storage = this.getLocalTtlStorage();
+    const storage = getLocalStorage(this.ttlStorageKey);
     deleteByRegex(key as RegExp, storage);
     localStorage.setItem(this.ttlStorageKey, JSON.stringify(storage));
-  }
-
-  private getLocalTtlStorage(): Map<string, HttpResponse<any>> {
-    const storageString = localStorage.getItem(this.ttlStorageKey) || '{}';
-    return JSON.parse(storageString);
   }
 }

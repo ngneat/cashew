@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { deleteByRegex } from './deleteByRegex';
 import { DefaultHttpCacheStorage, HttpCacheStorage } from './httpCacheStorage';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
+import { getLocalStorage } from './getLocalStorage';
 
 @Injectable()
 export class HttpCacheLocalStorage implements HttpCacheStorage {
@@ -14,7 +15,7 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
   }
 
   has(key: string): boolean {
-    return this.cache.has(key) || !!this.getLocalStorage()[key];
+    return this.cache.has(key) || !!getLocalStorage(this.storageKey)[key];
   }
 
   get(key: string): HttpResponse<any> {
@@ -23,7 +24,7 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
       return cacheValue;
     }
 
-    const value = this.getLocalStorage()[key];
+    const value = getLocalStorage(this.storageKey)[key];
     if (value) {
       const response = new HttpResponse(value);
       this.cache.set(key, response);
@@ -33,7 +34,7 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
   }
 
   set(key: string, response: HttpResponse<any>): void {
-    const storage = this.getLocalStorage();
+    const storage = getLocalStorage(this.storageKey);
     storage[key] = response;
     localStorage.setItem(this.storageKey, JSON.stringify(storage));
     this.cache.set(key, response);
@@ -47,20 +48,15 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
       return;
     }
 
+    const storage = getLocalStorage(this.storageKey);
+
     if (typeof key === 'string') {
-      const storage = this.getLocalStorage();
       delete storage[key];
       localStorage.setItem(this.storageKey, JSON.stringify(storage));
       return;
     }
 
-    const storage = this.getLocalStorage();
     deleteByRegex(key as RegExp, storage);
     localStorage.setItem(this.storageKey, JSON.stringify(storage));
-  }
-
-  private getLocalStorage(): Map<string, HttpResponse<any>> {
-    const storageString = localStorage.getItem(this.storageKey) || '{}';
-    return JSON.parse(storageString);
   }
 }
