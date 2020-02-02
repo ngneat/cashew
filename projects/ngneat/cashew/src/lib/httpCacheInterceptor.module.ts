@@ -18,10 +18,7 @@ export class HttpCacheInterceptorModule {
       providers: [
         { provide: HTTP_CACHE_CONFIG, useValue: conf },
         { provide: KeySerializer, useClass: DefaultKeySerializer },
-        {
-          provide: HttpCacheStorage,
-          useClass: conf.storage === 'memory' ? DefaultHttpCacheStorage : HttpCacheLocalStorage
-        },
+        { provide: HttpCacheStorage, useClass: DefaultHttpCacheStorage },
         { provide: TTLManager, useClass: DefaultTTLManager },
         { provide: HttpCacheGuard, useClass: DefaultHttpCacheGuard },
         { provide: HTTP_INTERCEPTORS, useClass: HttpCacheInterceptor, multi: true },

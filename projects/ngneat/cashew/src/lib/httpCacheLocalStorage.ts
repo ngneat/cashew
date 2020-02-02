@@ -1,11 +1,12 @@
 import { HttpResponse } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { deleteByRegex } from './deleteByRegex';
-import { HttpCacheStorage } from './httpCacheStorage';
+import { DefaultHttpCacheStorage, HttpCacheStorage } from './httpCacheStorage';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
 
 @Injectable()
 export class HttpCacheLocalStorage implements HttpCacheStorage {
+  private readonly cache = new DefaultHttpCacheStorage();
   private readonly storageKey: string;
 
   constructor(@Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig) {
@@ -13,22 +14,34 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
   }
 
   has(key: string): boolean {
-    const storage = this.getLocalStorage();
-    return !!storage[key];
+    return this.cache.has(key) || !!this.getLocalStorage()[key];
   }
 
-  get(key: string) {
-    const storage = this.getLocalStorage();
-    return storage[key];
+  get(key: string): HttpResponse<any> {
+    const cacheValue = this.cache.get(key);
+    if (cacheValue) {
+      return cacheValue;
+    }
+
+    const value = this.getLocalStorage()[key];
+    if (value) {
+      const response = new HttpResponse(value);
+      this.cache.set(key, response);
+    }
+
+    return this.cache.get(key);
   }
 
   set(key: string, response: HttpResponse<any>): void {
     const storage = this.getLocalStorage();
     storage[key] = response;
     localStorage.setItem(this.storageKey, JSON.stringify(storage));
+    this.cache.set(key, response);
   }
 
   delete(key?: string | RegExp): void {
+    this.cache.delete(key);
+
     if (!key) {
       localStorage.removeItem(this.storageKey);
       return;
