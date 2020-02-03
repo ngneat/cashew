@@ -9,7 +9,7 @@ export class LocalStorageTtlManager {
   private readonly ttlStorageKey: string;
 
   constructor(@Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig) {
-    this.ttlStorageKey = `${config.localStorageKey || 'httpCache'}Ttl`;
+    this.ttlStorageKey = `${config.localStorageKey}Ttl`;
     this.ttl = new DefaultTTLManager(config);
   }
 

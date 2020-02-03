@@ -11,7 +11,7 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
   private readonly storageKey: string;
 
   constructor(@Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig) {
-    this.storageKey = config.localStorageKey || 'httpCache';
+    this.storageKey = config.localStorageKey;
   }
 
   has(key: string): boolean {

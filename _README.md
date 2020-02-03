@@ -19,6 +19,7 @@
 ## Features
 
 ✅ HTTP Caching <br>
+✅ Local Storage Option <br>
 ✅ Handles Simultaneous Requests<br>
 ✅ Automatic & Manual Cache Busting <br>
 ✅ Hackable <br>
@@ -90,15 +91,12 @@ HttpCacheInterceptorModule.forRoot({
 })
 ```
 
-#### `storage`
-Defines the caching destination. The library supports two different locations:
-
-* `memory (default)` - app memory
-* `localStorage` - global local storage
+#### `localStorageKey`
+When using local storage for caching, this defines the key where the cache is stored (for ttl - with the "Ttl" suffix): (defaults to 'httpCache')
 
 ```ts
 HttpCacheInterceptorModule.forRoot({
-  strategy: 'localStorage'
+  localStorageKey: string
 })
 ```
 

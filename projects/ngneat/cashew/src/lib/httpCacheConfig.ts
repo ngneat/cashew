@@ -6,13 +6,12 @@ export interface HttpCacheConfig {
   ttl: number;
   responseSerializer?: (value: any) => any;
   localStorageKey?: string;
-  storage: 'memory' | 'localStorage';
 }
 
 export const defaultConfig: HttpCacheConfig = {
   strategy: 'explicit',
   ttl: 3600000, // One hour
-  storage: 'memory'
+  localStorageKey: 'httpCache'
 };
 
 export function mergeConfig(config: Partial<HttpCacheConfig>) {
