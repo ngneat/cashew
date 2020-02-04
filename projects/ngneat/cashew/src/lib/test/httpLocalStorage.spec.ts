@@ -27,6 +27,12 @@ describe('httpCacheLocalStorage', () => {
     it('should get the cached response', () => {
       expect(storage.get(existingKey)).toBe(response);
     });
+    it('should not access local storage when key is found in memory', () => {
+      spyOn(localStorage, 'setItem');
+      storage.get(existingKey);
+      expect((storage as any).cache.get(existingKey)).toEqual(response);
+      expect(localStorage.setItem).not.toHaveBeenCalled();
+    });
   });
 
   describe('delete', () => {
