@@ -9,16 +9,7 @@ import { HttpCacheInterceptorModule } from '@ngneat/cashew';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, TodosComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    HttpCacheInterceptorModule.forRoot({
-      // ttl: {
-      // default: 10000
-      // }
-    })
-  ],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule, HttpCacheInterceptorModule.forRoot()],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

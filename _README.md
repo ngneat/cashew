@@ -77,12 +77,9 @@ That's simple as that.
 
 By default caching is done to app memory. To switch to using local storage instead simply add: 
 ```ts
-{provide: HttpCacheStorage, useClass: HttpCacheLocalStorage}
+providers: [withHttpCacheLocalStorage]
 ```
-To your app module providers list. Similarly, to use ttl in local storage, add to that list:
-```ts
-{provide: TTLManager, useClass: LocalStorageTtlManager}
-```
+To your app module providers list. Note that ttl will also be calculated via local storage in this instance.
 
 ## Config Options
 
