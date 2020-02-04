@@ -31,3 +31,23 @@ export const ttlManager = (conf = config) => new DefaultTTLManager(conf);
 export const keySerializer = () => new DefaultKeySerializer();
 export const httpCacheManager = (conf = config) =>
   new HttpCacheManager(requestQueue(), httpCacheStorage(), httpCacheGuard(), ttlManager(conf), conf);
+export function localStorageMock() {
+  const localStorageMock = (function() {
+    let store = {};
+    return {
+      getItem: function(key) {
+        return store[key];
+      },
+      setItem: function(key, value) {
+        store[key] = value.toString();
+      },
+      clear: function() {
+        store = {};
+      },
+      removeItem: function(key) {
+        delete store[key];
+      }
+    };
+  })();
+  Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+}

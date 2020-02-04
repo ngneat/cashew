@@ -73,6 +73,17 @@ export class UsersService {
 
 That's simple as that.
 
+## Local Storage
+
+By default caching is done to app memory. To switch to using local storage instead simply add: 
+```ts
+{provide: HttpCacheStorage, useClass: HttpCacheLocalStorage}
+```
+To your app module providers list. Similarly, to use ttl in local storage, add to that list:
+```ts
+{provide: TTLManager, useClass: LocalStorageTtlManager}
+```
+
 ## Config Options
 
 Using the library, you might need to change the default behavior of the caching mechanism. You could do that by passing a configuration object to the static `forRoot` method of the `HttpCacheInterceptorModule` module.

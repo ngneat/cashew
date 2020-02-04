@@ -1,4 +1,7 @@
 export function getLocalStorage(key: string): Map<string, any> {
   const storageString = localStorage.getItem(key) || '{}';
-  return JSON.parse(storageString);
+  const storage = JSON.parse(storageString);
+  return new Map(
+    Object.keys(storage).map<[string, any]>(key => [key, storage[key]])
+  );
 }

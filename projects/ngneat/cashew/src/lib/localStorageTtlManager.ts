@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import { DefaultTTLManager, HTTP_CACHE_CONFIG, HttpCacheConfig } from '@ngneat/cashew';
+import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
+import { DefaultTTLManager } from './ttlManager';
 import { deleteByRegex } from './deleteByRegex';
 import { getLocalStorage } from './getLocalStorage';
 
