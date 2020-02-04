@@ -1,0 +1,64 @@
+{
+  "projectName": "cashew",
+  "projectOwner": "ngneat",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "NetanelBasal",
+      "name": "Netanel Basal",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6745730?v=4",
+      "profile": "https://www.netbasal.com",
+      "contributions": [
+        "code",
+        "design",
+        "doc",
+        "ideas",
+        "infra"
+      ]
+    },
+    {
+      "login": "itayod",
+      "name": "Itay Oded",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6719615?v=4",
+      "profile": "https://github.com/itayod",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "shaharkazaz",
+      "name": "Shahar Kazaz",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/17194830?v=4",
+      "profile": "https://github.com/shaharkazaz",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "LayZeeDK",
+      "name": "Lars Gyrup Brink Nielsen",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6364586?v=4",
+      "profile": "https://indepth.dev/author/layzee/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "raisiqueira",
+      "name": "Raí Siqueira",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2914170?v=4",
+      "profile": "https://raisiqueira.dev",
+      "contributions": [
+        "content"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}
