@@ -18,6 +18,7 @@
 ## Features
 
 ✅ HTTP Caching <br>
+✅ Local Storage Option <br>
 ✅ Handles Simultaneous Requests<br>
 ✅ Automatic & Manual Cache Busting <br>
 ✅ Hackable <br>
@@ -65,7 +66,15 @@ export class UsersService {
 }
 ```
 
-That's simple as that.
+It's as simple as that.
+
+## Local Storage
+
+By default caching is done to app memory. To switch to using local storage instead simply add: 
+```ts
+providers: [withHttpCacheLocalStorage]
+```
+To your app module providers list. Note that ttl will also be calculated via local storage in this instance.
 
 ## Config Options
 
@@ -84,6 +93,16 @@ Defines the caching behavior. The library supports two different strategies:
 HttpCacheInterceptorModule.forRoot({
   strategy: 'explicit'
 });
+```
+
+#### `localStorageKey`
+
+When using local storage for caching, this defines the key where the cache is stored (for ttl - with the "Ttl" suffix): (defaults to 'httpCache')
+
+```ts
+HttpCacheInterceptorModule.forRoot({
+  localStorageKey: string
+})
 ```
 
 #### `ttl`
