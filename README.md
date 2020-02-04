@@ -250,12 +250,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/shaharkazaz"><img src="https://avatars2.githubusercontent.com/u/17194830?v=4" width="100px;" alt=""/><br /><sub><b>Shahar Kazaz</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=shaharkazaz" title="Code">💻</a></td>
     <td align="center"><a href="https://indepth.dev/author/layzee/"><img src="https://avatars1.githubusercontent.com/u/6364586?v=4" width="100px;" alt=""/><br /><sub><b>Lars Gyrup Brink Nielsen</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=LayZeeDK" title="Documentation">📖</a></td>
     <td align="center"><a href="https://raisiqueira.dev"><img src="https://avatars1.githubusercontent.com/u/2914170?v=4" width="100px;" alt=""/><br /><sub><b>Raí Siqueira</b></sub></a><br /><a href="#content-raisiqueira" title="Content">🖋</a></td>
+    <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt=""/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=theblushingcrow" title="Code">💻</a> <a href="https://github.com/ngneat/cashew/commits?author=theblushingcrow" title="Documentation">📖</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
