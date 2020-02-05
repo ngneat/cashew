@@ -16,10 +16,6 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
   }
 
   has(key: string): boolean {
-    console.error(key);
-    console.error(getLocalStorage(this.storageKey));
-    console.error(getLocalStorage(this.storageKey).has(key));
-
     return this.cache.has(key) || getLocalStorage(this.storageKey).has(key);
   }
 
