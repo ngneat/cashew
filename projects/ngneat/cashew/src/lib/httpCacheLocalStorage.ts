@@ -4,6 +4,7 @@ import { deleteByRegex } from './deleteByRegex';
 import { DefaultHttpCacheStorage, HttpCacheStorage } from './httpCacheStorage';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
 import { getLocalStorage } from './getLocalStorage';
+import { setLocalStorage } from './setLocalStorage';
 
 @Injectable()
 export class HttpCacheLocalStorage implements HttpCacheStorage {
@@ -15,7 +16,11 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
   }
 
   has(key: string): boolean {
-    return this.cache.has(key) || !!getLocalStorage(this.storageKey)[key];
+    console.error(key);
+    console.error(getLocalStorage(this.storageKey));
+    console.error(getLocalStorage(this.storageKey).has(key));
+
+    return this.cache.has(key) || getLocalStorage(this.storageKey).has(key);
   }
 
   get(key: string): HttpResponse<any> {
@@ -24,7 +29,7 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
       return cacheValue;
     }
 
-    const value = getLocalStorage(this.storageKey)[key];
+    const value = getLocalStorage(this.storageKey).get(key);
     if (value) {
       const response = new HttpResponse(value);
       this.cache.set(key, response);
@@ -35,8 +40,8 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
 
   set(key: string, response: HttpResponse<any>): void {
     const storage = getLocalStorage(this.storageKey);
-    storage[key] = response;
-    localStorage.setItem(this.storageKey, JSON.stringify(storage));
+    storage.set(key, response);
+    setLocalStorage(this.storageKey, storage);
     this.cache.set(key, response);
   }
 
@@ -51,12 +56,12 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
     const storage = getLocalStorage(this.storageKey);
 
     if (typeof key === 'string') {
-      delete storage[key];
-      localStorage.setItem(this.storageKey, JSON.stringify(storage));
+      storage.delete(key);
+      setLocalStorage(this.storageKey, storage);
       return;
     }
 
     deleteByRegex(key as RegExp, storage);
-    localStorage.setItem(this.storageKey, JSON.stringify(storage));
+    setLocalStorage(this.storageKey, storage);
   }
 }

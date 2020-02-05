@@ -3,6 +3,7 @@ import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
 import { DefaultTTLManager } from './ttlManager';
 import { deleteByRegex } from './deleteByRegex';
 import { getLocalStorage } from './getLocalStorage';
+import { setLocalStorage } from './setLocalStorage';
 
 @Injectable()
 export class LocalStorageTtlManager {
@@ -19,10 +20,10 @@ export class LocalStorageTtlManager {
     if (valid) {
       return true;
     }
-    const storage = getLocalStorage(this.ttlStorageKey);
-    const validInStorage = !!storage[key] && storage[key] > new Date().getTime();
+    const ttlValue = getLocalStorage(this.ttlStorageKey).get(key);
+    const validInStorage = ttlValue > new Date().getTime();
     if (validInStorage) {
-      this.ttl.set(key, storage[key]);
+      this.ttl.set(key, ttlValue);
     }
     return validInStorage;
   }
@@ -30,8 +31,8 @@ export class LocalStorageTtlManager {
   set(key: string, ttl?: number) {
     const resolveTTL = ttl || this.config.ttl;
     const storage = getLocalStorage(this.ttlStorageKey);
-    storage[key] = new Date().setMilliseconds(resolveTTL);
-    localStorage.setItem(this.ttlStorageKey, JSON.stringify(storage));
+    storage.set(key, new Date().setMilliseconds(resolveTTL));
+    setLocalStorage(this.ttlStorageKey, storage);
     this.ttl.set(key, ttl);
   }
 
@@ -45,13 +46,13 @@ export class LocalStorageTtlManager {
 
     if (typeof key === 'string') {
       const storage = getLocalStorage(this.ttlStorageKey);
-      delete storage[key];
-      localStorage.setItem(this.ttlStorageKey, JSON.stringify(storage));
+      storage.delete(key);
+      setLocalStorage(this.ttlStorageKey, storage);
       return;
     }
 
     const storage = getLocalStorage(this.ttlStorageKey);
     deleteByRegex(key as RegExp, storage);
-    localStorage.setItem(this.ttlStorageKey, JSON.stringify(storage));
+    setLocalStorage(this.ttlStorageKey, storage);
   }
 }
