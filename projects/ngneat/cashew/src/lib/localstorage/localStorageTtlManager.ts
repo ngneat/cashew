@@ -1,17 +1,16 @@
 import { Inject, Injectable } from '@angular/core';
-import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
-import { DefaultTTLManager } from './ttlManager';
-import { deleteByRegex } from './deleteByRegex';
-import { getLocalStorage } from './getLocalStorage';
-import { setLocalStorage } from './setLocalStorage';
+import { HTTP_CACHE_CONFIG, HttpCacheConfig } from '../httpCacheConfig';
+import { DefaultTTLManager } from '../ttlManager';
+import { deleteByRegex } from '../deleteByRegex';
+import { setCacheInStorage, getStorageCache, clearStorageCache } from './localstorage';
 
 @Injectable()
-export class LocalStorageTtlManager {
+export class LocalStorageTTLManager {
   private readonly ttl: DefaultTTLManager;
   private readonly ttlStorageKey: string;
 
   constructor(@Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig) {
-    this.ttlStorageKey = `${config.localStorageKey}Ttl`;
+    this.ttlStorageKey = `${config.localStorageKey}TTL`;
     this.ttl = new DefaultTTLManager(config);
   }
 
@@ -20,19 +19,21 @@ export class LocalStorageTtlManager {
     if (valid) {
       return true;
     }
-    const ttlValue = getLocalStorage(this.ttlStorageKey).get(key);
+
+    const ttlValue = getStorageCache(this.ttlStorageKey).get(key);
     const validInStorage = ttlValue > new Date().getTime();
     if (validInStorage) {
       this.ttl.set(key, ttlValue);
     }
+
     return validInStorage;
   }
 
   set(key: string, ttl?: number) {
     const resolveTTL = ttl || this.config.ttl;
-    const storage = getLocalStorage(this.ttlStorageKey);
+    const storage = getStorageCache(this.ttlStorageKey);
     storage.set(key, new Date().setMilliseconds(resolveTTL));
-    setLocalStorage(this.ttlStorageKey, storage);
+    setCacheInStorage(this.ttlStorageKey, storage);
     this.ttl.set(key, ttl);
   }
 
@@ -40,19 +41,19 @@ export class LocalStorageTtlManager {
     this.ttl.delete(key);
 
     if (!key) {
-      localStorage.removeItem(this.ttlStorageKey);
+      clearStorageCache(this.ttlStorageKey);
       return;
     }
 
     if (typeof key === 'string') {
-      const storage = getLocalStorage(this.ttlStorageKey);
+      const storage = getStorageCache(this.ttlStorageKey);
       storage.delete(key);
-      setLocalStorage(this.ttlStorageKey, storage);
+      setCacheInStorage(this.ttlStorageKey, storage);
       return;
     }
 
-    const storage = getLocalStorage(this.ttlStorageKey);
+    const storage = getStorageCache(this.ttlStorageKey);
     deleteByRegex(key as RegExp, storage);
-    setLocalStorage(this.ttlStorageKey, storage);
+    setCacheInStorage(this.ttlStorageKey, storage);
   }
 }

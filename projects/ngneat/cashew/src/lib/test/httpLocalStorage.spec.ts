@@ -1,6 +1,6 @@
 import { defaultConfig } from '../httpCacheConfig';
 import { httpResponse, localStorageMock } from './mocks.spec';
-import { HttpCacheLocalStorage } from '../httpCacheLocalStorage';
+import { HttpCacheLocalStorage } from '../localstorage/httpCacheLocalStorage';
 
 describe('httpCacheLocalStorage', () => {
   let storage: HttpCacheLocalStorage;
@@ -18,6 +18,7 @@ describe('httpCacheLocalStorage', () => {
     it('should return false if key does not exist', () => {
       expect(storage.has(notExistingKey)).toBeFalsy();
     });
+
     it('should return true if key exists', () => {
       expect(storage.has(existingKey)).toBeTruthy();
     });
@@ -27,6 +28,7 @@ describe('httpCacheLocalStorage', () => {
     it('should get the cached response', () => {
       expect(storage.get(existingKey)).toBe(response);
     });
+
     it('should not access local storage when key is found in memory', () => {
       spyOn(localStorage, 'setItem');
       storage.get(existingKey);
@@ -43,6 +45,7 @@ describe('httpCacheLocalStorage', () => {
       expect((storage as any).cache.delete).toHaveBeenCalled();
       expect(localStorage.removeItem).toHaveBeenCalled();
     });
+
     it('should call delete when given key', () => {
       spyOn((storage as any).cache, 'delete');
       spyOn(localStorage, 'setItem');
@@ -50,6 +53,7 @@ describe('httpCacheLocalStorage', () => {
       expect((storage as any).cache.delete).toHaveBeenCalled();
       expect(localStorage.setItem).toHaveBeenCalled();
     });
+
     it('should delete by regex', () => {
       const key = 'aaa';
       storage.set(key, response);

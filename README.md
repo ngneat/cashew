@@ -18,7 +18,7 @@
 ## Features
 
 ✅ HTTP Caching <br>
-✅ Local Storage Option <br>
+✅ Local Storage Support <br>
 ✅ Handles Simultaneous Requests<br>
 ✅ Automatic & Manual Cache Busting <br>
 ✅ Hackable <br>
@@ -71,10 +71,19 @@ It's as simple as that.
 ## Local Storage
 
 By default caching is done to app memory. To switch to using local storage instead simply add: 
+
 ```ts
-providers: [withHttpCacheLocalStorage]
+import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
+
+@NgModule({
+  imports: [HttpClientModule, HttpCacheInterceptorModule.forRoot()],
+  providers: [useHttpCacheLocalStorage],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
 ```
-To your app module providers list. Note that ttl will also be calculated via local storage in this instance.
+
+To your `AppModule` providers list. Note that `ttl` will also be calculated via local storage in this instance.
 
 ## Config Options
 
