@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
 import { DefaultTTLManager } from './ttlManager';
 import { deleteByRegex } from './deleteByRegex';
-import { getLocalStorage } from './getLocalStorage';
-import { setLocalStorage } from './setLocalStorage';
+import { getLocalStorageValue } from './getLocalStorageValue';
+import { setLocalStorageValue } from './setLocalStorageValue';
 
 @Injectable()
 export class LocalStorageTtlManager {
@@ -20,20 +20,20 @@ export class LocalStorageTtlManager {
     if (valid) {
       return true;
     }
-    const ttlValue = getLocalStorage(this.ttlStorageKey).get(key);
-    const validInStorage = ttlValue > new Date().getTime();
+    const localStorageTimeStamp = getLocalStorageValue(this.ttlStorageKey).get(key);
+    const validInStorage = localStorageTimeStamp > new Date().getTime();
     if (validInStorage) {
-      this.ttl.set(key, ttlValue);
+      this.ttl.set(key, localStorageTimeStamp - new Date().getTime());
     }
     return validInStorage;
   }
 
   set(key: string, ttl?: number) {
     const resolveTTL = ttl || this.config.ttl;
-    const storage = getLocalStorage(this.ttlStorageKey);
+    const storage = getLocalStorageValue(this.ttlStorageKey);
     storage.set(key, new Date().setMilliseconds(resolveTTL));
-    setLocalStorage(this.ttlStorageKey, storage);
-    this.ttl.set(key, ttl);
+    setLocalStorageValue(this.ttlStorageKey, storage);
+    this.ttl.set(key, resolveTTL);
   }
 
   delete(key?: string | RegExp) {
@@ -45,14 +45,14 @@ export class LocalStorageTtlManager {
     }
 
     if (typeof key === 'string') {
-      const storage = getLocalStorage(this.ttlStorageKey);
+      const storage = getLocalStorageValue(this.ttlStorageKey);
       storage.delete(key);
-      setLocalStorage(this.ttlStorageKey, storage);
+      setLocalStorageValue(this.ttlStorageKey, storage);
       return;
     }
 
-    const storage = getLocalStorage(this.ttlStorageKey);
+    const storage = getLocalStorageValue(this.ttlStorageKey);
     deleteByRegex(key as RegExp, storage);
-    setLocalStorage(this.ttlStorageKey, storage);
+    setLocalStorageValue(this.ttlStorageKey, storage);
   }
 }
