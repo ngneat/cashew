@@ -20,10 +20,11 @@ export class LocalStorageTTLManager {
       return true;
     }
 
-    const ttlValue = getStorageCache(this.ttlStorageKey).get(key);
-    const validInStorage = ttlValue > new Date().getTime();
+    const localStorageTimeStamp = getStorageCache(this.ttlStorageKey).get(key);
+    const validInStorage = localStorageTimeStamp > new Date().getTime();
+
     if (validInStorage) {
-      this.ttl.set(key, ttlValue);
+      this.ttl.set(key, localStorageTimeStamp - new Date().getTime());
     }
 
     return validInStorage;
@@ -34,7 +35,7 @@ export class LocalStorageTTLManager {
     const storage = getStorageCache(this.ttlStorageKey);
     storage.set(key, new Date().setMilliseconds(resolveTTL));
     setCacheInStorage(this.ttlStorageKey, storage);
-    this.ttl.set(key, ttl);
+    this.ttl.set(key, resolveTTL);
   }
 
   delete(key?: string | RegExp) {
