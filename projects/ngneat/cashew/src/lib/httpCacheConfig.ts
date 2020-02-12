@@ -29,7 +29,7 @@ type Params = {
   [key: string]: any;
 };
 
-export function withCache(params: Params = {}): any {
+export function withCache(params: Params = {}): { params: Params } {
   return {
     params: {
       cache$: true,

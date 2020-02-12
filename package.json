@@ -5,7 +5,7 @@
     "contributors:add": "all-contributors add",
     "hooks:pre-commit": "node hooks/pre-commit.js",
     "build": "ng build",
-    "build:lib": "ng build @ngneat/cashew",
+    "build:lib": "ng build @ngneat/cashew && npm run copy-readme",
     "start": "ng serve",
     "e2e": "ng e2e",
     "test": "npm run test:lib",
@@ -14,7 +14,8 @@
     "test:headless": "cross-env CI=true npm run test:lib",
     "ng": "ng",
     "lint": "ng lint",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "copy-readme": "cp README.md dist/ngneat/cashew"
   },
   "dependencies": {
     "@angular/animations": "~7.2.0",
