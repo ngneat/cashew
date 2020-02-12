@@ -14,13 +14,6 @@ export const defaultConfig: HttpCacheConfig = {
   localStorageKey: 'httpCache'
 };
 
-export function mergeConfig(config: Partial<HttpCacheConfig>) {
-  return {
-    ...defaultConfig,
-    ...config
-  };
-}
-
 type Params = {
   cache$?: boolean;
   ttl$?: number;
