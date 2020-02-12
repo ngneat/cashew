@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://github.com/ngneat/cashew/compare/v1.1.2...v1.1.3) (2020-02-12)
+
+
+### Bug Fixes
+
+* 🐛 aot build ([0ed2eba](https://github.com/ngneat/cashew/commit/0ed2ebac2f78ed15b6771e50fc4db6d54170c5e2))
+
 ### [1.1.2](https://github.com/ngneat/cashew/compare/v1.1.1...v1.1.2) (2020-02-12)
 
 
