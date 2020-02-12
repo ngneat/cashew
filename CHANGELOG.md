@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/ngneat/cashew/compare/v1.1.0...v1.1.1) (2020-02-12)
+
+
+### Bug Fixes
+
+* 🐛 add type to wrapCache ([ff25b4f](https://github.com/ngneat/cashew/commit/ff25b4fce7ed2d4e7780070cfd9233b82e2b1f00))
+
 ## [1.1.0](https://github.com/ngneat/cashew/compare/v1.0.0...v1.1.0) (2020-02-11)
 
 
