@@ -12,10 +12,9 @@ import { RequestsQueue } from './requestsQueue';
 @NgModule({})
 export class HttpCacheInterceptorModule {
   static forRoot(config: Partial<HttpCacheConfig> = {}): ModuleWithProviders {
-    const merged = { ...defaultConfig, ...config };
     return {
       providers: [
-        { provide: HTTP_CACHE_CONFIG, useValue: merged },
+        { provide: HTTP_CACHE_CONFIG, useValue: { ...defaultConfig, ...config } },
         { provide: KeySerializer, useClass: DefaultKeySerializer },
         { provide: HttpCacheStorage, useClass: DefaultHttpCacheStorage },
         { provide: TTLManager, useClass: DefaultTTLManager },
