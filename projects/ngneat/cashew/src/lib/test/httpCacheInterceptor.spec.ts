@@ -1,7 +1,7 @@
 import { HttpHandler, HttpResponse, HttpParams } from '@angular/common/http';
 import { fakeAsync, tick } from '@angular/core/testing';
-import { timer } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { EMPTY, throwError, timer } from 'rxjs';
+import { catchError, mapTo, mergeMap } from 'rxjs/operators';
 import { HttpCacheInterceptor } from '../httpCacheInterceptor';
 import { httpCacheManager, keySerializer, httpRequest, config, frame, ttl, cacheBucket } from './mocks.spec';
 
@@ -91,6 +91,31 @@ describe('HttpCacheInterceptor', () => {
     call(request({ cache$: true }), 2, 0);
     expect(cacheSpy).toHaveBeenCalledTimes(1);
     tick(frame);
+  }));
+
+  it('should not queue requests that error', fakeAsync(() => {
+    const handler = {
+      handle: jest.fn(() =>
+        timer(frame).pipe(
+          mergeMap(() => {
+            return throwError('Not Found');
+          })
+        )
+      )
+    };
+    const queueSpy = spyOn((httpCacheInterceptor as any).httpCacheManager.queue, 'delete').and.callThrough();
+
+    httpCacheInterceptor
+      .intercept(request({ cache$: true }), handler)
+      .pipe(
+        catchError(error => {
+          return EMPTY;
+        })
+      )
+      .subscribe();
+    tick(frame);
+
+    expect(queueSpy).toHaveBeenCalledTimes(1);
   }));
 
   it('should refetch after ttl has passed', fakeAsync(() => {
