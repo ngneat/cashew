@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.4](https://github.com/ngneat/cashew/compare/v1.1.3...v1.1.4) (2020-04-29)
+
+
+### Bug Fixes
+
+* remove requests that error from queue ([17b6b0b](https://github.com/ngneat/cashew/commit/17b6b0bd1c0da5d4c5cd2cc2a6b7a1596cda10a0))
+
 ### [1.1.3](https://github.com/ngneat/cashew/compare/v1.1.2...v1.1.3) (2020-02-12)
 
 
