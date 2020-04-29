@@ -34,10 +34,15 @@ export class HttpCacheInterceptor implements HttpInterceptor {
         return of(this.httpCacheManager.get(key));
       }
       const shared = next.handle(clone).pipe(
-        tap(event => {
-          if (event instanceof HttpResponse) {
-            const cache = this.httpCacheManager._resolveResponse(event);
-            this.httpCacheManager._set(key, cache, +ttl);
+        tap({
+          next: event => {
+            if (event instanceof HttpResponse) {
+              const cache = this.httpCacheManager._resolveResponse(event);
+              this.httpCacheManager._set(key, cache, +ttl);
+            }
+            queue.delete(key);
+          },
+          error: () => {
             queue.delete(key);
           }
         }),
