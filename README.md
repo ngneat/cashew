@@ -279,6 +279,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://indepth.dev/author/layzee/"><img src="https://avatars1.githubusercontent.com/u/6364586?v=4" width="100px;" alt=""/><br /><sub><b>Lars Gyrup Brink Nielsen</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=LayZeeDK" title="Documentation">📖</a></td>
     <td align="center"><a href="https://raisiqueira.dev"><img src="https://avatars1.githubusercontent.com/u/2914170?v=4" width="100px;" alt=""/><br /><sub><b>Raí Siqueira</b></sub></a><br /><a href="#content-raisiqueira" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt=""/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=theblushingcrow" title="Code">💻</a> <a href="https://github.com/ngneat/cashew/commits?author=theblushingcrow" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://binary.com.au"><img src="https://avatars2.githubusercontent.com/u/175909?v=4" width="100px;" alt=""/><br /><sub><b>James Manners</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=jmannau" title="Code">💻</a></td>
   </tr>
 </table>
 
