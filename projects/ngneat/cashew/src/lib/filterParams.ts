@@ -5,7 +5,7 @@ const filterKeys = ['ttl$', 'cache$', 'key$', 'bucket$'];
 export function filterParams(request: HttpCacheRequest) {
   return request.params.keys().reduce((acc, key) => {
     if (filterKeys.includes(key) === false) {
-      acc[key] = request.params.get(key);
+      acc[key] = request.params.getAll(key);
     }
 
     return acc;
