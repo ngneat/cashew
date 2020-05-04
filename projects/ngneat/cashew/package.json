@@ -1,7 +1,7 @@
 {
   "name": "@ngneat/cashew",
   "description": "A simple and flexible library that caches HTTP requests in Angular applications",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
