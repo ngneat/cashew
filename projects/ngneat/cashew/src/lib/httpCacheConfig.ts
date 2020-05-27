@@ -1,3 +1,4 @@
+import { HttpParameterCodec } from '@angular/common/http';
 import { InjectionToken } from '@angular/core';
 import { CacheBucket } from './cacheBucket';
 
@@ -6,6 +7,7 @@ export interface HttpCacheConfig {
   ttl: number;
   responseSerializer?: (value: any) => any;
   localStorageKey?: string;
+  parameterCodec?: HttpParameterCodec;
 }
 
 export const defaultConfig: HttpCacheConfig = {

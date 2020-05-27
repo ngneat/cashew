@@ -136,6 +136,39 @@ HttpCacheInterceptorModule.forRoot({
 });
 ```
 
+#### `parameterCodec`
+
+Define the `HttpParameterCodec` implementation if you need a different parameter encoder.
+
+Example of custom implementation that uses `encodeURIComponent`:
+
+```ts
+import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
+import { HttpParameterCodec } from '@angular/common/http';
+
+class CustomHttpParameterCodec implements HttpParameterCodec {
+  encodeKey(key: string): string {
+    return encodeURIComponent(key);
+  }
+  encodeValue(value: string): string {
+    return encodeURIComponent(value);
+  }
+  decodeKey(key: string): string {
+    return decodeURIComponent(key);
+  }
+  decodeValue(value: string): string {
+    return decodeURIComponent(value);
+  }
+}
+
+@NgModule({
+  imports: [HttpClientModule, HttpCacheInterceptorModule.forRoot({ parameterCodec: new CustomHttpParameterCodec()})],
+  providers: [useHttpCacheLocalStorage],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+
+```
 ## API
 
 ### WithCache
