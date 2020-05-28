@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { finalize, share, tap } from 'rxjs/operators';
+import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
 
 import { HttpCacheManager } from './httpCacheManager.service';
 import { cloneWithoutParams } from './cloneWithoutParams';
@@ -10,7 +11,11 @@ import { CacheBucket } from './cacheBucket';
 
 @Injectable()
 export class HttpCacheInterceptor implements HttpInterceptor {
-  constructor(private httpCacheManager: HttpCacheManager, private keySerializer: KeySerializer) {}
+  constructor(
+    private httpCacheManager: HttpCacheManager,
+    private keySerializer: KeySerializer,
+    @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
+  ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const canActivate = this.httpCacheManager._canActivate(request);
@@ -18,8 +23,9 @@ export class HttpCacheInterceptor implements HttpInterceptor {
     const ttl = request.params.get('ttl$');
     const customKey = request.params.get('key$');
     const bucket: any = request.params.get('bucket$');
+    const { parameterCodec } = this.config;
 
-    const clone = cloneWithoutParams(request, customKey);
+    const clone = cloneWithoutParams(request, customKey, parameterCodec);
     const key = this.keySerializer.serialize(clone);
     const queue = this.httpCacheManager._getQueue();
 

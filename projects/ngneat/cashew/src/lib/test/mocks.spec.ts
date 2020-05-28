@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpRequest, HttpResponse, HttpHeaders, HttpParams, HttpParameterCodec } from '@angular/common/http';
 import { CacheBucket } from '../cacheBucket';
 import { defaultConfig } from '../httpCacheConfig';
 import { DefaultHttpCacheGuard } from '../httpCacheGuard';
@@ -50,4 +50,18 @@ export function localStorageMock() {
     };
   })();
   Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+}
+export class CustomHttpParamsCodec implements HttpParameterCodec {
+  public decodeKey(key: string): string {
+    return decodeURIComponent(key);
+  }
+  public decodeValue(value: string): string {
+    return decodeURIComponent(value);
+  }
+  public encodeKey(key: string): string {
+    return encodeURIComponent(key);
+  }
+  public encodeValue(value: string): string {
+    return encodeURIComponent(value);
+  }
 }

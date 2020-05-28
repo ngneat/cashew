@@ -136,6 +136,39 @@ HttpCacheInterceptorModule.forRoot({
 });
 ```
 
+#### `parameterCodec`
+
+Define the `HttpParameterCodec` implementation if you need a different parameter encoder.
+
+Example of custom implementation that uses `encodeURIComponent`:
+
+```ts
+import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
+import { HttpParameterCodec } from '@angular/common/http';
+
+class CustomHttpParameterCodec implements HttpParameterCodec {
+  encodeKey(key: string): string {
+    return encodeURIComponent(key);
+  }
+  encodeValue(value: string): string {
+    return encodeURIComponent(value);
+  }
+  decodeKey(key: string): string {
+    return decodeURIComponent(key);
+  }
+  decodeValue(value: string): string {
+    return decodeURIComponent(value);
+  }
+}
+
+@NgModule({
+  imports: [HttpClientModule, HttpCacheInterceptorModule.forRoot({ parameterCodec: new CustomHttpParameterCodec()})],
+  providers: [useHttpCacheLocalStorage],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+
+```
 ## API
 
 ### WithCache
@@ -280,6 +313,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://raisiqueira.dev"><img src="https://avatars1.githubusercontent.com/u/2914170?v=4" width="100px;" alt=""/><br /><sub><b>Raí Siqueira</b></sub></a><br /><a href="#content-raisiqueira" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt=""/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=theblushingcrow" title="Code">💻</a> <a href="https://github.com/ngneat/cashew/commits?author=theblushingcrow" title="Documentation">📖</a></td>
     <td align="center"><a href="https://binary.com.au"><img src="https://avatars2.githubusercontent.com/u/175909?v=4" width="100px;" alt=""/><br /><sub><b>James Manners</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=jmannau" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/mokipedia"><img src="https://avatars3.githubusercontent.com/u/11502273?v=4" width="100px;" alt=""/><br /><sub><b>mokipedia</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=mokipedia" title="Code">💻</a> <a href="https://github.com/ngneat/cashew/commits?author=mokipedia" title="Documentation">📖</a></td>
   </tr>
 </table>
 

@@ -22,7 +22,7 @@ describe('HttpCacheInterceptor', () => {
 
   beforeEach(() => {
     handler = httpHandler();
-    httpCacheInterceptor = new HttpCacheInterceptor(httpCacheManager(), keySerializer());
+    httpCacheInterceptor = new HttpCacheInterceptor(httpCacheManager(), keySerializer(), config);
     expect.hasAssertions();
   });
 
@@ -54,7 +54,7 @@ describe('HttpCacheInterceptor', () => {
   it('should cache a return a serialized request when passing a serializer', fakeAsync(() => {
     const responseSerializer = jest.fn(v => 'serialized');
     const cacheManager: any = httpCacheManager({ ...config, responseSerializer });
-    httpCacheInterceptor = new HttpCacheInterceptor(cacheManager, keySerializer());
+    httpCacheInterceptor = new HttpCacheInterceptor(cacheManager, keySerializer(), config);
     call(request({ cache$: true }));
     expect(handler.handle).toHaveBeenCalledTimes(1);
     /* The serializer is called when adding the value to the cache and when retrieving it */
@@ -65,7 +65,8 @@ describe('HttpCacheInterceptor', () => {
   it('should cache the request by default on implicit strategy', fakeAsync(() => {
     httpCacheInterceptor = new HttpCacheInterceptor(
       httpCacheManager({ ...config, strategy: 'implicit' }),
-      keySerializer()
+      keySerializer(),
+      config
     );
     call(request({}));
     expect(handler.handle).toHaveBeenCalledTimes(1);
@@ -74,7 +75,8 @@ describe('HttpCacheInterceptor', () => {
   it('should not cache the request on implicit strategy and cache$ if falsy', fakeAsync(() => {
     httpCacheInterceptor = new HttpCacheInterceptor(
       httpCacheManager({ ...config, strategy: 'implicit' }),
-      keySerializer()
+      keySerializer(),
+      config
     );
     call(request({ cache$: false }));
     expect(handler.handle).toHaveBeenCalledTimes(2);
