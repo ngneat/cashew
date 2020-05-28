@@ -77,6 +77,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mokipedia",
+      "name": "mokipedia",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/11502273?v=4",
+      "profile": "https://github.com/mokipedia",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
