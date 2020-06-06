@@ -139,6 +139,7 @@ HttpCacheInterceptorModule.forRoot({
 #### `parameterCodec`
 
 Define the `HttpParameterCodec` implementation if you need a different parameter encoder.
+> **Note:** use an object literal, if you intend to use AOT, as class creation at this stage is not possible.
 
 Example of custom implementation that uses `encodeURIComponent`:
 
@@ -146,23 +147,23 @@ Example of custom implementation that uses `encodeURIComponent`:
 import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
 import { HttpParameterCodec } from '@angular/common/http';
 
-class CustomHttpParameterCodec implements HttpParameterCodec {
+const customHttpParameterCodec: HttpParameterCodec = {
   encodeKey(key: string): string {
     return encodeURIComponent(key);
-  }
+  },
   encodeValue(value: string): string {
     return encodeURIComponent(value);
-  }
+  },
   decodeKey(key: string): string {
     return decodeURIComponent(key);
-  }
+  },
   decodeValue(value: string): string {
     return decodeURIComponent(value);
   }
-}
+};
 
 @NgModule({
-  imports: [HttpClientModule, HttpCacheInterceptorModule.forRoot({ parameterCodec: new CustomHttpParameterCodec()})],
+  imports: [HttpClientModule, HttpCacheInterceptorModule.forRoot({ parameterCodec: customHttpParameterCodec})],
   providers: [useHttpCacheLocalStorage],
   bootstrap: [AppComponent]
 })
