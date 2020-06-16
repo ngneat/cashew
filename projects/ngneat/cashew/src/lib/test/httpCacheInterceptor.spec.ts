@@ -172,29 +172,27 @@ describe('HttpCacheInterceptor', () => {
       fromObject: { testParam }
     }).toString();
 
-    const handler = {
+    handler = {
       handle: jest.fn(clone => {
         expect(clone.params.toString()).toBe(expectedParamString);
-        return of(clone);
+        return of();
       })
     };
 
-    httpCacheInterceptor
-      .intercept(request({ cache$: true, testParam, parameterCodec$: new CustomHttpParamsCodec() }), handler)
-      .subscribe();
+    call(request({ cache$: true, testParam, parameterCodec$: new CustomHttpParamsCodec() }), 1);
   }));
 
   it('should use default codec if neigher config nor request provides custom param codec', fakeAsync(() => {
     const testParam = 'te3/s-+d+_asd:';
     const expectedParamString = new HttpParams({ fromObject: { testParam } }).toString();
 
-    const handler = {
+    handler = {
       handle: jest.fn(clone => {
         expect(clone.params.toString()).toBe(expectedParamString);
-        return of(clone);
+        return of();
       })
     };
 
-    httpCacheInterceptor.intercept(request({ cache$: true, testParam }), handler).subscribe();
+    call(request({ cache$: true, testParam }), 1);
   }));
 });
