@@ -70,7 +70,7 @@ It's as simple as that.
 
 ## Local Storage
 
-By default caching is done to app memory. To switch to using local storage instead simply add: 
+By default caching is done to app memory. To switch to using local storage instead simply add:
 
 ```ts
 import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
@@ -111,7 +111,7 @@ When using local storage for caching, this defines the key where the cache is st
 ```ts
 HttpCacheInterceptorModule.forRoot({
   localStorageKey: string
-})
+});
 ```
 
 #### `ttl`
@@ -160,31 +160,23 @@ class CustomHttpParameterCodec implements HttpParameterCodec {
     return decodeURIComponent(value);
   }
 }
-
+<!-- prettier-ignore -->
 @NgModule({
-  imports: [HttpClientModule, HttpCacheInterceptorModule.forRoot({ parameterCodec: new CustomHttpParameterCodec()})],
+  imports: [
+    HttpClientModule,
+    HttpCacheInterceptorModule.forRoot({ parameterCodec: new CustomHttpParameterCodec() })
+  ],
   providers: [useHttpCacheLocalStorage],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
-
 ```
 
 or per request:
+
 ```ts
 class CustomHttpParameterCodec implements HttpParameterCodec {
-  encodeKey(key: string): string {
-    return encodeURIComponent(key);
-  }
-  encodeValue(value: string): string {
-    return encodeURIComponent(value);
-  }
-  decodeKey(key: string): string {
-    return decodeURIComponent(key);
-  }
-  decodeValue(value: string): string {
-    return decodeURIComponent(value);
-  }
+  ...
 }
 
 @Injectable()
@@ -202,6 +194,7 @@ export class UsersService {
   }
 }
 ```
+
 ## API
 
 ### WithCache
@@ -354,6 +347,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
