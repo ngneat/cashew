@@ -141,7 +141,7 @@ HttpCacheInterceptorModule.forRoot({
 Define the `HttpParameterCodec` implementation if you need a different parameter encoder.
 
 Example of custom implementation that uses `encodeURIComponent`:
-
+<!-- prettier-ignore -->
 ```ts
 import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
 import { HttpParameterCodec } from '@angular/common/http';
@@ -160,7 +160,7 @@ class CustomHttpParameterCodec implements HttpParameterCodec {
     return decodeURIComponent(value);
   }
 }
-<!-- prettier-ignore -->
+
 @NgModule({
   imports: [
     HttpClientModule,
