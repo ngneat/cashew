@@ -21,6 +21,7 @@ type Params = {
   ttl$?: number;
   key$?: string;
   bucket$?: CacheBucket;
+  parameterCodec$?: HttpParameterCodec;
   [key: string]: any;
 };
 

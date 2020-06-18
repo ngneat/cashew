@@ -1,9 +1,18 @@
 import { HttpHandler, HttpResponse, HttpParams } from '@angular/common/http';
 import { fakeAsync, tick } from '@angular/core/testing';
-import { EMPTY, throwError, timer } from 'rxjs';
+import { EMPTY, of, throwError, timer } from 'rxjs';
 import { catchError, mapTo, mergeMap } from 'rxjs/operators';
 import { HttpCacheInterceptor } from '../httpCacheInterceptor';
-import { httpCacheManager, keySerializer, httpRequest, config, frame, ttl, cacheBucket } from './mocks.spec';
+import {
+  httpCacheManager,
+  keySerializer,
+  httpRequest,
+  config,
+  frame,
+  ttl,
+  cacheBucket,
+  CustomHttpParamsCodec
+} from './mocks.spec';
 
 describe('HttpCacheInterceptor', () => {
   let httpCacheInterceptor: HttpCacheInterceptor;
@@ -154,5 +163,28 @@ describe('HttpCacheInterceptor', () => {
     spyOn(bucket, 'add');
     call(request({ cache$: true, bucket$: bucket, key$: 'foo' }), 1);
     expect(bucket.add).toHaveBeenCalledWith('foo');
+  }));
+
+  it('should use parameterCodec from request', fakeAsync(() => {
+    const testParam = 'te3/s-+d+_asd:';
+    const expectedParamString = new HttpParams({
+      encoder: new CustomHttpParamsCodec(),
+      fromObject: { testParam }
+    }).toString();
+
+    call(request({ cache$: true, testParam, parameterCodec$: new CustomHttpParamsCodec() }), 1);
+
+    const params = (handler.handle as jest.Mock).mock.calls[0][0].params;
+    expect(params.toString()).toBe(expectedParamString);
+  }));
+
+  it('should use default codec if neigher config nor request provides custom param codec', fakeAsync(() => {
+    const testParam = 'te3/s-+d+_asd:';
+    const expectedParamString = new HttpParams({ fromObject: { testParam } }).toString();
+
+    call(request({ cache$: true, testParam }), 1);
+
+    const params = (handler.handle as jest.Mock).mock.calls[0][0].params;
+    expect(params.toString()).toBe(expectedParamString);
   }));
 });

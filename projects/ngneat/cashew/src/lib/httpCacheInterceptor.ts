@@ -23,7 +23,10 @@ export class HttpCacheInterceptor implements HttpInterceptor {
     const ttl = request.params.get('ttl$');
     const customKey = request.params.get('key$');
     const bucket: any = request.params.get('bucket$');
-    const { parameterCodec } = this.config;
+
+    const localParameterCodec: any = request.params.get('parameterCodec$');
+    const globalParameterCodec = this.config.parameterCodec;
+    const parameterCodec = localParameterCodec || globalParameterCodec;
 
     const clone = cloneWithoutParams(request, customKey, parameterCodec);
     const key = this.keySerializer.serialize(clone);
