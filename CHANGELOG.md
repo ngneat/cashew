@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/ngneat/cashew/compare/v1.2.0...v1.3.0) (2020-06-18)
+
+
+### Features
+
+* add local parameter codec override ([80148d6](https://github.com/ngneat/cashew/commit/80148d63d9cf79536e21489365208e7dcddeac74))
+* add tests for request parameter codec ([dbc17a6](https://github.com/ngneat/cashew/commit/dbc17a68088815d99f897a75a346d06d45ae3c76))
+* update Params type to be more specific ([c44daf1](https://github.com/ngneat/cashew/commit/c44daf13bad7b8d52e3f8a57d973c5fadb686513))
+
 ## [1.2.0](https://github.com/ngneat/cashew/compare/v1.1.4...v1.2.0) (2020-05-28)
 
 
