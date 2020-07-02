@@ -5,20 +5,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { TodosComponent } from './todos/todos.component';
-import { HttpCacheInterceptorModule } from '@ngneat/cashew';
+import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, TodosComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    HttpCacheInterceptorModule.forRoot({
-      // ttl: {
-      // default: 10000
-      // }
-    })
-  ],
+  // providers: [useHttpCacheLocalStorage],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule, HttpCacheInterceptorModule.forRoot()],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

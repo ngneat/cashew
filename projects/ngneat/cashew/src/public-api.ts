@@ -7,3 +7,4 @@ export * from './lib/ttlManager';
 export * from './lib/httpCacheStorage';
 export * from './lib/httpCacheInterceptor.module';
 export * from './lib/cacheBucket';
+export * from './lib/localstorage/useHttpCacheLocalStorage';

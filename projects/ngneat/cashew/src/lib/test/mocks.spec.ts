@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpRequest, HttpResponse, HttpHeaders, HttpParams, HttpParameterCodec } from '@angular/common/http';
 import { CacheBucket } from '../cacheBucket';
 import { defaultConfig } from '../httpCacheConfig';
 import { DefaultHttpCacheGuard } from '../httpCacheGuard';
@@ -31,3 +31,37 @@ export const ttlManager = (conf = config) => new DefaultTTLManager(conf);
 export const keySerializer = () => new DefaultKeySerializer();
 export const httpCacheManager = (conf = config) =>
   new HttpCacheManager(requestQueue(), httpCacheStorage(), httpCacheGuard(), ttlManager(conf), conf);
+export function localStorageMock() {
+  const localStorageMock = (function() {
+    let store = {};
+    return {
+      getItem: function(key) {
+        return store[key];
+      },
+      setItem: function(key, value) {
+        store[key] = value.toString();
+      },
+      clear: function() {
+        store = {};
+      },
+      removeItem: function(key) {
+        delete store[key];
+      }
+    };
+  })();
+  Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+}
+export class CustomHttpParamsCodec implements HttpParameterCodec {
+  public decodeKey(key: string): string {
+    return decodeURIComponent(key);
+  }
+  public decodeValue(value: string): string {
+    return decodeURIComponent(value);
+  }
+  public encodeKey(key: string): string {
+    return encodeURIComponent(key);
+  }
+  public encodeValue(value: string): string {
+    return encodeURIComponent(value);
+  }
+}

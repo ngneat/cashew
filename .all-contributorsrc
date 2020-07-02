@@ -40,6 +40,53 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "LayZeeDK",
+      "name": "Lars Gyrup Brink Nielsen",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6364586?v=4",
+      "profile": "https://indepth.dev/author/layzee/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "raisiqueira",
+      "name": "Raí Siqueira",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2914170?v=4",
+      "profile": "https://raisiqueira.dev",
+      "contributions": [
+        "content"
+      ]
+    },
+    {
+      "login": "theblushingcrow",
+      "name": "Inbal Sinai",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/638818?v=4",
+      "profile": "https://github.com/theblushingcrow",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "jmannau",
+      "name": "James Manners",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/175909?v=4",
+      "profile": "https://binary.com.au",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mokipedia",
+      "name": "mokipedia",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/11502273?v=4",
+      "profile": "https://github.com/mokipedia",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7

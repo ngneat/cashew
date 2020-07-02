@@ -12,17 +12,20 @@
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors)
 [![ngneat](https://img.shields.io/badge/@-ngneat-383636?style=flat-square&labelColor=8f68d4)](https://github.com/ngneat/)
 
 ## Features
 
 ✅ HTTP Caching <br>
+✅ Local Storage Support <br>
 ✅ Handles Simultaneous Requests<br>
 ✅ Automatic & Manual Cache Busting <br>
 ✅ Hackable <br>
 
 A flexible and straightforward library that caches HTTP requests in Angular
+
+<a href="https://www.buymeacoffee.com/basalnetanel" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
 ## Installation
 
@@ -65,7 +68,24 @@ export class UsersService {
 }
 ```
 
-That's simple as that.
+It's as simple as that.
+
+## Local Storage
+
+By default caching is done to app memory. To switch to using local storage instead simply add:
+
+```ts
+import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
+
+@NgModule({
+  imports: [HttpClientModule, HttpCacheInterceptorModule.forRoot()],
+  providers: [useHttpCacheLocalStorage],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+```
+
+To your `AppModule` providers list. Note that `ttl` will also be calculated via local storage in this instance.
 
 ## Config Options
 
@@ -77,12 +97,22 @@ Let's go over each of the configuration options:
 
 Defines the caching behavior. The library supports two different strategies:
 
-- `implicit (default)` - **only** caches API requests when explicitly uses the `withCache` function
-- `explicit` - caches API requests that are of type `GET` and the response type is `JSON`. You can change this behavior by overriding the `HttpCacheGuard` provider. (See the [Hackable](#hackable) section)
+- `explicit` (default) - **only** caches API requests that explicitly use the `withCache` function
+- `implicit` - caches API requests that are of type `GET` and the response type is `JSON`. You can change this behavior by overriding the `HttpCacheGuard` provider. (See the [Hackable](#hackable) section)
 
 ```ts
 HttpCacheInterceptorModule.forRoot({
   strategy: 'explicit'
+});
+```
+
+#### `localStorageKey`
+
+When using local storage for caching, this defines the key where the cache is stored (for ttl - with the "Ttl" suffix): (defaults to 'httpCache')
+
+```ts
+HttpCacheInterceptorModule.forRoot({
+  localStorageKey: string
 });
 ```
 
@@ -106,6 +136,65 @@ HttpCacheInterceptorModule.forRoot({
     return cloneDeep(body);
   }
 });
+```
+
+#### `parameterCodec`
+
+Define the `HttpParameterCodec` implementation if you need a different parameter encoder.
+
+Example of custom implementation that uses `encodeURIComponent`:
+<!-- prettier-ignore -->
+```ts
+import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
+import { HttpParameterCodec } from '@angular/common/http';
+
+class CustomHttpParameterCodec implements HttpParameterCodec {
+  encodeKey(key: string): string {
+    return encodeURIComponent(key);
+  }
+  encodeValue(value: string): string {
+    return encodeURIComponent(value);
+  }
+  decodeKey(key: string): string {
+    return decodeURIComponent(key);
+  }
+  decodeValue(value: string): string {
+    return decodeURIComponent(value);
+  }
+}
+
+@NgModule({
+  imports: [
+    HttpClientModule,
+    HttpCacheInterceptorModule.forRoot({ parameterCodec: new CustomHttpParameterCodec() })
+  ],
+  providers: [useHttpCacheLocalStorage],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+```
+
+or per request:
+
+```ts
+class CustomHttpParameterCodec implements HttpParameterCodec {
+  ...
+}
+
+@Injectable()
+export class UsersService {
+  constructor(private http: HttpClient) {}
+
+  getUsers() {
+    return this.http.get(
+      'api/users',
+      withCache({
+        parameterCodec$: new CustomHttpParameterCodec(),
+        ...
+      })
+    );
+  }
+}
 ```
 
 ## API
@@ -248,6 +337,13 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.netbasal.com"><img src="https://avatars1.githubusercontent.com/u/6745730?v=4" width="100px;" alt=""/><br /><sub><b>Netanel Basal</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=NetanelBasal" title="Code">💻</a> <a href="#design-NetanelBasal" title="Design">🎨</a> <a href="https://github.com/ngneat/cashew/commits?author=NetanelBasal" title="Documentation">📖</a> <a href="#ideas-NetanelBasal" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-NetanelBasal" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
     <td align="center"><a href="https://github.com/itayod"><img src="https://avatars2.githubusercontent.com/u/6719615?v=4" width="100px;" alt=""/><br /><sub><b>Itay Oded</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=itayod" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/shaharkazaz"><img src="https://avatars2.githubusercontent.com/u/17194830?v=4" width="100px;" alt=""/><br /><sub><b>Shahar Kazaz</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=shaharkazaz" title="Code">💻</a></td>
+    <td align="center"><a href="https://indepth.dev/author/layzee/"><img src="https://avatars1.githubusercontent.com/u/6364586?v=4" width="100px;" alt=""/><br /><sub><b>Lars Gyrup Brink Nielsen</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=LayZeeDK" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://raisiqueira.dev"><img src="https://avatars1.githubusercontent.com/u/2914170?v=4" width="100px;" alt=""/><br /><sub><b>Raí Siqueira</b></sub></a><br /><a href="#content-raisiqueira" title="Content">🖋</a></td>
+    <td align="center"><a href="https://github.com/theblushingcrow"><img src="https://avatars3.githubusercontent.com/u/638818?v=4" width="100px;" alt=""/><br /><sub><b>Inbal Sinai</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=theblushingcrow" title="Code">💻</a> <a href="https://github.com/ngneat/cashew/commits?author=theblushingcrow" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://binary.com.au"><img src="https://avatars2.githubusercontent.com/u/175909?v=4" width="100px;" alt=""/><br /><sub><b>James Manners</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=jmannau" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/mokipedia"><img src="https://avatars3.githubusercontent.com/u/11502273?v=4" width="100px;" alt=""/><br /><sub><b>mokipedia</b></sub></a><br /><a href="https://github.com/ngneat/cashew/commits?author=mokipedia" title="Code">💻</a> <a href="https://github.com/ngneat/cashew/commits?author=mokipedia" title="Documentation">📖</a></td>
   </tr>
 </table>
 

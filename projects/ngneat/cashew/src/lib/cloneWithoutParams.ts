@@ -1,12 +1,19 @@
-import { HttpParams } from '@angular/common/http';
+import { HttpParameterCodec, HttpParams } from '@angular/common/http';
 import { filterParams } from './filterParams';
 import { HttpCacheRequest } from './types';
 
-export function cloneWithoutParams(request: HttpCacheRequest, customKey: string): HttpCacheRequest {
+export function cloneWithoutParams(
+  request: HttpCacheRequest,
+  customKey: string,
+  parameterCodec?: HttpParameterCodec
+): HttpCacheRequest {
   const filteredParams = filterParams(request);
 
   const clone = request.clone({
-    params: new HttpParams({ fromObject: filteredParams })
+    params: new HttpParams({
+      fromObject: filteredParams,
+      ...(parameterCodec && { encoder: parameterCodec })
+    })
   });
 
   (clone as HttpCacheRequest).customKey = customKey;

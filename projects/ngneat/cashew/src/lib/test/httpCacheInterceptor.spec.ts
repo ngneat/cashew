@@ -1,9 +1,18 @@
 import { HttpHandler, HttpResponse, HttpParams } from '@angular/common/http';
 import { fakeAsync, tick } from '@angular/core/testing';
-import { timer } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { EMPTY, of, throwError, timer } from 'rxjs';
+import { catchError, mapTo, mergeMap } from 'rxjs/operators';
 import { HttpCacheInterceptor } from '../httpCacheInterceptor';
-import { httpCacheManager, keySerializer, httpRequest, config, frame, ttl, cacheBucket } from './mocks.spec';
+import {
+  httpCacheManager,
+  keySerializer,
+  httpRequest,
+  config,
+  frame,
+  ttl,
+  cacheBucket,
+  CustomHttpParamsCodec
+} from './mocks.spec';
 
 describe('HttpCacheInterceptor', () => {
   let httpCacheInterceptor: HttpCacheInterceptor;
@@ -22,7 +31,7 @@ describe('HttpCacheInterceptor', () => {
 
   beforeEach(() => {
     handler = httpHandler();
-    httpCacheInterceptor = new HttpCacheInterceptor(httpCacheManager(), keySerializer());
+    httpCacheInterceptor = new HttpCacheInterceptor(httpCacheManager(), keySerializer(), config);
     expect.hasAssertions();
   });
 
@@ -54,7 +63,7 @@ describe('HttpCacheInterceptor', () => {
   it('should cache a return a serialized request when passing a serializer', fakeAsync(() => {
     const responseSerializer = jest.fn(v => 'serialized');
     const cacheManager: any = httpCacheManager({ ...config, responseSerializer });
-    httpCacheInterceptor = new HttpCacheInterceptor(cacheManager, keySerializer());
+    httpCacheInterceptor = new HttpCacheInterceptor(cacheManager, keySerializer(), config);
     call(request({ cache$: true }));
     expect(handler.handle).toHaveBeenCalledTimes(1);
     /* The serializer is called when adding the value to the cache and when retrieving it */
@@ -65,7 +74,8 @@ describe('HttpCacheInterceptor', () => {
   it('should cache the request by default on implicit strategy', fakeAsync(() => {
     httpCacheInterceptor = new HttpCacheInterceptor(
       httpCacheManager({ ...config, strategy: 'implicit' }),
-      keySerializer()
+      keySerializer(),
+      config
     );
     call(request({}));
     expect(handler.handle).toHaveBeenCalledTimes(1);
@@ -74,7 +84,8 @@ describe('HttpCacheInterceptor', () => {
   it('should not cache the request on implicit strategy and cache$ if falsy', fakeAsync(() => {
     httpCacheInterceptor = new HttpCacheInterceptor(
       httpCacheManager({ ...config, strategy: 'implicit' }),
-      keySerializer()
+      keySerializer(),
+      config
     );
     call(request({ cache$: false }));
     expect(handler.handle).toHaveBeenCalledTimes(2);
@@ -91,6 +102,31 @@ describe('HttpCacheInterceptor', () => {
     call(request({ cache$: true }), 2, 0);
     expect(cacheSpy).toHaveBeenCalledTimes(1);
     tick(frame);
+  }));
+
+  it('should not queue requests that error', fakeAsync(() => {
+    const handler = {
+      handle: jest.fn(() =>
+        timer(frame).pipe(
+          mergeMap(() => {
+            return throwError('Not Found');
+          })
+        )
+      )
+    };
+    const queueSpy = spyOn((httpCacheInterceptor as any).httpCacheManager.queue, 'delete').and.callThrough();
+
+    httpCacheInterceptor
+      .intercept(request({ cache$: true }), handler)
+      .pipe(
+        catchError(error => {
+          return EMPTY;
+        })
+      )
+      .subscribe();
+    tick(frame);
+
+    expect(queueSpy).toHaveBeenCalledTimes(1);
   }));
 
   it('should refetch after ttl has passed', fakeAsync(() => {
@@ -127,5 +163,28 @@ describe('HttpCacheInterceptor', () => {
     spyOn(bucket, 'add');
     call(request({ cache$: true, bucket$: bucket, key$: 'foo' }), 1);
     expect(bucket.add).toHaveBeenCalledWith('foo');
+  }));
+
+  it('should use parameterCodec from request', fakeAsync(() => {
+    const testParam = 'te3/s-+d+_asd:';
+    const expectedParamString = new HttpParams({
+      encoder: new CustomHttpParamsCodec(),
+      fromObject: { testParam }
+    }).toString();
+
+    call(request({ cache$: true, testParam, parameterCodec$: new CustomHttpParamsCodec() }), 1);
+
+    const params = (handler.handle as jest.Mock).mock.calls[0][0].params;
+    expect(params.toString()).toBe(expectedParamString);
+  }));
+
+  it('should use default codec if neigher config nor request provides custom param codec', fakeAsync(() => {
+    const testParam = 'te3/s-+d+_asd:';
+    const expectedParamString = new HttpParams({ fromObject: { testParam } }).toString();
+
+    call(request({ cache$: true, testParam }), 1);
+
+    const params = (handler.handle as jest.Mock).mock.calls[0][0].params;
+    expect(params.toString()).toBe(expectedParamString);
   }));
 });
