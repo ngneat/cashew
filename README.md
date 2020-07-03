@@ -98,7 +98,7 @@ Let's go over each of the configuration options:
 Defines the caching behavior. The library supports two different strategies:
 
 - `explicit` (default) - **only** caches API requests that explicitly use the `withCache` function
-- `implicit` - caches API requests that are of type `GET` and the response type is `JSON`. You can change this behavior by overriding the `HttpCacheGuard` provider. (See the [Hackable](#hackable) section)
+- `implicit` - caches API requests that are of type `GET` and the response type is `JSON`. You can change this behavior by overriding the `HttpCacheGuard` provider. (See the [Hackable](#hack-the-library) section)
 
 ```ts
 HttpCacheInterceptorModule.forRoot({
@@ -143,6 +143,7 @@ HttpCacheInterceptorModule.forRoot({
 Define the `HttpParameterCodec` implementation if you need a different parameter encoder.
 
 Example of custom implementation that uses `encodeURIComponent`:
+
 <!-- prettier-ignore -->
 ```ts
 import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
@@ -206,7 +207,7 @@ Currently, there is no way in Angular to pass `metadata` to an interceptor. The 
 - `cache$` - Whether to cache the request (defaults to `true`)
 - `ttl$` - TTL that will override the global
 - `key$` - Custom key. (defaults to the request URL including any query params)
-- `bucket$` - The [bucket](#cache-bucket) in which we save the keys
+- `bucket$` - The [bucket](#cachebucket) in which we save the keys
 
 ```ts
 @Injectable()
