@@ -39,7 +39,8 @@ export function cashewConfig(config: Partial<HttpCacheConfig> = defaultConfig): 
     strategy: config.strategy || defaultConfig.strategy,
     ttl: config.ttl || defaultConfig.ttl,
     localStorageKey: config.localStorageKey || defaultConfig.localStorageKey,
-    ...config
+    responseSerializer: config.responseSerializer,
+    parameterCodec: config.parameterCodec
   };
 }
 
