@@ -34,4 +34,13 @@ export function withCache(params: Params = {}): { params: Params } {
   };
 }
 
+export function cashewConfig(config: Partial<HttpCacheConfig> = defaultConfig): HttpCacheConfig {
+  return {
+    strategy: config.strategy || defaultConfig.strategy,
+    ttl: config.ttl || defaultConfig.ttl,
+    localStorageKey: config.localStorageKey || defaultConfig.localStorageKey,
+    ...config
+  };
+}
+
 export const HTTP_CACHE_CONFIG = new InjectionToken<HttpCacheConfig>('HTTP_CACHE_CONFIG');
