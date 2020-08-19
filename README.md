@@ -89,7 +89,12 @@ To your `AppModule` providers list. Note that `ttl` will also be calculated via 
 
 ## Config Options
 
-Using the library, you might need to change the default behavior of the caching mechanism. You could do that by passing a configuration object to the static `forRoot` method of the `HttpCacheInterceptorModule` module.
+Using the library, you might need to change the default behavior of the caching mechanism. You could do that by passing a configuration (a partial `HttpCacheConfig` object) to the static `forRoot` method of the `HttpCacheInterceptorModule` module.
+**Important note:** View Engine users - instead of adding the config to the `forRoot()` method, add it in the app module provides in the following manner, using the supplied `cashewConfig()` method: 
+
+```ts
+{ provide: HTTP_CACHE_CONFIG, useValue: cashewConfig(config) }
+``` 
 
 Let's go over each of the configuration options:
 
@@ -197,13 +202,6 @@ export class UsersService {
   }
 }
 ```
-
-## View Engine Users
-For View Engine users - instead of adding the config (a partial `HttpCacheConfig` object) to the `forRoot()` method, add it in the app module provides in the following manner, using the supplied `cashewConfig()` method: 
-
-```ts
-{ provide: HTTP_CACHE_CONFIG, useValue: cashewConfig(config) }
-``` 
 
 ## API
 
