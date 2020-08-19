@@ -89,7 +89,7 @@ To your `AppModule` providers list. Note that `ttl` will also be calculated via 
 
 ## Config Options
 
-Using the library, you might need to change the default behavior of the caching mechanism. You could do that by passing a configuration object to the static `forRoot` method of the `HttpCacheInterceptorModule` module, using the available `cashewConfig()` method.
+Using the library, you might need to change the default behavior of the caching mechanism. You could do that by passing a configuration object to the static `forRoot` method of the `HttpCacheInterceptorModule` module.
 
 Let's go over each of the configuration options:
 
@@ -101,9 +101,9 @@ Defines the caching behavior. The library supports two different strategies:
 - `implicit` - caches API requests that are of type `GET` and the response type is `JSON`. You can change this behavior by overriding the `HttpCacheGuard` provider. (See the [Hackable](#hack-the-library) section)
 
 ```ts
-HttpCacheInterceptorModule.forRoot(cashewConfig({
+HttpCacheInterceptorModule.forRoot({
   strategy: 'explicit'
-}));
+});
 ```
 
 #### `localStorageKey`
@@ -111,9 +111,9 @@ HttpCacheInterceptorModule.forRoot(cashewConfig({
 When using local storage for caching, this defines the key where the cache is stored (for ttl - with the "Ttl" suffix): (defaults to 'httpCache')
 
 ```ts
-HttpCacheInterceptorModule.forRoot(cashewConfig({
+HttpCacheInterceptorModule.forRoot({
   localStorageKey: string
-}));
+});
 ```
 
 #### `ttl`
@@ -121,9 +121,9 @@ HttpCacheInterceptorModule.forRoot(cashewConfig({
 Define the cache TTL (time to live) in milliseconds: (defaults to one hour)
 
 ```ts
-HttpCacheInterceptorModule.forRoot(cashewConfig({
+HttpCacheInterceptorModule.forRoot({
   ttl: number
-}));
+});
 ```
 
 #### `responseSerializer`
@@ -131,11 +131,11 @@ HttpCacheInterceptorModule.forRoot(cashewConfig({
 By default, the registry returns the `original` response object. It can be dangerous if, for some reason, you mutate it. To change this behavior, you can clone the response before getting it:
 
 ```ts
-HttpCacheInterceptorModule.forRoot(cashewConfig({
+HttpCacheInterceptorModule.forRoot({
   responseSerializer(body) {
     return cloneDeep(body);
   }
-}));
+});
 ```
 
 #### `parameterCodec`
@@ -167,7 +167,7 @@ class CustomHttpParameterCodec implements HttpParameterCodec {
 @NgModule({
   imports: [
     HttpClientModule,
-    HttpCacheInterceptorModule.forRoot(cashewConfig({ parameterCodec: new CustomHttpParameterCodec() }))
+    HttpCacheInterceptorModule.forRoot({ parameterCodec: new CustomHttpParameterCodec() })
   ],
   providers: [useHttpCacheLocalStorage],
   bootstrap: [AppComponent]
@@ -197,6 +197,13 @@ export class UsersService {
   }
 }
 ```
+
+## View Engine Users
+For View Engine users - instead of adding the config (a partial `HttpCacheConfig` object) to the `forRoot()` method, add it in the app module provides in the following manner, using the supplied `cashewConfig()` method: 
+
+```ts
+{ provide: HTTP_CACHE_CONFIG, useValue: cashewConfig(config) }
+``` 
 
 ## API
 
