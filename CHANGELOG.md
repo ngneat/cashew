@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/ngneat/cashew/compare/v1.3.0...v1.3.1) (2020-08-20)
+
+
+### Bug Fixes
+
+* 🐛 method for View Engine users to pass partial config ([7f7a934](https://github.com/ngneat/cashew/commit/7f7a934f851a2245cd5cb10a7601c9fb42738f1d))
+* rename the HTTP_CACHE_CONFIG injection token desc ([c63ca48](https://github.com/ngneat/cashew/commit/c63ca484508153ad638af7e9fca58fb0e390155a))
+
 ## [1.3.0](https://github.com/ngneat/cashew/compare/v1.2.0...v1.3.0) (2020-06-18)
 
 
