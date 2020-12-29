@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.2](https://github.com/ngneat/cashew/compare/v1.3.1...v1.3.2) (2020-12-29)
+
+
+### Bug Fixes
+
+* angular 10 compatibility ([89bd9d6](https://github.com/ngneat/cashew/commit/89bd9d66e11261bdb444a3f5d05a47fb50179f61))
+
 ### [1.3.1](https://github.com/ngneat/cashew/compare/v1.3.0...v1.3.1) (2020-08-20)
 
 
