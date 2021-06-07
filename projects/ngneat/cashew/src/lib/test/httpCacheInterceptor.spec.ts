@@ -1,31 +1,28 @@
-import { HttpHandler, HttpResponse, HttpParams } from '@angular/common/http';
-import { fakeAsync, tick } from '@angular/core/testing';
-import { EMPTY, of, throwError, timer } from 'rxjs';
+import { HttpHandler, HttpResponse } from '@angular/common/http';
+import { EMPTY, throwError, timer } from 'rxjs';
 import { catchError, mapTo, mergeMap } from 'rxjs/operators';
 import { HttpCacheInterceptor } from '../httpCacheInterceptor';
-import {
-  httpCacheManager,
-  keySerializer,
-  httpRequest,
-  config,
-  frame,
-  ttl,
-  cacheBucket,
-  CustomHttpParamsCodec
-} from './mocks.spec';
+import { cacheBucket, config, frame, httpCacheManager, httpRequest, keySerializer, ttl } from './mocks.spec';
+import { ContextOptions, withCache } from '../cacheContext';
+
+jest.useFakeTimers();
 
 describe('HttpCacheInterceptor', () => {
   let httpCacheInterceptor: HttpCacheInterceptor;
   let handler: HttpHandler;
-  let request = (params, method = 'GET', url = 'api/mock') =>
-    httpRequest(method, { params: new HttpParams({ fromObject: params }) }, url);
+
+  const request = (options: ContextOptions, params: object = {}, method = 'GET', url = 'api/mock') => {
+    return httpRequest(method, { context: withCache(options), ...params }, url);
+  };
+
   const httpHandler = (response = {}): HttpHandler => ({
     handle: jest.fn(() => timer(frame).pipe(mapTo(new HttpResponse({ body: response }))))
   });
+
   const call = (req, times = 2, delay = frame) => {
     for (let i = 0; i < times; i++) {
       httpCacheInterceptor.intercept(req, handler).subscribe();
-      tick(delay);
+      jest.advanceTimersByTime(delay);
     }
   };
 
@@ -35,43 +32,38 @@ describe('HttpCacheInterceptor', () => {
     expect.hasAssertions();
   });
 
-  it('should cache a request', fakeAsync(() => {
-    call(request({ cache$: true }));
+  it('should cache a request', () => {
+    call(request({ cache: true }));
     expect(handler.handle).toHaveBeenCalledTimes(1);
-  }));
+  });
 
-  it('should not cache when cache$ is falsy', fakeAsync(() => {
-    call(request({ cache$: false }));
+  it('should not cache when cache is falsy', () => {
+    call(request({ cache: false }));
     expect(handler.handle).toHaveBeenCalledTimes(2);
-  }));
+  });
 
-  it('should not cache request of type POST', fakeAsync(() => {
-    call(request({}, 'POST'));
+  it('should not cache request of type POST', () => {
+    call(request({ cache: false }, {}, 'POST'));
     expect(handler.handle).toHaveBeenCalledTimes(2);
-  }));
+  });
 
-  it('should cache request of type POST when cache$ is implicitly true', fakeAsync(() => {
-    call(request({ cache$: true }, 'POST'));
+  it('should cache request of type POST when cache$ is implicitly true', () => {
+    call(request({ cache: true }, {}, 'POST'));
     expect(handler.handle).toHaveBeenCalledTimes(1);
-  }));
+  });
 
-  it('should not cache the request by default on explicit strategy', fakeAsync(() => {
-    call(request({}));
-    expect(handler.handle).toHaveBeenCalledTimes(2);
-  }));
-
-  it('should cache a return a serialized request when passing a serializer', fakeAsync(() => {
+  it('should cache a return a serialized request when passing a serializer', () => {
     const responseSerializer = jest.fn(v => 'serialized');
     const cacheManager: any = httpCacheManager({ ...config, responseSerializer });
     httpCacheInterceptor = new HttpCacheInterceptor(cacheManager, keySerializer(), config);
-    call(request({ cache$: true }));
+    call(request({ cache: true }));
     expect(handler.handle).toHaveBeenCalledTimes(1);
     /* The serializer is called when adding the value to the cache and when retrieving it */
     expect(responseSerializer).toHaveBeenCalledTimes(2);
     expect(cacheManager.storage.get('api/mock').body).toBe('serialized');
-  }));
+  });
 
-  it('should cache the request by default on implicit strategy', fakeAsync(() => {
+  it('should cache the request by default on implicit strategy', () => {
     httpCacheInterceptor = new HttpCacheInterceptor(
       httpCacheManager({ ...config, strategy: 'implicit' }),
       keySerializer(),
@@ -79,32 +71,32 @@ describe('HttpCacheInterceptor', () => {
     );
     call(request({}));
     expect(handler.handle).toHaveBeenCalledTimes(1);
-  }));
+  });
 
-  it('should not cache the request on implicit strategy and cache$ if falsy', fakeAsync(() => {
+  it('should not cache the request on implicit strategy and cache$ if falsy', () => {
     httpCacheInterceptor = new HttpCacheInterceptor(
       httpCacheManager({ ...config, strategy: 'implicit' }),
       keySerializer(),
       config
     );
-    call(request({ cache$: false }));
+    call(request({ cache: false }));
     expect(handler.handle).toHaveBeenCalledTimes(2);
-  }));
+  });
 
-  it('should return a cached request', fakeAsync(() => {
-    const cacheSpy = spyOn((httpCacheInterceptor as any).httpCacheManager, 'get');
-    call(request({ cache$: true, paramA: true }));
+  it('should return a cached request', () => {
+    const cacheSpy = jest.spyOn((httpCacheInterceptor as any).httpCacheManager, 'get');
+    call(request({ cache: true }));
     expect(cacheSpy).toHaveBeenCalledTimes(1);
-  }));
+  });
 
-  it('should return a queued request', fakeAsync(() => {
-    const cacheSpy = spyOn((httpCacheInterceptor as any).httpCacheManager.queue, 'get').and.callThrough();
-    call(request({ cache$: true }), 2, 0);
+  it('should return a queued request', () => {
+    const cacheSpy = jest.spyOn((httpCacheInterceptor as any).httpCacheManager.queue, 'get');
+    call(request({ cache: true }), 2, 0);
     expect(cacheSpy).toHaveBeenCalledTimes(1);
-    tick(frame);
-  }));
+    jest.advanceTimersByTime(frame);
+  });
 
-  it('should not queue requests that error', fakeAsync(() => {
+  it('should not queue requests that error', () => {
     const handler = {
       handle: jest.fn(() =>
         timer(frame).pipe(
@@ -114,77 +106,54 @@ describe('HttpCacheInterceptor', () => {
         )
       )
     };
-    const queueSpy = spyOn((httpCacheInterceptor as any).httpCacheManager.queue, 'delete').and.callThrough();
+    const queueSpy = jest.spyOn((httpCacheInterceptor as any).httpCacheManager.queue, 'delete');
 
     httpCacheInterceptor
-      .intercept(request({ cache$: true }), handler)
+      .intercept(request({ cache: true }), handler)
       .pipe(
         catchError(error => {
           return EMPTY;
         })
       )
       .subscribe();
-    tick(frame);
+    jest.advanceTimersByTime(frame);
 
     expect(queueSpy).toHaveBeenCalledTimes(1);
-  }));
+  });
 
-  it('should refetch after ttl has passed', fakeAsync(() => {
-    call(request({ cache$: true }), 2, ttl + frame);
+  it('should refetch after ttl has passed', () => {
+    call(request({ cache: true }), 2, ttl + frame);
     expect(handler.handle).toHaveBeenCalledTimes(2);
-  }));
+  });
 
-  it('should not cache a request of same url and different params', fakeAsync(() => {
-    call(request({ cache$: true, paramA: true }), 1);
-    call(request({ cache$: true, paramA: false }), 1);
+  it('should not cache a request of same url and different params', () => {
+    call(request({ cache: true }), 1);
+    call(request({ cache: true }, { params: { paramA: false } }), 1);
     expect(handler.handle).toHaveBeenCalledTimes(2);
-  }));
+  });
 
-  it('should cache a request of same url and same params', fakeAsync(() => {
-    call(request({ cache$: true, paramA: true }), 2);
+  it('should cache a request of same url and same params', () => {
+    call(request({ cache: true }, { params: { paramA: true } }), 2);
     expect(handler.handle).toHaveBeenCalledTimes(1);
-  }));
+  });
 
-  it('should cache a request of same url and same params in queue ', fakeAsync(() => {
-    call(request({ cache$: true, paramA: true }), 2, 0);
+  it('should cache a request of same url and same params in queue ', () => {
+    call(request({ cache: true }, { params: { paramA: true } }), 2, 0);
     expect(handler.handle).toHaveBeenCalledTimes(1);
-    tick(frame);
-  }));
+    jest.advanceTimersByTime(frame);
+  });
 
-  it('should fetch twice for different url', fakeAsync(() => {
-    call(request({ cache$: true }, 'GET', 'url1'), 1);
-    call(request({ cache$: true }, 'GET', 'url2'), 1);
-    tick(frame);
+  it('should fetch twice for different url', () => {
+    call(request({ cache: true }, {}, 'GET', 'url1'), 1);
+    call(request({ cache: true }, {}, 'GET', 'url2'), 1);
+    jest.advanceTimersByTime(frame);
     expect(handler.handle).toHaveBeenCalledTimes(2);
-  }));
+  });
 
-  it('should add a request to cacheBucket', fakeAsync(() => {
+  it('should add a request to cacheBucket', () => {
     const bucket = cacheBucket();
-    spyOn(bucket, 'add');
-    call(request({ cache$: true, bucket$: bucket, key$: 'foo' }), 1);
+    jest.spyOn(bucket, 'add');
+    call(request({ cache: true, bucket: bucket, key: 'foo' }), 1);
     expect(bucket.add).toHaveBeenCalledWith('foo');
-  }));
-
-  it('should use parameterCodec from request', fakeAsync(() => {
-    const testParam = 'te3/s-+d+_asd:';
-    const expectedParamString = new HttpParams({
-      encoder: new CustomHttpParamsCodec(),
-      fromObject: { testParam }
-    }).toString();
-
-    call(request({ cache$: true, testParam, parameterCodec$: new CustomHttpParamsCodec() }), 1);
-
-    const params = (handler.handle as jest.Mock).mock.calls[0][0].params;
-    expect(params.toString()).toBe(expectedParamString);
-  }));
-
-  it('should use default codec if neigher config nor request provides custom param codec', fakeAsync(() => {
-    const testParam = 'te3/s-+d+_asd:';
-    const expectedParamString = new HttpParams({ fromObject: { testParam } }).toString();
-
-    call(request({ cache$: true, testParam }), 1);
-
-    const params = (handler.handle as jest.Mock).mock.calls[0][0].params;
-    expect(params.toString()).toBe(expectedParamString);
-  }));
+  });
 });

@@ -1,11 +1,10 @@
-import { HttpResponse } from '@angular/common/http';
+import { HttpRequest, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
 import { HttpCacheStorage } from './httpCacheStorage';
 import { TTLManager } from './ttlManager';
 import { HttpCacheGuard } from './httpCacheGuard';
 import { RequestsQueue } from './requestsQueue';
-import { HttpCacheRequest } from './types';
 import { CacheBucket } from './cacheBucket';
 
 @Injectable()
@@ -21,9 +20,11 @@ export class HttpCacheManager {
   validate(key: string) {
     const has = this.storage.has(key);
     const isValid = this.ttlManager.isValid(key);
+
     if (has && isValid) return true;
 
     this.storage.delete(key);
+
     return false;
   }
 
@@ -65,8 +66,9 @@ export class HttpCacheManager {
     return this.queue;
   }
 
-  _isCacheable(canActivate: boolean, cache: any) {
+  _isCacheable(canActivate: boolean, cache: boolean) {
     const strategy = this.config.strategy;
+
     if (strategy === 'explicit') {
       return cache;
     }
@@ -83,7 +85,7 @@ export class HttpCacheManager {
     this.ttlManager.set(key, ttl);
   }
 
-  _canActivate(request: HttpCacheRequest) {
+  _canActivate(request: HttpRequest<any>) {
     return this.guard.canActivate(request);
   }
 

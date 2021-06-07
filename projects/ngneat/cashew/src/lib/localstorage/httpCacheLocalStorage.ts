@@ -20,11 +20,13 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
 
   get(key: string): HttpResponse<any> {
     const cacheValue = this.cache.get(key);
+
     if (cacheValue) {
       return cacheValue;
     }
 
     const value = getStorageCache(this.storageKey).get(key);
+
     if (value) {
       const response = new HttpResponse(value);
       this.cache.set(key, response);
@@ -53,6 +55,7 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
     if (typeof key === 'string') {
       storage.delete(key);
       setCacheInStorage(this.storageKey, storage);
+
       return;
     }
 

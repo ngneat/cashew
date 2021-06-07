@@ -16,6 +16,7 @@ export class LocalStorageTTLManager {
 
   isValid(key: string): boolean {
     const valid = this.ttl.isValid(key);
+
     if (valid) {
       return true;
     }
@@ -43,6 +44,7 @@ export class LocalStorageTTLManager {
 
     if (!key) {
       clearStorageCache(this.ttlStorageKey);
+
       return;
     }
 
@@ -50,6 +52,7 @@ export class LocalStorageTTLManager {
       const storage = getStorageCache(this.ttlStorageKey);
       storage.delete(key);
       setCacheInStorage(this.ttlStorageKey, storage);
+
       return;
     }
 

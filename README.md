@@ -141,66 +141,6 @@ HttpCacheInterceptorModule.forRoot({
 });
 ```
 
-#### `parameterCodec`
-
-Define the `HttpParameterCodec` implementation if you need a different parameter encoder.
-
-Example of custom implementation that uses `encodeURIComponent`:
-
-<!-- prettier-ignore -->
-```ts
-import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
-import { HttpParameterCodec } from '@angular/common/http';
-
-class CustomHttpParameterCodec implements HttpParameterCodec {
-  encodeKey(key: string): string {
-    return encodeURIComponent(key);
-  }
-  encodeValue(value: string): string {
-    return encodeURIComponent(value);
-  }
-  decodeKey(key: string): string {
-    return decodeURIComponent(key);
-  }
-  decodeValue(value: string): string {
-    return decodeURIComponent(value);
-  }
-}
-
-@NgModule({
-  imports: [
-    HttpClientModule,
-    HttpCacheInterceptorModule.forRoot({ parameterCodec: new CustomHttpParameterCodec() })
-  ],
-  providers: [useHttpCacheLocalStorage],
-  bootstrap: [AppComponent]
-})
-export class AppModule {}
-```
-
-or per request:
-
-```ts
-class CustomHttpParameterCodec implements HttpParameterCodec {
-  // ...
-}
-
-@Injectable()
-export class UsersService {
-  constructor(private http: HttpClient) {}
-
-  getUsers() {
-    return this.http.get(
-      'api/users',
-      withCache({
-        parameterCodec$: new CustomHttpParameterCodec(),
-        ...
-      })
-    );
-  }
-}
-```
-
 ## API
 
 ### WithCache
@@ -305,7 +245,7 @@ abstract class HttpCacheStorage {
 
 ```ts
 export abstract class KeySerializer {
-  abstract serialize(request: HttpCacheRequest): string;
+  abstract serialize(request: HttpRequest): string;
 }
 ```
 
@@ -313,7 +253,7 @@ export abstract class KeySerializer {
 
 ```ts
 export abstract class HttpCacheGuard {
-  abstract canActivate(request: HttpCacheRequest): boolean;
+  abstract canActivate(request: HttpCacheHttpRequestRequest): boolean;
 }
 ```
 

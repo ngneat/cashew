@@ -11,7 +11,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "types": [],
+    "esModuleInterop": true,
     "lib": ["dom", "es2018"]
   },
   "angularCompilerOptions": {

@@ -1,7 +1,7 @@
-import { fakeAsync, tick } from '@angular/core/testing';
-import { DefaultTTLManager } from '../ttlManager';
 import { config, localStorageMock } from './mocks.spec';
 import { LocalStorageTTLManager } from '../localstorage/localStorageTtlManager';
+
+jest.useFakeTimers();
 
 describe('localStorageTtlManager', () => {
   let ttlManager: LocalStorageTTLManager;
@@ -24,14 +24,14 @@ describe('localStorageTtlManager', () => {
       expect(ttlManager.isValid('key')).toBeTruthy();
     });
 
-    it('should not be valid after ttl is over', fakeAsync(() => {
+    it('should not be valid after ttl is over', () => {
       ttlManager.set('key', 1000);
-      tick(1001);
+      jest.advanceTimersByTime(1001);
       expect(ttlManager.isValid('key')).toBeFalsy();
-    }));
+    });
 
     it('should use the config ttl if non has been passed', () => {
-      spyOn(Date.prototype, 'setMilliseconds');
+      jest.spyOn(Date.prototype, 'setMilliseconds');
       ttlManager.set('key');
       expect(Date.prototype.setMilliseconds).toHaveBeenCalledWith(config.ttl);
     });
@@ -39,16 +39,16 @@ describe('localStorageTtlManager', () => {
 
   describe('delete', () => {
     it('should clear storage when call without a key', () => {
-      spyOn((ttlManager as any).ttl, 'delete');
-      spyOn(localStorage, 'removeItem');
+      jest.spyOn((ttlManager as any).ttl, 'delete');
+      jest.spyOn(localStorage, 'removeItem');
       ttlManager.delete();
       expect((ttlManager as any).ttl.delete).toHaveBeenCalled();
       expect(localStorage.removeItem).toHaveBeenCalled();
     });
 
     it('should call delete when given key', () => {
-      spyOn((ttlManager as any).ttl, 'delete');
-      spyOn(localStorage, 'setItem');
+      jest.spyOn((ttlManager as any).ttl, 'delete');
+      jest.spyOn(localStorage, 'setItem');
       ttlManager.delete('key');
       expect((ttlManager as any).ttl.delete).toHaveBeenCalled();
       expect(localStorage.setItem).toHaveBeenCalled();

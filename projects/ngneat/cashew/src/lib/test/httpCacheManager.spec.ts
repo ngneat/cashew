@@ -11,7 +11,7 @@ import {
   ttlManager as makeTTL,
   cacheBucket
 } from './mocks.spec';
-import Spy = jasmine.Spy;
+import SpyInstance = jest.SpyInstance;
 
 describe('HttpCacheManager', () => {
   let httpCache: HttpCacheManager;
@@ -34,34 +34,37 @@ describe('HttpCacheManager', () => {
   });
 
   describe('validate', () => {
-    let has: Spy;
-    let isValid: Spy;
-    let storageDelete: Spy;
+    let has: SpyInstance;
+    let isValid: SpyInstance;
+    let storageDelete: SpyInstance;
 
     beforeEach(() => {
-      has = spyOn(storage, 'has');
-      isValid = spyOn(ttlManager, 'isValid');
-      storageDelete = spyOn(storage, 'delete');
+      has = jest.spyOn(storage, 'has');
+      isValid = jest.spyOn(ttlManager, 'isValid');
+      storageDelete = jest.spyOn(storage, 'delete');
     });
 
     it('should return true when cache is valid', () => {
-      has.and.returnValue(true);
-      isValid.and.returnValue(true);
+      has.mockImplementation(() => true);
+      isValid.mockImplementation(() => true);
       expect(httpCache.validate('valid key')).toBeTruthy();
     });
+
     it('should return false when cache is invalid', () => {
-      has.and.returnValue(true);
-      isValid.and.returnValue(false);
+      has.mockImplementation(() => true);
+      isValid.mockImplementation(() => false);
       expect(httpCache.validate('invalid key')).toBeFalsy();
     });
+
     it('should return false when key is not exist', () => {
-      has.and.returnValue(false);
-      isValid.and.returnValue(true);
+      has.mockImplementation(() => false);
+      isValid.mockImplementation(() => true);
       expect(httpCache.validate('invalid key')).toBeFalsy();
     });
+
     it('should call delete from storage when key is valid', () => {
-      has.and.returnValue(false);
-      isValid.and.returnValue(false);
+      has.mockImplementation(() => false);
+      isValid.mockImplementation(() => false);
       httpCache.validate('valid key');
       expect(storage.delete).toHaveBeenCalledWith('valid key');
     });
@@ -70,13 +73,14 @@ describe('HttpCacheManager', () => {
   describe('add', () => {
     it('should add key to bucket', () => {
       const bucket = cacheBucket();
-      spyOn(bucket, 'add');
+      jest.spyOn(bucket, 'add');
       httpCache.set('key', {}, { bucket: bucket });
       expect(bucket.add).toHaveBeenCalledWith('key');
     });
+
     it('should set the key', () => {
-      spyOn(storage, 'set');
-      spyOn(ttlManager, 'set');
+      jest.spyOn(storage, 'set');
+      jest.spyOn(ttlManager, 'set');
       httpCache.set('key', {}, {});
       expect(storage.set).toHaveBeenCalled();
       expect(ttlManager.set).toHaveBeenCalled();
@@ -85,20 +89,22 @@ describe('HttpCacheManager', () => {
 
   describe('delete', () => {
     it('should delete the key from storage and ttl', () => {
-      spyOn(storage, 'delete');
-      spyOn(ttlManager, 'delete');
+      jest.spyOn(storage, 'delete');
+      jest.spyOn(ttlManager, 'delete');
       httpCache.delete('key');
       expect(storage.delete).toHaveBeenCalledWith('key');
       expect(ttlManager.delete).toHaveBeenCalledWith('key');
     });
+
     it('should clear a given cache bucket', () => {
       const bucket = cacheBucket();
-      spyOn(bucket, 'clear');
+      jest.spyOn(bucket, 'clear');
       httpCache.delete(bucket);
       expect(bucket.clear).toHaveBeenCalled();
     });
+
     it('should delete every key of the bucket', () => {
-      spyOn(httpCache, 'delete').and.callThrough();
+      jest.spyOn(httpCache, 'delete');
       const bucket = cacheBucket();
       bucket.add('a');
       bucket.add('b');
@@ -113,6 +119,7 @@ describe('HttpCacheManager', () => {
       httpCache.set('a', 'value');
       expect(httpCache.get('a').body).toBe('value');
     });
+
     it('should pass the cached value through the serializer', () => {
       const responseSerializer = jest.fn(v => 'serialized');
       const httpCache: any = new HttpCacheManager(queue, storage, guard, ttlManager, { ...config, responseSerializer });

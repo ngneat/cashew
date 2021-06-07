@@ -29,15 +29,17 @@ describe('httpCacheStorage', () => {
 
   describe('delete', () => {
     it('should clear storage when call without a key', () => {
-      spyOn((storage as any).cache, 'clear');
+      jest.spyOn((storage as any).cache, 'clear');
       storage.delete();
       expect((storage as any).cache.clear).toHaveBeenCalled();
     });
+
     it('should call delete when given key', () => {
-      spyOn((storage as any).cache, 'delete');
+      jest.spyOn((storage as any).cache, 'delete');
       storage.delete(existingKey);
       expect((storage as any).cache.delete).toHaveBeenCalled();
     });
+
     it('should delete by regex', () => {
       const key = 'aaa';
       storage.set(key, response);

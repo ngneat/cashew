@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CacheBucket, HttpCacheManager, withCache } from '@ngneat/cashew';
+import { CacheBucket, HttpCacheManager } from '@ngneat/cashew';
+import { withCache } from '../../../projects/ngneat/cashew/src/lib/cacheContext';
 
 @Component({
   selector: 'app-todos',
@@ -14,33 +15,33 @@ export class TodosComponent {
 
   getById(id: number) {
     this.http
-      .get(
-        'https://jsonplaceholder.typicode.com/todos',
-        withCache({
-          id,
-          bucket$: this.todosBucket
+      .get('https://jsonplaceholder.typicode.com/todos', {
+        params: { id },
+        context: withCache({
+          bucket: this.todosBucket
         })
-      )
+      })
       .subscribe(res => {
         console.log(`Todo ${id}`, res);
       });
   }
 
   loadTodos() {
-    this.http.get('https://jsonplaceholder.typicode.com/todos', withCache()).subscribe(res => {
-      console.log(`Todos`, res);
-    });
+    this.http
+      .get('https://jsonplaceholder.typicode.com/todos', {
+        context: withCache()
+      })
+      .subscribe(res => {
+        console.log(`Todos`, res);
+      });
   }
 
   loadTodoFour() {
     this.http
-      .get(
-        'https://jsonplaceholder.typicode.com/todos',
-        withCache({
-          id: 4,
-          ttl$: 10000
-        })
-      )
+      .get('https://jsonplaceholder.typicode.com/todos', {
+        params: { id: 4 },
+        context: withCache({ ttl: 10000 })
+      })
       .subscribe(res => {
         console.log(`Todo 4`, res);
       });
@@ -48,12 +49,11 @@ export class TodosComponent {
 
   loadCustomKey() {
     this.http
-      .get(
-        'https://jsonplaceholder.typicode.com/todos',
-        withCache({
-          key$: 'allTodos'
+      .get('https://jsonplaceholder.typicode.com/todos', {
+        context: withCache({
+          key: 'allTodos'
         })
-      )
+      })
       .subscribe(res => {
         console.log(`allTodos`, res);
       });

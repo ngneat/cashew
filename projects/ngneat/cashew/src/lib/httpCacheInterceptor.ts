@@ -5,9 +5,8 @@ import { finalize, share, tap } from 'rxjs/operators';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
 
 import { HttpCacheManager } from './httpCacheManager.service';
-import { cloneWithoutParams } from './cloneWithoutParams';
 import { KeySerializer } from './keySerializer';
-import { CacheBucket } from './cacheBucket';
+import { CACHE_CONTEXT } from './cacheContext';
 
 @Injectable()
 export class HttpCacheInterceptor implements HttpInterceptor {
@@ -18,22 +17,21 @@ export class HttpCacheInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const context = request.context.get(CACHE_CONTEXT);
+
+    if (context === undefined) {
+      return next.handle(request);
+    }
+
+    const { cache, ttl, bucket } = context;
+
     const canActivate = this.httpCacheManager._canActivate(request);
-    const cache = request.params.get('cache$');
-    const ttl = request.params.get('ttl$');
-    const customKey = request.params.get('key$');
-    const bucket: any = request.params.get('bucket$');
-
-    const localParameterCodec: any = request.params.get('parameterCodec$');
-    const globalParameterCodec = this.config.parameterCodec;
-    const parameterCodec = localParameterCodec || globalParameterCodec;
-
-    const clone = cloneWithoutParams(request, customKey, parameterCodec);
-    const key = this.keySerializer.serialize(clone);
-    const queue = this.httpCacheManager._getQueue();
 
     if (this.httpCacheManager._isCacheable(canActivate, cache)) {
-      bucket && (bucket as CacheBucket).add(key);
+      const queue = this.httpCacheManager._getQueue();
+      const key = this.keySerializer.serialize(request, context);
+
+      bucket && bucket.add(key);
 
       if (queue.has(key)) {
         return queue.get(key);
@@ -42,16 +40,15 @@ export class HttpCacheInterceptor implements HttpInterceptor {
       if (this.httpCacheManager.validate(key)) {
         return of(this.httpCacheManager.get(key));
       }
-      const shared = next.handle(clone).pipe(
+
+      const shared = next.handle(request).pipe(
         tap(event => {
           if (event instanceof HttpResponse) {
             const cache = this.httpCacheManager._resolveResponse(event);
             this.httpCacheManager._set(key, cache, +ttl);
           }
         }),
-        finalize(() => {
-          queue.delete(key);
-        }),
+        finalize(() => queue.delete(key)),
         share()
       );
 
@@ -60,6 +57,6 @@ export class HttpCacheInterceptor implements HttpInterceptor {
       return shared;
     }
 
-    return next.handle(clone);
+    return next.handle(request);
   }
 }
