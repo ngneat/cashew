@@ -25,11 +25,7 @@
 
 A flexible and straightforward library that caches HTTP requests in Angular
 
-<a href="https://www.buymeacoffee.com/basalnetanel" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
-
 ## Installation
-
-#### NPM
 
 ```shell script
 $ npm install @ngneat/cashew
@@ -72,7 +68,7 @@ It's as simple as that.
 
 ## Local Storage
 
-By default caching is done to app memory. To switch to using local storage instead simply add:
+By default, caching is done to app memory. To switch to using local storage instead simply add:
 
 ```ts
 import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
@@ -186,7 +182,7 @@ or per request:
 
 ```ts
 class CustomHttpParameterCodec implements HttpParameterCodec {
-  ...
+  // ...
 }
 
 @Injectable()
@@ -297,7 +293,7 @@ Now when we call the `invalidateTodos` method, it'll automatically delete all th
 - `HttpCacheStorage` - The storage to use: (defaults to in-memory storage)
 
 ```ts
-class HttpCacheStorage {
+abstract class HttpCacheStorage {
   abstract has(key: string): boolean;
   abstract get(key: string): HttpResponse<any>;
   abstract set(key: string, response: HttpResponse<any>): void;
@@ -335,7 +331,7 @@ abstract class TTLManager {
 
 ## Contributors ✨
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
