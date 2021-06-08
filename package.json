@@ -3,15 +3,12 @@
   "scripts": {
     "release": "cd projects/ngneat/cashew && standard-version --infile ../../../CHANGELOG.md",
     "contributors:add": "all-contributors add",
-    "hooks:pre-commit": "node hooks/pre-commit.js",
-    "build": "ng build",
-    "build:lib": "ng build @ngneat/cashew && npm run copy-readme",
+    "build": "ng build --config production",
+    "build:lib": "ng build @ngneat/cashew --config production && npm run copy-readme",
     "start": "ng serve",
-    "e2e": "ng e2e",
     "test": "npm run test:lib",
     "test:lib": "npm run test --prefix projects/ngneat/cashew",
     "test:lib:watch": "npm run test:watch --prefix projects/ngneat/cashew",
-    "test:headless": "cross-env CI=true npm run test:lib",
     "ng": "ng",
     "lint": "ng lint",
     "commit": "git-cz",
@@ -66,8 +63,7 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -e $GIT_PARAMS",
-      "pre-commit": "npm run hooks:pre-commit && lint-staged",
-      "pre-push": "npm run test:headless"
+      "pre-commit": "lint-staged"
     }
   },
   "config": {
