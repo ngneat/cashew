@@ -1,5 +1,5 @@
 import { DefaultTTLManager, TTLManager } from '../ttlManager';
-import { config } from './mocks.spec';
+import { config } from './mocks';
 
 jest.useFakeTimers();
 

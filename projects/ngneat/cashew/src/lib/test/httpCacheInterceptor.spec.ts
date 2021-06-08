@@ -2,7 +2,7 @@ import { HttpHandler, HttpResponse } from '@angular/common/http';
 import { EMPTY, throwError, timer } from 'rxjs';
 import { catchError, mapTo, mergeMap } from 'rxjs/operators';
 import { HttpCacheInterceptor } from '../httpCacheInterceptor';
-import { cacheBucket, config, frame, httpCacheManager, httpRequest, keySerializer, ttl } from './mocks.spec';
+import { cacheBucket, config, frame, httpCacheManager, httpRequest, keySerializer, ttl } from './mocks';
 import { ContextOptions, withCache } from '../cacheContext';
 
 jest.useFakeTimers();

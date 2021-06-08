@@ -1,4 +1,4 @@
-import { config, localStorageMock } from './mocks.spec';
+import { config, localStorageMock } from './mocks';
 import { LocalStorageTTLManager } from '../localstorage/localStorageTtlManager';
 
 jest.useFakeTimers();

@@ -1,0 +1,9 @@
+export function deleteByRegex(pattern, cache) {
+    for (const [key] of Array.from(cache)) {
+        if (pattern.test(key)) {
+            cache.delete(key);
+            break;
+        }
+    }
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZGVsZXRlQnlSZWdleC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL25nbmVhdC9jYXNoZXcvc3JjL2xpYi9kZWxldGVCeVJlZ2V4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLE1BQU0sVUFBVSxhQUFhLENBQUMsT0FBZSxFQUFFLEtBQW9CO0lBQ2pFLEtBQUssTUFBTSxDQUFDLEdBQUcsQ0FBQyxJQUFJLEtBQUssQ0FBQyxJQUFJLENBQUMsS0FBSyxDQUFDLEVBQUU7UUFDckMsSUFBSyxPQUFrQixDQUFDLElBQUksQ0FBQyxHQUFHLENBQUMsRUFBRTtZQUNqQyxLQUFLLENBQUMsTUFBTSxDQUFDLEdBQUcsQ0FBQyxDQUFDO1lBQ2xCLE1BQU07U0FDUDtLQUNGO0FBQ0gsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBmdW5jdGlvbiBkZWxldGVCeVJlZ2V4KHBhdHRlcm46IFJlZ0V4cCwgY2FjaGU6IE1hcDxhbnksIGFueT4pIHtcbiAgZm9yIChjb25zdCBba2V5XSBvZiBBcnJheS5mcm9tKGNhY2hlKSkge1xuICAgIGlmICgocGF0dGVybiBhcyBSZWdFeHApLnRlc3Qoa2V5KSkge1xuICAgICAgY2FjaGUuZGVsZXRlKGtleSk7XG4gICAgICBicmVhaztcbiAgICB9XG4gIH1cbn1cbiJdfQ==

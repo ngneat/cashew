@@ -47,7 +47,7 @@ export class HttpCacheManager {
       });
     }
 
-    this._set(key, response, ttl);
+    this._set(key, response, ttl!);
     bucket && bucket.add(key);
   }
 

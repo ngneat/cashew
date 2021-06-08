@@ -1,5 +1,5 @@
-import { CacheBucket } from '@ngneat/cashew';
 import { HttpContext, HttpContextToken } from '@angular/common/http';
+import { CacheBucket } from './cacheBucket';
 
 export interface ContextOptions {
   cache?: boolean;

@@ -27,7 +27,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
 
     const canActivate = this.httpCacheManager._canActivate(request);
 
-    if (this.httpCacheManager._isCacheable(canActivate, cache)) {
+    if (this.httpCacheManager._isCacheable(canActivate, Boolean(cache))) {
       const queue = this.httpCacheManager._getQueue();
       const key = this.keySerializer.serialize(request, context);
 
@@ -45,7 +45,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
         tap(event => {
           if (event instanceof HttpResponse) {
             const cache = this.httpCacheManager._resolveResponse(event);
-            this.httpCacheManager._set(key, cache, +ttl);
+            this.httpCacheManager._set(key, cache, +ttl!);
           }
         }),
         finalize(() => queue.delete(key)),

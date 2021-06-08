@@ -15,7 +15,7 @@ export class DefaultTTLManager {
   constructor(@Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig) {}
 
   isValid(key: string): boolean {
-    return this.cache.get(key) > new Date().getTime();
+    return this.cache.get(key)! > new Date().getTime();
   }
 
   set(key: string, ttl?: number): void {

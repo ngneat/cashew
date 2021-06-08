@@ -18,5 +18,5 @@ function mapToObj(map: Map<any, any>) {
   return Array.from(map).reduce((obj, [key, value]) => {
     obj[key] = value;
     return obj;
-  }, {});
+  }, {} as Record<any, any>);
 }

@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "../../../out-tsc/spec",
     "types": ["jest", "node"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strict": false
   },
   "files": ["setupJest.ts"],
   "include": ["**/*.spec.ts"]

@@ -18,7 +18,7 @@ export class DefaultHttpCacheStorage implements HttpCacheStorage {
   }
 
   get(key: string) {
-    return this.cache.get(key);
+    return this.cache.get(key)!;
   }
 
   set(key: string, response: HttpResponse<any>): void {

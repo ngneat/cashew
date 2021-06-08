@@ -10,7 +10,7 @@ import {
   httpCacheGuard,
   ttlManager as makeTTL,
   cacheBucket
-} from './mocks.spec';
+} from './mocks';
 import SpyInstance = jest.SpyInstance;
 
 describe('HttpCacheManager', () => {
