@@ -34,7 +34,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
       bucket && bucket.add(key);
 
       if (queue.has(key)) {
-        return queue.get(key);
+        return queue.get(key)!;
       }
 
       if (this.httpCacheManager.validate(key)) {
