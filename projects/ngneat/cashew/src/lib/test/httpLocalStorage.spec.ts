@@ -54,12 +54,5 @@ describe('httpCacheLocalStorage', () => {
       expect(localStorage.setItem).toHaveBeenCalled();
     });
 
-    it('should delete by regex', () => {
-      const key = 'aaa';
-      storage.set(key, response);
-      const regex = new RegExp('aa');
-      storage.delete(regex);
-      expect(storage.has(key)).toBeFalsy();
-    });
   });
 });

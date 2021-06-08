@@ -1,5 +1,5 @@
 import { config, localStorageMock } from './mocks';
-import { LocalStorageTTLManager } from '../localstorage/localStorageTtlManager';
+import { LocalStorageTTLManager } from '../localstorage/localStorageTTLManager';
 
 jest.useFakeTimers();
 
@@ -52,14 +52,6 @@ describe('localStorageTtlManager', () => {
       ttlManager.delete('key');
       expect((ttlManager as any).ttl.delete).toHaveBeenCalled();
       expect(localStorage.setItem).toHaveBeenCalled();
-    });
-
-    it('should delete by regex', () => {
-      const key = 'aaa';
-      ttlManager.set(key, ttl);
-      const regex = new RegExp('aa');
-      ttlManager.delete(regex);
-      expect(ttlManager.isValid(key)).toBeFalsy();
     });
   });
 });

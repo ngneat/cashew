@@ -157,6 +157,11 @@ describe('HttpCacheInterceptor', () => {
     expect(bucket.add).toHaveBeenCalledWith('foo');
   });
 
+  it('should allow callback for a key', () => {
+    call(request({ cache: true, key: req => req.url }), 1);
+    expect(handler.handle).toHaveBeenCalledTimes(1);
+  });
+
   describe('clearCachePredicate', () => {
 
     it('should NOT clear the cache when return false', () => {

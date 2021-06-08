@@ -1,7 +1,7 @@
 import { TTLManager } from '../ttlManager';
 import { HttpCacheStorage } from '../httpCacheStorage';
 import { HttpCacheLocalStorage } from './httpCacheLocalStorage';
-import { LocalStorageTTLManager } from './localStorageTtlManager';
+import { LocalStorageTTLManager } from './localStorageTTLManager';
 
 export const useHttpCacheLocalStorage = [
   { provide: HttpCacheStorage, useClass: HttpCacheLocalStorage },

@@ -72,7 +72,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
             this.httpCacheManager._set(key, cache, +ttl!);
           }
         }),
-        finalize(() => queue.remove(key)),
+        finalize(() => queue.delete(key)),
         share()
       );
 

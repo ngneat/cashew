@@ -177,7 +177,7 @@ The `CacheManager` provider, exposes an API to update and query the cache regist
 - `get<T>(key: string): HttpResponse<T>` - Get the `HttpResponse` from the cache
 - `has(key: string)` - Returns a `boolean` indicates whether the provided `key` exists in the cache
 - `set(key: string, body: any, { ttl, bucket })` - Set manually a new entry in the cache
-- `delete(key: string | RegExp | CacheBucket)` - Delete from the cache
+- `delete(key: string | CacheBucket)` - Delete from the cache
 
 ### CacheBucket
 
@@ -220,7 +220,7 @@ abstract class HttpCacheStorage {
   abstract has(key: string): boolean;
   abstract get(key: string): HttpResponse<any>;
   abstract set(key: string, response: HttpResponse<any>): void;
-  abstract delete(key?: string | RegExp): void;
+  abstract delete(key?: string): void;
 }
 ```
 
@@ -248,7 +248,7 @@ It defaults to `request.method === 'GET' && request.responseType === 'json'`.
 abstract class TTLManager {
   abstract isValid(key: string): boolean;
   abstract set(key: string, ttl?: number): void;
-  abstract delete(key?: string | RegExp): void;
+  abstract delete(key?: string): void;
 }
 ```
 

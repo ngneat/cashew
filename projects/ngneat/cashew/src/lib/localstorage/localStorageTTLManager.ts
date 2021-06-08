@@ -1,11 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from '../httpCacheConfig';
-import { DefaultTTLManager } from '../ttlManager';
-import { deleteByRegex } from '../deleteByRegex';
-import { setCacheInStorage, getStorageCache, clearStorageCache } from './localstorage';
+import { DefaultTTLManager, TTLManager } from '../ttlManager';
+import { clearStorageCache, getStorageCache, setCacheInStorage } from './localstorage';
 
 @Injectable()
-export class LocalStorageTTLManager {
+export class LocalStorageTTLManager implements TTLManager {
   private readonly ttl: DefaultTTLManager;
   private readonly ttlStorageKey: string;
 
@@ -17,14 +16,14 @@ export class LocalStorageTTLManager {
   isValid(key: string): boolean {
     const valid = this.ttl.isValid(key);
 
-    if (valid) {
+    if(valid) {
       return true;
     }
 
     const localStorageTimeStamp = getStorageCache(this.ttlStorageKey).get(key);
     const validInStorage = localStorageTimeStamp > new Date().getTime();
 
-    if (validInStorage) {
+    if(validInStorage) {
       this.ttl.set(key, localStorageTimeStamp - new Date().getTime());
     }
 
@@ -39,25 +38,17 @@ export class LocalStorageTTLManager {
     this.ttl.set(key, resolveTTL);
   }
 
-  delete(key?: string | RegExp) {
+  delete(key?: string) {
     this.ttl.delete(key);
 
-    if (!key) {
+    if(!key) {
       clearStorageCache(this.ttlStorageKey);
 
       return;
     }
 
-    if (typeof key === 'string') {
-      const storage = getStorageCache(this.ttlStorageKey);
-      storage.delete(key);
-      setCacheInStorage(this.ttlStorageKey, storage);
-
-      return;
-    }
-
     const storage = getStorageCache(this.ttlStorageKey);
-    deleteByRegex(key as RegExp, storage);
+    storage.delete(key);
     setCacheInStorage(this.ttlStorageKey, storage);
   }
 }

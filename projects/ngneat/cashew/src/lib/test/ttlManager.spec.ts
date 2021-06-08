@@ -49,12 +49,5 @@ describe('ttlManager', () => {
       expect((ttlManager as any).cache.delete).toHaveBeenCalled();
     });
 
-    it('should delete by regex', () => {
-      const key = 'aaa';
-      ttlManager.set(key, ttl);
-      const regex = new RegExp('aa');
-      ttlManager.delete(regex);
-      expect(ttlManager.isValid(key)).toBeFalsy();
-    });
   });
 });

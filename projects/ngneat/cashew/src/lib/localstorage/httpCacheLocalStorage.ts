@@ -1,9 +1,8 @@
 import { HttpResponse } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { deleteByRegex } from '../deleteByRegex';
 import { DefaultHttpCacheStorage, HttpCacheStorage } from '../httpCacheStorage';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from '../httpCacheConfig';
-import { setCacheInStorage, getStorageCache, clearStorageCache } from './localstorage';
+import { clearStorageCache, getStorageCache, setCacheInStorage } from './localstorage';
 
 @Injectable()
 export class HttpCacheLocalStorage implements HttpCacheStorage {
@@ -21,13 +20,13 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
   get(key: string): HttpResponse<any> {
     const cacheValue = this.cache.get(key);
 
-    if (cacheValue) {
+    if(cacheValue) {
       return cacheValue;
     }
 
     const value = getStorageCache(this.storageKey).get(key);
 
-    if (value) {
+    if(value) {
       const response = new HttpResponse(value);
       this.cache.set(key, response);
     }
@@ -42,24 +41,18 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
     this.cache.set(key, response);
   }
 
-  delete(key?: string | RegExp): void {
+  delete(key?: string): void {
     this.cache.delete(key);
 
-    if (!key) {
+    if(!key) {
       clearStorageCache(this.storageKey);
       return;
     }
 
     const storage = getStorageCache(this.storageKey);
 
-    if (typeof key === 'string') {
-      storage.delete(key);
-      setCacheInStorage(this.storageKey, storage);
-
-      return;
-    }
-
-    deleteByRegex(key as RegExp, storage);
+    storage.delete(key);
     setCacheInStorage(this.storageKey, storage);
+
   }
 }

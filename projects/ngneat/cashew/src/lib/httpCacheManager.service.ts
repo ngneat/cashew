@@ -54,7 +54,7 @@ export class HttpCacheManager {
     bucket && bucket.add(key);
   }
 
-  delete(key?: string | RegExp | CacheBucket): void {
+  delete(key?: string | CacheBucket): void {
     if(key instanceof CacheBucket) {
       key.forEach(value => this.delete(value));
       key.clear();
@@ -63,7 +63,7 @@ export class HttpCacheManager {
 
     this.storage.delete(key);
     this.ttlManager.delete(key);
-    this.queue.remove(key);
+    this.queue.delete(key!);
   }
 
   _getQueue(): RequestsQueue {

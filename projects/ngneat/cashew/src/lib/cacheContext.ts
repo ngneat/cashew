@@ -4,7 +4,7 @@ import { CacheBucket } from './cacheBucket';
 export interface ContextOptions {
   cache?: boolean;
   ttl?: number;
-  key?: string;
+  key?: string | ((request: HttpRequest<any>) => string);
   bucket?: CacheBucket;
 
   clearCachePredicate?<T>(currentRequest: HttpRequest<T> | undefined, nextRequest: HttpRequest<T>): boolean;

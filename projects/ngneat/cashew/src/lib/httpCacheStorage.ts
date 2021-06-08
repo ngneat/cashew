@@ -1,12 +1,14 @@
 import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { deleteByRegex } from './deleteByRegex';
 
 export abstract class HttpCacheStorage {
   abstract has(key: string): boolean;
+
   abstract get(key: string): HttpResponse<any>;
+
   abstract set(key: string, response: HttpResponse<any>): void;
-  abstract delete(key?: string | RegExp): void;
+
+  abstract delete(key?: string): void;
 }
 
 @Injectable()
@@ -25,17 +27,13 @@ export class DefaultHttpCacheStorage implements HttpCacheStorage {
     this.cache.set(key, response);
   }
 
-  delete(key?: string | RegExp): void {
-    if (!key) {
+  delete(key?: string): void {
+    if(!key) {
       this.cache.clear();
       return;
     }
 
-    if (typeof key === 'string') {
-      this.cache.delete(key as string);
-      return;
-    }
+    this.cache.delete(key as string);
 
-    deleteByRegex(key as RegExp, this.cache);
   }
 }

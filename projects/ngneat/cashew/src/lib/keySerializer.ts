@@ -7,6 +7,12 @@ export abstract class KeySerializer {
 
 export class DefaultKeySerializer extends KeySerializer {
   serialize(request: HttpRequest<any>, context: ContextOptions) {
-    return context.key ?? request.urlWithParams;
+    const { key } = context;
+
+    if(key) {
+      return typeof key === 'function' ? key(request) : key;
+    }
+
+    return request.urlWithParams;
   }
 }
