@@ -7,6 +7,7 @@ import { DefaultHttpCacheStorage } from '../httpCacheStorage';
 import { DefaultKeySerializer } from '../keySerializer';
 import { RequestsQueue } from '../requestsQueue';
 import { DefaultTTLManager } from '../ttlManager';
+import { RequestsCache } from '../requestsCache';
 
 export const frame = 1000;
 export const config = defaultConfig;
@@ -22,7 +23,7 @@ export const httpCacheGuard = () => new DefaultHttpCacheGuard();
 export const ttlManager = (conf = config) => new DefaultTTLManager(conf);
 export const keySerializer = () => new DefaultKeySerializer();
 export const httpCacheManager = (conf = config) =>
-  new HttpCacheManager(requestQueue(), httpCacheStorage(), httpCacheGuard(), ttlManager(conf), conf);
+  new HttpCacheManager(requestQueue(), httpCacheStorage(), httpCacheGuard(), ttlManager(conf), new RequestsCache(), conf);
 
 export function localStorageMock() {
   const localStorageMock = (function () {

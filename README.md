@@ -47,7 +47,7 @@ import { HttpCacheInterceptorModule } from '@ngneat/cashew';
 export class AppModule {}
 ```
 
-And you're done! Now, when using Angular `HttpClient`, you can call the `withCache` function, and it'll cache the response:
+And you're done! Now, when using Angular `HttpClient`, you can pass the `withCache` function as context, and it'll cache the response:
 
 ```ts
 import { HttpClient } from '@angular/common/http';
@@ -59,7 +59,9 @@ export class UsersService {
   constructor(private http: HttpClient) {}
 
   getUsers() {
-    return this.http.get('api/users', withCache());
+    return this.http.get('api/users', {
+      context: withCache()
+    });
   }
 }
 ```
@@ -86,9 +88,6 @@ To your `AppModule` providers list. Note that `ttl` will also be calculated via 
 ## Config Options
 
 Using the library, you might need to change the default behavior of the caching mechanism. You could do that by passing a configuration (a partial `HttpCacheConfig` object) to the static `forRoot` method of the `HttpCacheInterceptorModule` module.
-
-
-**Important note:** View Engine users - instead of adding the config to the `forRoot()` method, add it in the app module providers in the following manner, using the supplied `cashewConfig()` method: 
 
 ```ts
 { provide: HTTP_CACHE_CONFIG, useValue: cashewConfig(config) }
@@ -147,10 +146,10 @@ HttpCacheInterceptorModule.forRoot({
 
 Currently, there is no way in Angular to pass `metadata` to an interceptor. The `withCache` function uses the `params` object to pass the `config` and removes it afterward in the interceptor. The function receives four optional params that are postfixed with a `$` sign so it'll not conflicts with others:
 
-- `cache$` - Whether to cache the request (defaults to `true`)
-- `ttl$` - TTL that will override the global
-- `key$` - Custom key. (defaults to the request URL including any query params)
-- `bucket$` - The [bucket](#cachebucket) in which we save the keys
+- `cache` - Whether to cache the request (defaults to `true`)
+- `ttl` - TTL that will override the global
+- `key` - Custom key. (defaults to the request URL including any query params)
+- `bucket` - The [bucket](#cachebucket) in which we save the keys
 
 ```ts
 @Injectable()
@@ -160,30 +159,12 @@ export class UsersService {
   getUsers() {
     return this.http.get(
       'api/users',
-      withCache({
-        withCache$: false,
-        ttl$: 40000,
-        key$: 'yourkey'
-      })
-    );
-  }
-}
-```
-
-In addition to that, you can pass any query parameter that you need:
-
-```ts
-@Injectable()
-export class UsersService {
-  constructor(private http: HttpClient) {}
-
-  getUser(id) {
-    return this.http.get(
-      'api/users',
-      withCache({
-        id,
-        ttl$: 40000
-      })
+      { 
+        context: withCache({
+          withCache: false,
+          ttl: 40000,
+          key: 'yourkey'
+      })}
     );
   }
 }
@@ -214,9 +195,11 @@ export class TodosService {
   getTodo(id) {
     return this.http.get(
       `todos/${id}`,
-      withCache({
-        bucket$: this.todosBucket
-      })
+      {
+        context: withCache({
+          bucket: this.todosBucket
+        })
+      }
     );
   }
 

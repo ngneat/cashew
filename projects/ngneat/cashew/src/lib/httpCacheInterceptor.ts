@@ -23,21 +23,45 @@ export class HttpCacheInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    const { cache, ttl, bucket } = context;
+    const key = this.keySerializer.serialize(request, context);
+    const { cache, ttl, bucket, clearCachePredicate } = context;
+
+    if(key && clearCachePredicate) {
+      const requests = this.httpCacheManager._getRequests();
+      const clearCache = clearCachePredicate(requests.get(key)!, requests.set(key, request).get(key)!);
+
+      if(clearCache) {
+        this.httpCacheManager.delete(key);
+
+        // @ts-ignore
+        if(process.env.NODE_ENV === 'development') {
+          console.log(`%c clearCachePredicate is true for key: ${key}`, 'background: #add8e6; color: #3e3c3c; padding: 5px');
+        }
+      }
+    }
 
     const canActivate = this.httpCacheManager._canActivate(request);
 
     if (this.httpCacheManager._isCacheable(canActivate, Boolean(cache))) {
       const queue = this.httpCacheManager._getQueue();
-      const key = this.keySerializer.serialize(request, context);
 
       bucket && bucket.add(key);
 
       if (queue.has(key)) {
+        // @ts-ignore
+        if(process.env.NODE_ENV === 'development') {
+          console.log(`%c ${key} was returned from the queue`, 'background: #add8e6; color: #3e3c3c; padding: 5px');
+        }
+
         return queue.get(key)!;
       }
 
       if (this.httpCacheManager.validate(key)) {
+        // @ts-ignore
+        if(process.env.NODE_ENV === 'development') {
+          console.log(`%c ${key} was returned from the cache`, 'background: #add8e6; color: #3e3c3c; padding: 5px');
+        }
+
         return of(this.httpCacheManager.get(key));
       }
 
@@ -48,7 +72,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
             this.httpCacheManager._set(key, cache, +ttl!);
           }
         }),
-        finalize(() => queue.delete(key)),
+        finalize(() => queue.remove(key)),
         share()
       );
 

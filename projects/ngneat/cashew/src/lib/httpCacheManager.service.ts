@@ -6,6 +6,7 @@ import { TTLManager } from './ttlManager';
 import { HttpCacheGuard } from './httpCacheGuard';
 import { RequestsQueue } from './requestsQueue';
 import { CacheBucket } from './cacheBucket';
+import { RequestsCache } from './requestsCache';
 
 @Injectable()
 export class HttpCacheManager {
@@ -14,14 +15,16 @@ export class HttpCacheManager {
     private storage: HttpCacheStorage,
     private guard: HttpCacheGuard,
     private ttlManager: TTLManager,
+    private requests: RequestsCache,
     @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
-  ) {}
+  ) {
+  }
 
   validate(key: string) {
     const has = this.storage.has(key);
     const isValid = this.ttlManager.isValid(key);
 
-    if (has && isValid) return true;
+    if(has && isValid) return true;
 
     this.storage.delete(key);
 
@@ -39,7 +42,7 @@ export class HttpCacheManager {
   set(key: string, body: HttpResponse<any> | any, { ttl, bucket }: { ttl?: number; bucket?: CacheBucket } = {}) {
     let response = body;
 
-    if (!(body instanceof HttpResponse)) {
+    if(!(body instanceof HttpResponse)) {
       response = new HttpResponse({
         body,
         status: 200,
@@ -52,7 +55,7 @@ export class HttpCacheManager {
   }
 
   delete(key?: string | RegExp | CacheBucket): void {
-    if (key instanceof CacheBucket) {
+    if(key instanceof CacheBucket) {
       key.forEach(value => this.delete(value));
       key.clear();
       return;
@@ -60,20 +63,25 @@ export class HttpCacheManager {
 
     this.storage.delete(key);
     this.ttlManager.delete(key);
+    this.queue.remove(key);
   }
 
   _getQueue(): RequestsQueue {
     return this.queue;
   }
 
+  _getRequests(): RequestsCache {
+    return this.requests;
+  }
+
   _isCacheable(canActivate: boolean, cache: boolean) {
     const strategy = this.config.strategy;
 
-    if (strategy === 'explicit') {
+    if(strategy === 'explicit') {
       return cache;
     }
 
-    if (canActivate && strategy === 'implicit') {
+    if(canActivate && strategy === 'implicit') {
       return cache !== false;
     }
 

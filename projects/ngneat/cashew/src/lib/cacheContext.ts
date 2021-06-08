@@ -1,4 +1,4 @@
-import { HttpContext, HttpContextToken } from '@angular/common/http';
+import { HttpContext, HttpContextToken, HttpRequest } from '@angular/common/http';
 import { CacheBucket } from './cacheBucket';
 
 export interface ContextOptions {
@@ -6,6 +6,8 @@ export interface ContextOptions {
   ttl?: number;
   key?: string;
   bucket?: CacheBucket;
+
+  clearCachePredicate?<T>(currentRequest: HttpRequest<T> | undefined, nextRequest: HttpRequest<T>): boolean;
 }
 
 export const CACHE_CONTEXT = new HttpContextToken<ContextOptions | undefined>(() => undefined);

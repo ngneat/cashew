@@ -8,6 +8,7 @@ import { HttpCacheManager } from './httpCacheManager.service';
 import { DefaultTTLManager, TTLManager } from './ttlManager';
 import { DefaultHttpCacheGuard, HttpCacheGuard } from './httpCacheGuard';
 import { RequestsQueue } from './requestsQueue';
+import { RequestsCache } from './requestsCache';
 
 @NgModule({})
 export class HttpCacheInterceptorModule {
@@ -21,7 +22,8 @@ export class HttpCacheInterceptorModule {
         { provide: HttpCacheGuard, useClass: DefaultHttpCacheGuard },
         { provide: HTTP_INTERCEPTORS, useClass: HttpCacheInterceptor, multi: true },
         HttpCacheManager,
-        RequestsQueue
+        RequestsQueue,
+        RequestsCache
       ],
       ngModule: HttpCacheInterceptorModule
     };

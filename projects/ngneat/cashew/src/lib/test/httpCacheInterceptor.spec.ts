@@ -1,4 +1,4 @@
-import { HttpHandler, HttpResponse } from '@angular/common/http';
+import { HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
 import { EMPTY, throwError, timer } from 'rxjs';
 import { catchError, mapTo, mergeMap } from 'rxjs/operators';
 import { HttpCacheInterceptor } from '../httpCacheInterceptor';
@@ -20,7 +20,7 @@ describe('HttpCacheInterceptor', () => {
   });
 
   const call = (req, times = 2, delay = frame) => {
-    for (let i = 0; i < times; i++) {
+    for(let i = 0; i < times; i++) {
       httpCacheInterceptor.intercept(req, handler).subscribe();
       jest.advanceTimersByTime(delay);
     }
@@ -156,4 +156,30 @@ describe('HttpCacheInterceptor', () => {
     call(request({ cache: true, bucket: bucket, key: 'foo' }), 1);
     expect(bucket.add).toHaveBeenCalledWith('foo');
   });
+
+  describe('clearCachePredicate', () => {
+
+    it('should NOT clear the cache when return false', () => {
+      call(request({
+        clearCachePredicate<T>(currentRequest: HttpRequest<T>, nextRequest: HttpRequest<T>): boolean {
+          expect(nextRequest).toBeInstanceOf(HttpRequest);
+          return false;
+        }
+      }));
+
+      expect(handler.handle).toHaveBeenCalledTimes(1);
+    });
+
+    it('should clear the cache when return true', () => {
+      call(request({
+        clearCachePredicate<T>(currentRequest: HttpRequest<T>, nextRequest: HttpRequest<T>): boolean {
+          return true;
+        }
+      }));
+
+      expect(handler.handle).toHaveBeenCalledTimes(2);
+    });
+
+  });
+
 });
