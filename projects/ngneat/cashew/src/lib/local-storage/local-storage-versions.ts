@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { storage } from './localstorage';
+import { storage } from './local-storage';
 
 const KEY = `@version`;
 
@@ -8,7 +8,7 @@ function createKey(key: string) {
 }
 
 @Injectable()
-export class VersionsCache {
+export class VersionsManager {
   private readonly cache = new Map<string, string>();
 
   has(key: string): boolean {

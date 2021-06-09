@@ -1,7 +1,7 @@
 import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { DefaultHttpCacheStorage, HttpCacheStorage } from '../httpCacheStorage';
-import { storage } from './localstorage';
+import { DefaultHttpCacheStorage, HttpCacheStorage } from '../cache-storage';
+import { storage } from './local-storage';
 
 const KEY = `@cache`;
 

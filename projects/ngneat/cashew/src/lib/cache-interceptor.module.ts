@@ -1,15 +1,15 @@
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ModuleWithProviders, NgModule } from '@angular/core';
-import { HttpCacheInterceptor } from './httpCacheInterceptor';
-import { DefaultKeySerializer, KeySerializer } from './keySerializer';
-import { DefaultHttpCacheStorage, HttpCacheStorage } from './httpCacheStorage';
-import { defaultConfig, HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
-import { HttpCacheManager } from './httpCacheManager.service';
-import { DefaultTTLManager, TTLManager } from './ttlManager';
-import { DefaultHttpCacheGuard, HttpCacheGuard } from './httpCacheGuard';
-import { RequestsQueue } from './requestsQueue';
-import { RequestsCache } from './requestsCache';
-import { VersionsCache } from './localstorage/versionsCache.service';
+import { HttpCacheInterceptor } from './cache-interceptor';
+import { DefaultKeySerializer, KeySerializer } from './key-serializer';
+import { DefaultHttpCacheStorage, HttpCacheStorage } from './cache-storage';
+import { defaultConfig, HTTP_CACHE_CONFIG, HttpCacheConfig } from './cache-config';
+import { HttpCacheManager } from './cache-manager.service';
+import { DefaultTTLManager, TTLManager } from './ttl-manager';
+import { DefaultHttpCacheGuard, HttpCacheGuard } from './cache-guard';
+import { RequestsQueue } from './requests-queue';
+import { RequestsCache } from './requests-cache';
+import { VersionsManager } from './local-storage/local-storage-versions';
 
 @NgModule({})
 export class HttpCacheInterceptorModule {
@@ -25,7 +25,7 @@ export class HttpCacheInterceptorModule {
         HttpCacheManager,
         RequestsQueue,
         RequestsCache,
-        VersionsCache
+        VersionsManager
       ],
       ngModule: HttpCacheInterceptorModule
     };

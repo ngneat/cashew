@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
-import { HTTP_CACHE_CONFIG, HttpCacheConfig } from '../httpCacheConfig';
-import { DefaultTTLManager, TTLManager } from '../ttlManager';
-import { storage } from './localstorage';
+import { HTTP_CACHE_CONFIG, HttpCacheConfig } from '../cache-config';
+import { DefaultTTLManager, TTLManager } from '../ttl-manager';
+import { storage } from './local-storage';
 
 const KEY = `@ttl`;
 

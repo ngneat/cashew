@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
+import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './cache-config';
 
 export abstract class TTLManager {
   abstract isValid(key: string): boolean;

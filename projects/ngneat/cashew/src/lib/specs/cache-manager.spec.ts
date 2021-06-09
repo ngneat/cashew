@@ -1,8 +1,8 @@
-import { HttpCacheGuard } from '../httpCacheGuard';
-import { HttpCacheManager } from '../httpCacheManager.service';
-import { HttpCacheStorage } from '../httpCacheStorage';
-import { RequestsQueue } from '../requestsQueue';
-import { TTLManager } from '../ttlManager';
+import { HttpCacheGuard } from '../cache-guard';
+import { HttpCacheManager } from '../cache-manager.service';
+import { HttpCacheStorage } from '../cache-storage';
+import { RequestsQueue } from '../requests-queue';
+import { TTLManager } from '../ttl-manager';
 import {
   config,
   requestQueue,
@@ -12,8 +12,8 @@ import {
   cacheBucket
 } from './mocks';
 import SpyInstance = jest.SpyInstance;
-import { RequestsCache } from '../requestsCache';
-import { VersionsCache } from '../localstorage/versionsCache.service';
+import { RequestsCache } from '../requests-cache';
+import { VersionsManager } from '../local-storage/local-storage-versions';
 
 describe('HttpCacheManager', () => {
   let httpCache: HttpCacheManager;
@@ -28,7 +28,7 @@ describe('HttpCacheManager', () => {
     guard = httpCacheGuard();
     ttlManager = makeTTL();
 
-    httpCache = new HttpCacheManager(queue, storage, guard, ttlManager, new RequestsCache(), new VersionsCache(), config);
+    httpCache = new HttpCacheManager(queue, storage, guard, ttlManager, new RequestsCache(), new VersionsManager(), config);
   });
 
   afterEach(() => {
@@ -124,7 +124,7 @@ describe('HttpCacheManager', () => {
 
     it('should pass the cached value through the serializer', () => {
       const responseSerializer = jest.fn(v => 'serialized');
-      const httpCache: any = new HttpCacheManager(queue, storage, guard, ttlManager, new RequestsCache(), new VersionsCache(), { ...config, responseSerializer });
+      const httpCache: any = new HttpCacheManager(queue, storage, guard, ttlManager, new RequestsCache(), new VersionsManager(), { ...config, responseSerializer });
       httpCache.set('a', 'value');
       const serialized = httpCache.get('a');
       const newResponse = serialized !== httpCache.storage.get('a');

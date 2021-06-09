@@ -2,11 +2,11 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { finalize, share, tap } from 'rxjs/operators';
-import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
+import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './cache-config';
 
-import { HttpCacheManager } from './httpCacheManager.service';
-import { KeySerializer } from './keySerializer';
-import { CACHE_CONTEXT } from './cacheContext';
+import { HttpCacheManager } from './cache-manager.service';
+import { KeySerializer } from './key-serializer';
+import { CACHE_CONTEXT } from './cache-context';
 
 @Injectable()
 export class HttpCacheInterceptor implements HttpInterceptor {

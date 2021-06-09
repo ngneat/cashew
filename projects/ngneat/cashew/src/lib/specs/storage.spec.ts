@@ -1,15 +1,14 @@
-import { httpResponse, localStorageMock } from './mocks';
-import { HttpCacheLocalStorage } from '../localstorage/httpCacheLocalStorage';
+import { DefaultHttpCacheStorage } from '../cache-storage';
+import { httpResponse } from './mocks';
 
-describe('httpCacheLocalStorage', () => {
-  let storage: HttpCacheLocalStorage;
+describe('httpCacheStorage', () => {
+  let storage: DefaultHttpCacheStorage;
   const existingKey = 'existingKey';
   const notExistingKey = 'notExistingKey';
   const response = httpResponse();
-  localStorageMock();
 
   beforeEach(() => {
-    storage = new HttpCacheLocalStorage();
+    storage = new DefaultHttpCacheStorage();
     storage.set(existingKey, response);
   });
 
@@ -17,7 +16,6 @@ describe('httpCacheLocalStorage', () => {
     it('should return false if key does not exist', () => {
       expect(storage.has(notExistingKey)).toBeFalsy();
     });
-
     it('should return true if key exists', () => {
       expect(storage.has(existingKey)).toBeTruthy();
     });
@@ -27,29 +25,19 @@ describe('httpCacheLocalStorage', () => {
     it('should get the cached response', () => {
       expect(storage.get(existingKey)).toBe(response);
     });
-
-    it('should not access local storage when key is found in memory', () => {
-      jest.spyOn(localStorage, 'setItem');
-      const value = storage.get(existingKey);
-      expect(value).toEqual(response);
-      expect(localStorage.setItem).not.toHaveBeenCalled();
-    });
   });
 
   describe('delete', () => {
     it('should clear storage when call without a key', () => {
-      jest.spyOn(localStorage, 'removeItem');
+      jest.spyOn((storage as any).cache, 'clear');
       storage.delete();
-      expect(localStorage.removeItem).toHaveBeenCalled();
+      expect((storage as any).cache.clear).toHaveBeenCalled();
     });
 
     it('should call delete when given key', () => {
       jest.spyOn((storage as any).cache, 'delete');
-      jest.spyOn(localStorage, 'removeItem');
       storage.delete(existingKey);
       expect((storage as any).cache.delete).toHaveBeenCalled();
-      expect(localStorage.removeItem).toHaveBeenCalled();
     });
-
   });
 });

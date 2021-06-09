@@ -1,14 +1,14 @@
-import { config, localStorageMock } from './mocks';
-import { LocalStorageTTLManager } from '../localstorage/localStorageTTLManager';
+import { DefaultTTLManager, TTLManager } from '../ttl-manager';
+import { config } from './mocks';
 
 jest.useFakeTimers();
 
-describe('localStorageTtlManager', () => {
-  let ttlManager: LocalStorageTTLManager;
-  localStorageMock();
+describe('ttlManager', () => {
+  let ttlManager: TTLManager;
+  const ttl = 1000;
 
   beforeEach(() => {
-    ttlManager = new LocalStorageTTLManager(config);
+    ttlManager = new DefaultTTLManager(config);
   });
 
   describe('valid', () => {
@@ -38,18 +38,16 @@ describe('localStorageTtlManager', () => {
 
   describe('delete', () => {
     it('should clear storage when call without a key', () => {
-      ttlManager.set('foo', 33);
-      jest.spyOn(localStorage, 'removeItem');
+      jest.spyOn((ttlManager as any).cache, 'clear');
       ttlManager.delete();
-      expect(localStorage.removeItem).toHaveBeenCalled();
+      expect((ttlManager as any).cache.clear).toHaveBeenCalled();
     });
 
     it('should call delete when given key', () => {
-      jest.spyOn((ttlManager as any).ttl, 'delete');
-      jest.spyOn(localStorage, 'removeItem');
+      jest.spyOn((ttlManager as any).cache, 'delete');
       ttlManager.delete('key');
-      expect((ttlManager as any).ttl.delete).toHaveBeenCalled();
-      expect(localStorage.removeItem).toHaveBeenCalled();
+      expect((ttlManager as any).cache.delete).toHaveBeenCalled();
     });
+
   });
 });

@@ -1,5 +1,5 @@
 import { HttpRequest } from '@angular/common/http';
-import { ContextOptions } from './cacheContext';
+import { ContextOptions } from './cache-context';
 
 export abstract class KeySerializer {
   abstract serialize(request: HttpRequest<any>, context: ContextOptions): string;

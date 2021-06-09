@@ -1,4 +1,4 @@
-import { DefaultHttpCacheGuard } from '../httpCacheGuard';
+import { DefaultHttpCacheGuard } from '../cache-guard';
 import { httpRequest } from './mocks';
 
 describe('DefaultHttpCacheGuard', () => {

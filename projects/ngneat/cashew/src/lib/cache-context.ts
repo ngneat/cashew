@@ -1,5 +1,5 @@
 import { HttpContext, HttpContextToken, HttpRequest } from '@angular/common/http';
-import { CacheBucket } from './cacheBucket';
+import { CacheBucket } from './cache-bucket';
 
 export interface ContextOptions {
   cache?: boolean;

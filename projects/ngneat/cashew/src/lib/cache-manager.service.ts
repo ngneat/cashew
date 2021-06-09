@@ -1,13 +1,13 @@
 import { HttpRequest, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './httpCacheConfig';
-import { HttpCacheStorage } from './httpCacheStorage';
-import { TTLManager } from './ttlManager';
-import { HttpCacheGuard } from './httpCacheGuard';
-import { RequestsQueue } from './requestsQueue';
-import { CacheBucket } from './cacheBucket';
-import { RequestsCache } from './requestsCache';
-import { VersionsCache } from './localstorage/versionsCache.service';
+import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './cache-config';
+import { HttpCacheStorage } from './cache-storage';
+import { TTLManager } from './ttl-manager';
+import { HttpCacheGuard } from './cache-guard';
+import { RequestsQueue } from './requests-queue';
+import { CacheBucket } from './cache-bucket';
+import { RequestsCache } from './requests-cache';
+import { VersionsManager } from './local-storage/local-storage-versions';
 
 @Injectable()
 export class HttpCacheManager {
@@ -17,7 +17,7 @@ export class HttpCacheManager {
     private guard: HttpCacheGuard,
     private ttlManager: TTLManager,
     private requests: RequestsCache,
-    private version: VersionsCache,
+    private version: VersionsManager,
     @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
   ) {
   }
