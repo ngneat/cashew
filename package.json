@@ -12,7 +12,9 @@
     "ng": "ng",
     "lint": "ng lint",
     "commit": "git-cz",
-    "copy-readme": "cp README.md dist/ngneat/cashew"
+    "copy-readme": "cp README.md dist/ngneat/cashew",
+    "prepare": "husky install",
+    "pre-commit": "lint-staged"
   },
   "dependencies": {
     "@angular/animations": "~12.0.1",
@@ -39,7 +41,7 @@
     "codelyzer": "^6.0.2",
     "cross-env": "^7.0.3",
     "git-cz": "^4.0.0",
-    "husky": "^3.0.1",
+    "husky": "^6.0.0",
     "jasmine-core": "~3.7.0",
     "jest": "^27.0.4",
     "jest-preset-angular": "^9.0.2",
@@ -49,7 +51,7 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
-    "lint-staged": "^9.2.0",
+    "lint-staged": "^11.0.0",
     "ng-packagr": "^12.0.3",
     "prettier": "^2.3.1",
     "standard-version": "^6.0.1",
@@ -60,8 +62,7 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -e $GIT_PARAMS",
-      "pre-commit": "lint-staged"
+      "commit-msg": "commitlint -e $GIT_PARAMS"
     }
   },
   "config": {
@@ -70,7 +71,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,json,css,scss,ts,html,component.html}": [
+    "*.ts": [
       "prettier --write",
       "git add"
     ]

@@ -39,7 +39,7 @@ export class TodosComponent {
         context: withCache({
           key: 'todos',
           clearCachePredicate(prev, current) {
-            if(Number(prev?.params.get('from')) > 3) {
+            if (Number(prev?.params.get('from')) > 3) {
               return true;
             }
 
@@ -51,7 +51,6 @@ export class TodosComponent {
         console.log(`cachePredicate`, res);
       });
   }
-
 
   loadTodos() {
     this.http
