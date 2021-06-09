@@ -14,17 +14,35 @@ export class HttpCacheInterceptor implements HttpInterceptor {
     private httpCacheManager: HttpCacheManager,
     private keySerializer: KeySerializer,
     @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
-  ) {}
+  ) {
+  }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const context = request.context.get(CACHE_CONTEXT);
 
-    if (context === undefined) {
+    if(context === undefined) {
       return next.handle(request);
     }
 
-    const key = this.keySerializer.serialize(request, context);
-    const { cache, ttl, bucket, clearCachePredicate } = context;
+    let key = this.keySerializer.serialize(request, context);
+
+    const { cache, ttl, bucket, clearCachePredicate, version } = context;
+
+    if(version) {
+      const versions = this.httpCacheManager._getVersions();
+      const currentVersion = versions.get(key);
+
+      if(currentVersion !== version) {
+        this.httpCacheManager.delete(key);
+
+        // @ts-ignore
+        if(process.env.NODE_ENV === 'development') {
+          console.log(`%c new version for key: ${key}`, 'background: #add8e6; color: #3e3c3c; padding: 5px');
+        }
+      }
+
+      versions.set(key, version);
+    }
 
     if(key && clearCachePredicate) {
       const requests = this.httpCacheManager._getRequests();
@@ -42,12 +60,12 @@ export class HttpCacheInterceptor implements HttpInterceptor {
 
     const canActivate = this.httpCacheManager._canActivate(request);
 
-    if (this.httpCacheManager._isCacheable(canActivate, Boolean(cache))) {
+    if(this.httpCacheManager._isCacheable(canActivate, cache!)) {
       const queue = this.httpCacheManager._getQueue();
 
       bucket && bucket.add(key);
 
-      if (queue.has(key)) {
+      if(queue.has(key)) {
         // @ts-ignore
         if(process.env.NODE_ENV === 'development') {
           console.log(`%c ${key} was returned from the queue`, 'background: #add8e6; color: #3e3c3c; padding: 5px');
@@ -56,7 +74,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
         return queue.get(key)!;
       }
 
-      if (this.httpCacheManager.validate(key)) {
+      if(this.httpCacheManager.validate(key)) {
         // @ts-ignore
         if(process.env.NODE_ENV === 'development') {
           console.log(`%c ${key} was returned from the cache`, 'background: #add8e6; color: #3e3c3c; padding: 5px');
@@ -67,7 +85,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
 
       const shared = next.handle(request).pipe(
         tap(event => {
-          if (event instanceof HttpResponse) {
+          if(event instanceof HttpResponse) {
             const cache = this.httpCacheManager._resolveResponse(event);
             this.httpCacheManager._set(key, cache, +ttl!);
           }

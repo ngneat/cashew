@@ -1,4 +1,3 @@
-import { defaultConfig } from '../httpCacheConfig';
 import { httpResponse, localStorageMock } from './mocks';
 import { HttpCacheLocalStorage } from '../localstorage/httpCacheLocalStorage';
 
@@ -10,7 +9,7 @@ describe('httpCacheLocalStorage', () => {
   localStorageMock();
 
   beforeEach(() => {
-    storage = new HttpCacheLocalStorage(defaultConfig);
+    storage = new HttpCacheLocalStorage();
     storage.set(existingKey, response);
   });
 

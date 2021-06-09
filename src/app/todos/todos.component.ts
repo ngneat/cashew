@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CacheBucket, HttpCacheManager } from '@ngneat/cashew';
 import { withCache } from '../../../projects/ngneat/cashew/src/lib/cacheContext';
-import { count } from 'rxjs/operators';
 
 @Component({
   selector: 'app-todos',

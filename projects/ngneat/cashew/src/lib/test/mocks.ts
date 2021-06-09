@@ -8,6 +8,7 @@ import { DefaultKeySerializer } from '../keySerializer';
 import { RequestsQueue } from '../requestsQueue';
 import { DefaultTTLManager } from '../ttlManager';
 import { RequestsCache } from '../requestsCache';
+import { VersionsCache } from '../localstorage/versionsCache.service';
 
 export const frame = 1000;
 export const config = defaultConfig;
@@ -23,7 +24,7 @@ export const httpCacheGuard = () => new DefaultHttpCacheGuard();
 export const ttlManager = (conf = config) => new DefaultTTLManager(conf);
 export const keySerializer = () => new DefaultKeySerializer();
 export const httpCacheManager = (conf = config) =>
-  new HttpCacheManager(requestQueue(), httpCacheStorage(), httpCacheGuard(), ttlManager(conf), new RequestsCache(), conf);
+  new HttpCacheManager(requestQueue(), httpCacheStorage(), httpCacheGuard(), ttlManager(conf), new RequestsCache(), new VersionsCache(), conf);
 
 let store = {} as Record<any, any>;
 

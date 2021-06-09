@@ -13,6 +13,7 @@ import {
 } from './mocks';
 import SpyInstance = jest.SpyInstance;
 import { RequestsCache } from '../requestsCache';
+import { VersionsCache } from '../localstorage/versionsCache.service';
 
 describe('HttpCacheManager', () => {
   let httpCache: HttpCacheManager;
@@ -27,7 +28,7 @@ describe('HttpCacheManager', () => {
     guard = httpCacheGuard();
     ttlManager = makeTTL();
 
-    httpCache = new HttpCacheManager(queue, storage, guard, ttlManager, new RequestsCache(), config);
+    httpCache = new HttpCacheManager(queue, storage, guard, ttlManager, new RequestsCache(), new VersionsCache(), config);
   });
 
   afterEach(() => {
@@ -123,7 +124,7 @@ describe('HttpCacheManager', () => {
 
     it('should pass the cached value through the serializer', () => {
       const responseSerializer = jest.fn(v => 'serialized');
-      const httpCache: any = new HttpCacheManager(queue, storage, guard, ttlManager, new RequestsCache(), { ...config, responseSerializer });
+      const httpCache: any = new HttpCacheManager(queue, storage, guard, ttlManager, new RequestsCache(), new VersionsCache(), { ...config, responseSerializer });
       httpCache.set('a', 'value');
       const serialized = httpCache.get('a');
       const newResponse = serialized !== httpCache.storage.get('a');

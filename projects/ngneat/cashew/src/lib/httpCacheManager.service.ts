@@ -7,6 +7,7 @@ import { HttpCacheGuard } from './httpCacheGuard';
 import { RequestsQueue } from './requestsQueue';
 import { CacheBucket } from './cacheBucket';
 import { RequestsCache } from './requestsCache';
+import { VersionsCache } from './localstorage/versionsCache.service';
 
 @Injectable()
 export class HttpCacheManager {
@@ -16,6 +17,7 @@ export class HttpCacheManager {
     private guard: HttpCacheGuard,
     private ttlManager: TTLManager,
     private requests: RequestsCache,
+    private version: VersionsCache,
     @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
   ) {
   }
@@ -64,14 +66,24 @@ export class HttpCacheManager {
     this.storage.delete(key);
     this.ttlManager.delete(key);
     this.queue.delete(key!);
+
+    if(!key) {
+      this._getVersions().delete();
+      this._getRequests().clear();
+    }
+
   }
 
-  _getQueue(): RequestsQueue {
+  _getQueue() {
     return this.queue;
   }
 
-  _getRequests(): RequestsCache {
+  _getRequests() {
     return this.requests;
+  }
+
+  _getVersions() {
+    return this.version;
   }
 
   _isCacheable(canActivate: boolean, cache: boolean) {
