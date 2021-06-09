@@ -3,7 +3,7 @@ import { HTTP_CACHE_CONFIG, HttpCacheConfig } from '../httpCacheConfig';
 import { DefaultTTLManager, TTLManager } from '../ttlManager';
 import { storage } from './localstorage';
 
-const KEY = `@@ttl`;
+const KEY = `@ttl`;
 
 function createKey(key: string) {
   return `${KEY}-${key}`;

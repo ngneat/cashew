@@ -4,7 +4,7 @@ import { DefaultHttpCacheStorage, HttpCacheStorage } from '../httpCacheStorage';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from '../httpCacheConfig';
 import { storage } from './localstorage';
 
-const KEY = `@@cache`;
+const KEY = `@cache`;
 
 function createKey(key: string) {
   return `${KEY}-${key}`;
