@@ -13,7 +13,7 @@
     "commit": "git-cz",
     "copy-readme": "cp README.md dist/ngneat/cashew",
     "prepare": "husky install",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged --allow-empty"
   },
   "dependencies": {
     "@angular/animations": "~12.0.1",
