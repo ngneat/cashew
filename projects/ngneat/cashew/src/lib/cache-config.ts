@@ -8,7 +8,7 @@ export interface HttpCacheConfig {
 
 export const defaultConfig: HttpCacheConfig = {
   strategy: 'explicit',
-  ttl: 3600000 // One hour
+  ttl: 3_600_000 // One hour
 };
 
 export const HTTP_CACHE_CONFIG = new InjectionToken<HttpCacheConfig>('HTTP_CACHE_CONFIG');
