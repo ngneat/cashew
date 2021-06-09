@@ -10,10 +10,11 @@ function createKey(key: string) {
 }
 
 @Injectable()
-export class LocalStorageTTLManager implements TTLManager {
+export class LocalStorageTTLManager extends TTLManager {
   private readonly ttl: DefaultTTLManager;
 
   constructor(@Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig) {
+    super();
     this.ttl = new DefaultTTLManager(config);
   }
 
@@ -34,27 +35,26 @@ export class LocalStorageTTLManager implements TTLManager {
     return validInStorage;
   }
 
-  set(key: string, ttl?: number) {
-    const resolveTTL = ttl || this.config.ttl;
+  set(key: string, ttl: number) {
+    const resolveTTL = ttl ?? this.config.ttl;
     storage.setItem(createKey(key), new Date().setMilliseconds(resolveTTL));
     this.ttl.set(createKey(key), resolveTTL);
+
+    return this;
   }
 
-  delete(key?: string) {
-    if(!key) {
-      this.ttl.forEach((_: any, key: string) => {
-        this.ttl.delete(createKey(key));
-        storage.clearItem(createKey(key));
-      });
-
-      return;
-    }
-
+  delete(key: string) {
     this.ttl.delete(createKey(key));
     storage.clearItem(createKey(key));
+
+    return true;
   }
 
-  forEach(cb: any) {
-    this.ttl.forEach(cb);
+  clear() {
+    this.ttl.forEach((_: any, key: string) => {
+      this.ttl.delete(createKey(key));
+      storage.clearItem(createKey(key));
+    });
+
   }
 }

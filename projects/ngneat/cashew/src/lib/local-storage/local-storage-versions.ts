@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { storage } from './local-storage';
+import { HttpCacheVersions } from '../versions';
 
 const KEY = `@version`;
 
@@ -8,15 +9,14 @@ function createKey(key: string) {
 }
 
 @Injectable()
-export class VersionsManager {
-  private readonly cache = new Map<string, string>();
+export class LocalStorageVersionsManager extends HttpCacheVersions {
 
   has(key: string): boolean {
-    return this.cache.has(createKey(key)) || !!storage.getItem(createKey(key));
+    return super.has(createKey(key)) || !!storage.getItem(createKey(key));
   }
 
   get(key: string): string {
-    const cacheValue = this.cache.get(createKey(key));
+    const cacheValue = super.get(createKey(key));
 
     if(cacheValue) {
       return cacheValue;
@@ -25,32 +25,29 @@ export class VersionsManager {
     const value = storage.getItem(createKey(key));
 
     if(value) {
-      this.cache.set(createKey(key), value);
+      super.set(createKey(key), value);
     }
 
-    return this.cache.get(createKey(key))!;
+    return super.get(createKey(key))!;
   }
 
-  set(key: string, version: string): void {
+  set(key: string, version: string) {
     storage.setItem(createKey(key), version);
-    this.cache.set(createKey(key), version);
+
+    return super.set(createKey(key), version);
   }
 
-  delete(key?: string) {
-    if(!key) {
-      this.cache.forEach((_: any, key: string) => {
-        this.cache.delete(key);
-        storage.clearItem(key);
-      });
-
-      return;
-    }
-
-    this.cache.delete(key);
+  delete(key: string) {
+    super.delete(key);
     storage.clearItem(key);
+
+    return true;
   }
 
-  forEach(cb: any) {
-    this.cache.forEach(cb);
+  clear() {
+    super.forEach((_: any, key: string) => {
+      super.delete(key);
+      storage.clearItem(key);
+    });
   }
 }

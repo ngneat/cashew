@@ -31,23 +31,9 @@ describe('ttlManager', () => {
 
     it('should use the config ttl if non has been passed', () => {
       jest.spyOn(Date.prototype, 'setMilliseconds');
-      ttlManager.set('key');
+      ttlManager.set('key', undefined);
       expect(Date.prototype.setMilliseconds).toHaveBeenCalledWith(config.ttl);
     });
   });
 
-  describe('delete', () => {
-    it('should clear storage when call without a key', () => {
-      jest.spyOn((ttlManager as any).cache, 'clear');
-      ttlManager.delete();
-      expect((ttlManager as any).cache.clear).toHaveBeenCalled();
-    });
-
-    it('should call delete when given key', () => {
-      jest.spyOn((ttlManager as any).cache, 'delete');
-      ttlManager.delete('key');
-      expect((ttlManager as any).cache.delete).toHaveBeenCalled();
-    });
-
-  });
 });

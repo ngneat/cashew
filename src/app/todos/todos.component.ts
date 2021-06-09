@@ -115,7 +115,7 @@ export class TodosComponent {
   }
 
   clearCache() {
-    this.manager.delete();
+    this.manager.clear();
   }
 
   addTodoFive() {

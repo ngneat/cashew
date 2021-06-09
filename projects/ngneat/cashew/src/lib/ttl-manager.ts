@@ -1,41 +1,22 @@
 import { Inject, Injectable } from '@angular/core';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './cache-config';
 
-export abstract class TTLManager {
+export abstract class TTLManager extends Map<string, number> {
   abstract isValid(key: string): boolean;
-
-  abstract set(key: string, ttl?: number): void;
-
-  abstract delete(key?: string): void;
 }
 
 @Injectable()
-export class DefaultTTLManager implements TTLManager {
-  private cache = new Map<string, number>();
+export class DefaultTTLManager extends TTLManager {
 
   constructor(@Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig) {
+    super();
   }
 
   isValid(key: string): boolean {
-    return this.cache.get(key)! > new Date().getTime();
+    return this.get(key)! > new Date().getTime();
   }
 
-  set(key: string, ttl?: number): void {
-    let resolveTTL = ttl || this.config.ttl;
-
-    this.cache.set(key, new Date().setMilliseconds(resolveTTL));
-  }
-
-  delete(key?: string): void {
-    if(!key) {
-      this.cache.clear();
-      return;
-    }
-
-    this.cache.delete(key as string);
-  }
-
-  forEach(cb: any) {
-    this.cache.forEach(cb);
+  set(key: string, ttl: number) {
+    return super.set(key, new Date().setMilliseconds(ttl || this.config.ttl));
   }
 }

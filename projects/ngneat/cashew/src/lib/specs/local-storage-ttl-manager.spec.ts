@@ -31,7 +31,7 @@ describe('localStorageTtlManager', () => {
 
     it('should use the config ttl if non has been passed', () => {
       jest.spyOn(Date.prototype, 'setMilliseconds');
-      ttlManager.set('key');
+      ttlManager.set('key', undefined);
       expect(Date.prototype.setMilliseconds).toHaveBeenCalledWith(config.ttl);
     });
   });
@@ -40,7 +40,7 @@ describe('localStorageTtlManager', () => {
     it('should clear storage when call without a key', () => {
       ttlManager.set('foo', 33);
       jest.spyOn(localStorage, 'removeItem');
-      ttlManager.delete();
+      ttlManager.clear();
       expect(localStorage.removeItem).toHaveBeenCalled();
     });
 

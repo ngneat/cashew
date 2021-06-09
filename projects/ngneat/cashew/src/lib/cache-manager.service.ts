@@ -7,7 +7,7 @@ import { HttpCacheGuard } from './cache-guard';
 import { RequestsQueue } from './requests-queue';
 import { CacheBucket } from './cache-bucket';
 import { RequestsCache } from './requests-cache';
-import { VersionsManager } from './local-storage/local-storage-versions';
+import { HttpCacheVersions } from './versions';
 
 @Injectable()
 export class HttpCacheManager {
@@ -17,7 +17,7 @@ export class HttpCacheManager {
     private guard: HttpCacheGuard,
     private ttlManager: TTLManager,
     private requests: RequestsCache,
-    private version: VersionsManager,
+    private version: HttpCacheVersions,
     @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
   ) {
   }
@@ -34,7 +34,7 @@ export class HttpCacheManager {
   }
 
   get<T = any>(key: string): HttpResponse<T> {
-    return this._resolveResponse<T>(this.storage.get(key));
+    return this._resolveResponse<T>(this.storage.get(key)!);
   }
 
   has(key: string) {
@@ -56,22 +56,28 @@ export class HttpCacheManager {
     bucket && bucket.add(key);
   }
 
-  delete(key?: string | CacheBucket): void {
+  delete(key: string | CacheBucket): void {
+
     if(key instanceof CacheBucket) {
       key.forEach(value => this.delete(value));
       key.clear();
+
       return;
     }
 
     this.storage.delete(key);
     this.ttlManager.delete(key);
-    this.queue.delete(key!);
+    this.queue.delete(key);
+    this._getVersions().delete(key);
+    this._getRequests().delete(key);
+  }
 
-    if(!key) {
-      this._getVersions().delete();
-      this._getRequests().clear();
-    }
-
+  clear() {
+    this.storage.clear();
+    this.ttlManager.clear();
+    this.queue.clear();
+    this._getVersions().clear();
+    this._getRequests().clear();
   }
 
   _getQueue() {
