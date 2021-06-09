@@ -42,19 +42,21 @@ export class HttpCacheLocalStorage implements HttpCacheStorage {
     this.cache.set(createKey(key), response);
   }
 
-  delete(key?: string): void {
-
+  delete(key?: string) {
     if(!key) {
-      Object.keys(localStorage).forEach(key => {
-        if(key.startsWith(KEY)) {
-          this.cache.delete(key);
-          storage.clearItem(key);
-        }
+      this.cache.forEach((_: any, key: string) => {
+        this.cache.delete(key);
+        storage.clearItem(key);
       });
+
       return;
     }
 
-    this.cache.delete(createKey(key));
-    storage.clearItem(createKey(key));
+    this.cache.delete(key);
+    storage.clearItem(key);
+  }
+
+  forEach(cb: any) {
+    this.cache.forEach(cb);
   }
 }

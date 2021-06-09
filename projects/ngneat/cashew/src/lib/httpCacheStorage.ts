@@ -9,6 +9,8 @@ export abstract class HttpCacheStorage {
   abstract set(key: string, response: HttpResponse<any>): void;
 
   abstract delete(key?: string): void;
+
+  abstract forEach(cb: (value: HttpResponse<any>, key: string) => void): void;
 }
 
 @Injectable()
@@ -35,5 +37,9 @@ export class DefaultHttpCacheStorage implements HttpCacheStorage {
 
     this.cache.delete(key as string);
 
+  }
+
+  forEach(cb: any) {
+    this.cache.forEach(cb);
   }
 }

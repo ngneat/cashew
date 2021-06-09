@@ -57,7 +57,9 @@ export class TodosComponent {
   loadTodos() {
     this.http
       .get('https://jsonplaceholder.typicode.com/todos', {
-        context: withCache()
+        context: withCache({
+          version: 'v1'
+        })
       })
       .subscribe(res => {
         console.log(`Todos`, res);

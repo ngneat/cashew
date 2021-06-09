@@ -3,7 +3,7 @@ import { HTTP_CACHE_CONFIG, HttpCacheConfig } from '../httpCacheConfig';
 import { DefaultTTLManager, TTLManager } from '../ttlManager';
 import { storage } from './localstorage';
 
-const KEY = `@ttl`;
+const KEY = `@@ttl`;
 
 function createKey(key: string) {
   return `${KEY}-${key}`;
@@ -42,16 +42,19 @@ export class LocalStorageTTLManager implements TTLManager {
 
   delete(key?: string) {
     if(!key) {
-      Object.keys(localStorage).forEach(key => {
-        if(key.startsWith(KEY)) {
-          this.ttl.delete(key);
-          storage.clearItem(key);
-        }
+      this.ttl.forEach((_: any, key: string) => {
+        this.ttl.delete(key);
+        storage.clearItem(key);
       });
+
       return;
     }
 
-    this.ttl.delete(createKey(key));
-    storage.clearItem(createKey(key));
+    this.ttl.delete(key);
+    storage.clearItem(key);
+  }
+
+  forEach(cb: any) {
+    this.ttl.forEach(cb);
   }
 }

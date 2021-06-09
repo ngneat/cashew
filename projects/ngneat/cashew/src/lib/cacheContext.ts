@@ -6,7 +6,7 @@ export interface ContextOptions {
   ttl?: number;
   key?: string | ((request: HttpRequest<any>) => string);
   bucket?: CacheBucket;
-
+  version?: string;
   clearCachePredicate?<T>(currentRequest: HttpRequest<T> | undefined, nextRequest: HttpRequest<T>): boolean;
 }
 

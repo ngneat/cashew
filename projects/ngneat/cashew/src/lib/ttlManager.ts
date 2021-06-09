@@ -34,4 +34,8 @@ export class DefaultTTLManager implements TTLManager {
 
     this.cache.delete(key as string);
   }
+
+  forEach(cb: any) {
+    this.cache.forEach(cb);
+  }
 }
