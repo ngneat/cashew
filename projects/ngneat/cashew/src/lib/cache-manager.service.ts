@@ -19,14 +19,13 @@ export class HttpCacheManager {
     private requests: RequestsCache,
     private version: HttpCacheVersions,
     @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
-  ) {
-  }
+  ) {}
 
   validate(key: string) {
     const has = this.storage.has(key);
     const isValid = this.ttlManager.isValid(key);
 
-    if(has && isValid) return true;
+    if (has && isValid) return true;
 
     this.storage.delete(key);
 
@@ -44,7 +43,7 @@ export class HttpCacheManager {
   set(key: string, body: HttpResponse<any> | any, { ttl, bucket }: { ttl?: number; bucket?: CacheBucket } = {}) {
     let response = body;
 
-    if(!(body instanceof HttpResponse)) {
+    if (!(body instanceof HttpResponse)) {
       response = new HttpResponse({
         body,
         status: 200,
@@ -57,8 +56,7 @@ export class HttpCacheManager {
   }
 
   delete(key: string | CacheBucket): void {
-
-    if(key instanceof CacheBucket) {
+    if (key instanceof CacheBucket) {
       key.forEach(value => this.delete(value));
       key.clear();
 
@@ -95,11 +93,11 @@ export class HttpCacheManager {
   _isCacheable(canActivate: boolean, cache: boolean) {
     const strategy = this.config.strategy;
 
-    if(strategy === 'explicit') {
+    if (strategy === 'explicit') {
       return cache;
     }
 
-    if(canActivate && strategy === 'implicit') {
+    if (canActivate && strategy === 'implicit') {
       return cache !== false;
     }
 

@@ -11,7 +11,6 @@ function createKey(key: string) {
 
 @Injectable()
 export class HttpCacheLocalStorage extends HttpCacheStorage {
-
   has(key: string): boolean {
     return super.has(createKey(key)) || !!storage.getItem(createKey(key));
   }
@@ -19,13 +18,13 @@ export class HttpCacheLocalStorage extends HttpCacheStorage {
   get(key: string): HttpResponse<any> {
     const cacheValue = super.get(createKey(key));
 
-    if(cacheValue) {
+    if (cacheValue) {
       return cacheValue;
     }
 
     const value = storage.getItem(createKey(key));
 
-    if(value) {
+    if (value) {
       super.set(createKey(key), new HttpResponse(value));
     }
 

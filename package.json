@@ -10,7 +10,6 @@
     "test:lib": "npm run test --prefix projects/ngneat/cashew --runInBand",
     "test:lib:watch": "npm run test:watch --prefix projects/ngneat/cashew",
     "ng": "ng",
-    "lint": "ng lint",
     "commit": "git-cz",
     "copy-readme": "cp README.md dist/ngneat/cashew",
     "prepare": "husky install",
@@ -59,11 +58,6 @@
     "ts-node": "~7.0.0",
     "tslib": "^2.2.0",
     "typescript": "~4.2.3"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -e $GIT_PARAMS"
-    }
   },
   "config": {
     "commitizen": {

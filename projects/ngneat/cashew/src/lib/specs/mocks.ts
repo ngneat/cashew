@@ -24,12 +24,19 @@ export const httpCacheGuard = () => new DefaultHttpCacheGuard();
 export const ttlManager = (conf = config) => new DefaultTTLManager(conf);
 export const keySerializer = () => new DefaultKeySerializer();
 export const httpCacheManager = (conf = config) =>
-  new HttpCacheManager(requestQueue(), httpCacheStorage(), httpCacheGuard(), ttlManager(conf), new RequestsCache(), new LocalStorageVersionsManager(), conf);
+  new HttpCacheManager(
+    requestQueue(),
+    httpCacheStorage(),
+    httpCacheGuard(),
+    ttlManager(conf),
+    new RequestsCache(),
+    new LocalStorageVersionsManager(),
+    conf
+  );
 
 let store = {} as Record<any, any>;
 
 export function localStorageMock() {
-
   const localStorageMock = {
     getItem(key: string) {
       return store[key];

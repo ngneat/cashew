@@ -3,6 +3,4 @@ import { HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class RequestsQueue extends Map<string, Observable<HttpEvent<any>>> {
-}
-
+export class RequestsQueue extends Map<string, Observable<HttpEvent<any>>> {}

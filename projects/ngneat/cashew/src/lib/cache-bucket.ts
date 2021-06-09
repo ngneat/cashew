@@ -1,2 +1,1 @@
-export class CacheBucket extends Set<string> {
-}
+export class CacheBucket extends Set<string> {}

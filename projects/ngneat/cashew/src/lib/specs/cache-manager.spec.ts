@@ -3,14 +3,7 @@ import { HttpCacheManager } from '../cache-manager.service';
 import { HttpCacheStorage } from '../cache-storage';
 import { RequestsQueue } from '../requests-queue';
 import { TTLManager } from '../ttl-manager';
-import {
-  config,
-  requestQueue,
-  httpCacheStorage,
-  httpCacheGuard,
-  ttlManager as makeTTL,
-  cacheBucket
-} from './mocks';
+import { config, requestQueue, httpCacheStorage, httpCacheGuard, ttlManager as makeTTL, cacheBucket } from './mocks';
 import SpyInstance = jest.SpyInstance;
 import { RequestsCache } from '../requests-cache';
 import { LocalStorageVersionsManager } from '../local-storage/local-storage-versions';
@@ -28,7 +21,15 @@ describe('HttpCacheManager', () => {
     guard = httpCacheGuard();
     ttlManager = makeTTL();
 
-    httpCache = new HttpCacheManager(queue, storage, guard, ttlManager, new RequestsCache(), new LocalStorageVersionsManager(), config);
+    httpCache = new HttpCacheManager(
+      queue,
+      storage,
+      guard,
+      ttlManager,
+      new RequestsCache(),
+      new LocalStorageVersionsManager(),
+      config
+    );
   });
 
   afterEach(() => {
@@ -124,7 +125,15 @@ describe('HttpCacheManager', () => {
 
     it('should pass the cached value through the serializer', () => {
       const responseSerializer = jest.fn(v => 'serialized');
-      const httpCache: any = new HttpCacheManager(queue, storage, guard, ttlManager, new RequestsCache(), new LocalStorageVersionsManager(), { ...config, responseSerializer });
+      const httpCache: any = new HttpCacheManager(
+        queue,
+        storage,
+        guard,
+        ttlManager,
+        new RequestsCache(),
+        new LocalStorageVersionsManager(),
+        { ...config, responseSerializer }
+      );
       httpCache.set('a', 'value');
       const serialized = httpCache.get('a');
       const newResponse = serialized !== httpCache.storage.get('a');

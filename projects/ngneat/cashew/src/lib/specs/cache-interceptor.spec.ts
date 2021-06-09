@@ -20,7 +20,7 @@ describe('HttpCacheInterceptor', () => {
   });
 
   const call = (req, times = 2, delay = frame) => {
-    for(let i = 0; i < times; i++) {
+    for (let i = 0; i < times; i++) {
       httpCacheInterceptor.intercept(req, handler).subscribe();
       jest.advanceTimersByTime(delay);
     }
@@ -163,28 +163,29 @@ describe('HttpCacheInterceptor', () => {
   });
 
   describe('clearCachePredicate', () => {
-
     it('should NOT clear the cache when return false', () => {
-      call(request({
-        clearCachePredicate<T>(currentRequest: HttpRequest<T>, nextRequest: HttpRequest<T>): boolean {
-          expect(nextRequest).toBeInstanceOf(HttpRequest);
-          return false;
-        }
-      }));
+      call(
+        request({
+          clearCachePredicate<T>(currentRequest: HttpRequest<T>, nextRequest: HttpRequest<T>): boolean {
+            expect(nextRequest).toBeInstanceOf(HttpRequest);
+            return false;
+          }
+        })
+      );
 
       expect(handler.handle).toHaveBeenCalledTimes(1);
     });
 
     it('should clear the cache when return true', () => {
-      call(request({
-        clearCachePredicate<T>(currentRequest: HttpRequest<T>, nextRequest: HttpRequest<T>): boolean {
-          return true;
-        }
-      }));
+      call(
+        request({
+          clearCachePredicate<T>(currentRequest: HttpRequest<T>, nextRequest: HttpRequest<T>): boolean {
+            return true;
+          }
+        })
+      );
 
       expect(handler.handle).toHaveBeenCalledTimes(2);
     });
-
   });
-
 });

@@ -35,5 +35,4 @@ describe('ttlManager', () => {
       expect(Date.prototype.setMilliseconds).toHaveBeenCalledWith(config.ttl);
     });
   });
-
 });

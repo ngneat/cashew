@@ -7,7 +7,6 @@ export abstract class TTLManager extends Map<string, number> {
 
 @Injectable()
 export class DefaultTTLManager extends TTLManager {
-
   constructor(@Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig) {
     super();
   }

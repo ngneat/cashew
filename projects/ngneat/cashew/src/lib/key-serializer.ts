@@ -9,7 +9,7 @@ export class DefaultKeySerializer extends KeySerializer {
   serialize(request: HttpRequest<any>, context: ContextOptions) {
     const { key } = context;
 
-    if(key) {
+    if (key) {
       return typeof key === 'function' ? key(request) : key;
     }
 

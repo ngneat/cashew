@@ -48,6 +48,5 @@ describe('httpCacheLocalStorage', () => {
       storage.delete(existingKey);
       expect(localStorage.removeItem).toHaveBeenCalled();
     });
-
   });
 });

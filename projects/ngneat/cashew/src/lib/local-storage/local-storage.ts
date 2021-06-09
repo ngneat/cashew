@@ -8,7 +8,7 @@ export const storage = {
   getItem(key: string): any {
     const value = localStorage.getItem(key);
 
-    if(!value) {
+    if (!value) {
       return undefined;
     }
 

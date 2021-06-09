@@ -21,14 +21,14 @@ export class LocalStorageTTLManager extends TTLManager {
   isValid(key: string): boolean {
     const valid = this.ttl.isValid(createKey(key));
 
-    if(valid) {
+    if (valid) {
       return true;
     }
 
     const localStorageTimeStamp = storage.getItem(createKey(key));
     const validInStorage = localStorageTimeStamp > new Date().getTime();
 
-    if(validInStorage) {
+    if (validInStorage) {
       this.ttl.set(createKey(key), localStorageTimeStamp - new Date().getTime());
     }
 
@@ -55,6 +55,5 @@ export class LocalStorageTTLManager extends TTLManager {
       this.ttl.delete(createKey(key));
       storage.clearItem(createKey(key));
     });
-
   }
 }
