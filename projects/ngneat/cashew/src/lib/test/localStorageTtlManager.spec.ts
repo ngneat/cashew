@@ -5,7 +5,6 @@ jest.useFakeTimers();
 
 describe('localStorageTtlManager', () => {
   let ttlManager: LocalStorageTTLManager;
-  const ttl = 1000;
   localStorageMock();
 
   beforeEach(() => {
@@ -39,19 +38,18 @@ describe('localStorageTtlManager', () => {
 
   describe('delete', () => {
     it('should clear storage when call without a key', () => {
-      jest.spyOn((ttlManager as any).ttl, 'delete');
+      ttlManager.set('foo', 33);
       jest.spyOn(localStorage, 'removeItem');
       ttlManager.delete();
-      expect((ttlManager as any).ttl.delete).toHaveBeenCalled();
       expect(localStorage.removeItem).toHaveBeenCalled();
     });
 
     it('should call delete when given key', () => {
       jest.spyOn((ttlManager as any).ttl, 'delete');
-      jest.spyOn(localStorage, 'setItem');
+      jest.spyOn(localStorage, 'removeItem');
       ttlManager.delete('key');
       expect((ttlManager as any).ttl.delete).toHaveBeenCalled();
-      expect(localStorage.setItem).toHaveBeenCalled();
+      expect(localStorage.removeItem).toHaveBeenCalled();
     });
   });
 });

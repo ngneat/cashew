@@ -31,27 +31,25 @@ describe('httpCacheLocalStorage', () => {
 
     it('should not access local storage when key is found in memory', () => {
       jest.spyOn(localStorage, 'setItem');
-      storage.get(existingKey);
-      expect((storage as any).cache.get(existingKey)).toEqual(response);
+      const value = storage.get(existingKey);
+      expect(value).toEqual(response);
       expect(localStorage.setItem).not.toHaveBeenCalled();
     });
   });
 
   describe('delete', () => {
     it('should clear storage when call without a key', () => {
-      jest.spyOn((storage as any).cache, 'delete');
       jest.spyOn(localStorage, 'removeItem');
       storage.delete();
-      expect((storage as any).cache.delete).toHaveBeenCalled();
       expect(localStorage.removeItem).toHaveBeenCalled();
     });
 
     it('should call delete when given key', () => {
       jest.spyOn((storage as any).cache, 'delete');
-      jest.spyOn(localStorage, 'setItem');
+      jest.spyOn(localStorage, 'removeItem');
       storage.delete(existingKey);
       expect((storage as any).cache.delete).toHaveBeenCalled();
-      expect(localStorage.setItem).toHaveBeenCalled();
+      expect(localStorage.removeItem).toHaveBeenCalled();
     });
 
   });

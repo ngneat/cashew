@@ -1,4 +1,4 @@
-import { HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpRequest, HttpResponse } from '@angular/common/http';
 import { CacheBucket } from '../cacheBucket';
 import { defaultConfig } from '../httpCacheConfig';
 import { DefaultHttpCacheGuard } from '../httpCacheGuard';
@@ -25,23 +25,28 @@ export const keySerializer = () => new DefaultKeySerializer();
 export const httpCacheManager = (conf = config) =>
   new HttpCacheManager(requestQueue(), httpCacheStorage(), httpCacheGuard(), ttlManager(conf), new RequestsCache(), conf);
 
+let store = {} as Record<any, any>;
+
 export function localStorageMock() {
-  const localStorageMock = (function () {
-    let store = {};
-    return {
-      getItem: function (key) {
-        return store[key];
-      },
-      setItem: function (key, value) {
-        store[key] = value.toString();
-      },
-      clear: function () {
-        store = {};
-      },
-      removeItem: function (key) {
-        delete store[key];
-      }
-    };
-  })();
-  Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+
+  const localStorageMock = {
+    getItem(key: string) {
+      return store[key];
+    },
+    setItem(key: string, value: any) {
+      store[key] = value.toString();
+    },
+    clear() {
+      store = {};
+    },
+    removeItem(key: string) {
+      delete store[key];
+    }
+  };
+
+  Object.defineProperty(window, 'localStorage', {
+    get() {
+      return Object.assign(localStorageMock, store);
+    }
+  });
 }

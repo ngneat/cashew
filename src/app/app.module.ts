@@ -9,7 +9,7 @@ import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/ca
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, TodosComponent],
-  // providers: [useHttpCacheLocalStorage],
+  providers: [useHttpCacheLocalStorage],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, HttpCacheInterceptorModule.forRoot()],
   bootstrap: [AppComponent]
 })

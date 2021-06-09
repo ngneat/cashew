@@ -1,30 +1,34 @@
 import { Inject, Injectable } from '@angular/core';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from '../httpCacheConfig';
 import { DefaultTTLManager, TTLManager } from '../ttlManager';
-import { clearStorageCache, getStorageCache, setCacheInStorage } from './localstorage';
+import { storage } from './localstorage';
+
+const KEY = `@@ttl`;
+
+function createKey(key: string) {
+  return `${KEY}-${key}`;
+}
 
 @Injectable()
 export class LocalStorageTTLManager implements TTLManager {
   private readonly ttl: DefaultTTLManager;
-  private readonly ttlStorageKey: string;
 
   constructor(@Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig) {
-    this.ttlStorageKey = `${config.localStorageKey}TTL`;
     this.ttl = new DefaultTTLManager(config);
   }
 
   isValid(key: string): boolean {
-    const valid = this.ttl.isValid(key);
+    const valid = this.ttl.isValid(createKey(key));
 
     if(valid) {
       return true;
     }
 
-    const localStorageTimeStamp = getStorageCache(this.ttlStorageKey).get(key);
+    const localStorageTimeStamp = storage.getItem(createKey(key));
     const validInStorage = localStorageTimeStamp > new Date().getTime();
 
     if(validInStorage) {
-      this.ttl.set(key, localStorageTimeStamp - new Date().getTime());
+      this.ttl.set(createKey(key), localStorageTimeStamp - new Date().getTime());
     }
 
     return validInStorage;
@@ -32,23 +36,22 @@ export class LocalStorageTTLManager implements TTLManager {
 
   set(key: string, ttl?: number) {
     const resolveTTL = ttl || this.config.ttl;
-    const storage = getStorageCache(this.ttlStorageKey);
-    storage.set(key, new Date().setMilliseconds(resolveTTL));
-    setCacheInStorage(this.ttlStorageKey, storage);
-    this.ttl.set(key, resolveTTL);
+    storage.setItem(createKey(key), new Date().setMilliseconds(resolveTTL));
+    this.ttl.set(createKey(key), resolveTTL);
   }
 
   delete(key?: string) {
-    this.ttl.delete(key);
-
     if(!key) {
-      clearStorageCache(this.ttlStorageKey);
-
+      Object.keys(localStorage).forEach(key => {
+        if(key.startsWith(KEY)) {
+          this.ttl.delete(key);
+          storage.clearItem(key);
+        }
+      });
       return;
     }
 
-    const storage = getStorageCache(this.ttlStorageKey);
-    storage.delete(key);
-    setCacheInStorage(this.ttlStorageKey, storage);
+    this.ttl.delete(createKey(key));
+    storage.clearItem(createKey(key));
   }
 }
