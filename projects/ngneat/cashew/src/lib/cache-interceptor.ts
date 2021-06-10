@@ -23,7 +23,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    let key = this.keySerializer.serialize(request, context);
+    const key = this.keySerializer.serialize(request, context);
 
     const { cache, ttl, bucket, clearCachePredicate, version } = context;
 
@@ -45,10 +45,10 @@ export class HttpCacheInterceptor implements HttpInterceptor {
 
     if (key && clearCachePredicate) {
       const requests = this.httpCacheManager._getRequests();
-      const clearCache = clearCachePredicate(requests.get(key)!, requests.set(key, request).get(key)!);
+      const clearCache = clearCachePredicate(requests.get(key)!, requests.set(key, request).get(key)!, key);
 
       if (clearCache) {
-        this.httpCacheManager.delete(key);
+        this.httpCacheManager.delete(key, { deleteRequests: false, deleteVersions: false });
 
         // @ts-ignore
         if (process.env.NODE_ENV === 'development') {

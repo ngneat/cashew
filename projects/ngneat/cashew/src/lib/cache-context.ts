@@ -7,7 +7,11 @@ export interface ContextOptions {
   key?: string | ((request: HttpRequest<any>) => string);
   bucket?: CacheBucket;
   version?: string;
-  clearCachePredicate?<T>(currentRequest: HttpRequest<T> | undefined, nextRequest: HttpRequest<T>): boolean;
+  clearCachePredicate?<T>(
+    currentRequest: HttpRequest<T> | undefined,
+    nextRequest: HttpRequest<T>,
+    key: string
+  ): boolean;
 }
 
 export const CACHE_CONTEXT = new HttpContextToken<ContextOptions | undefined>(() => undefined);

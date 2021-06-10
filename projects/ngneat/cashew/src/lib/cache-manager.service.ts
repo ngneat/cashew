@@ -55,7 +55,10 @@ export class HttpCacheManager {
     bucket && bucket.add(key);
   }
 
-  delete(key: string | CacheBucket): void {
+  delete(
+    key: string | CacheBucket,
+    { deleteRequests, deleteVersions }: { deleteVersions?: boolean; deleteRequests?: boolean } = {}
+  ): void {
     if (key instanceof CacheBucket) {
       key.forEach(value => this.delete(value));
       key.clear();
@@ -66,8 +69,14 @@ export class HttpCacheManager {
     this.storage.delete(key);
     this.ttlManager.delete(key);
     this.queue.delete(key);
-    this._getVersions().delete(key);
-    this._getRequests().delete(key);
+
+    if (deleteRequests !== false) {
+      this._getRequests().delete(key);
+    }
+
+    if (deleteVersions !== false) {
+      this._getVersions().delete(key);
+    }
   }
 
   clear() {

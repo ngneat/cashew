@@ -13,6 +13,9 @@
   "bugs": {
     "url": "https://github.com/ngneat/cashew/issues"
   },
+  "peerDependencies": {
+    "@angular/core": ">=12.0.0"
+  },
   "homepage": "https://github.com/ngneat/cashew#readme",
   "repository": {
     "type": "git",

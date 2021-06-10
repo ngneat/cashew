@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CacheBucket, HttpCacheManager } from '@ngneat/cashew';
-import { withCache } from '../../../projects/ngneat/cashew/src/lib/cache-context';
+import { CacheBucket, HttpCacheManager, withCache } from '@ngneat/cashew';
 
 @Component({
   selector: 'app-todos',
