@@ -3,5 +3,6 @@
   "dest": "../../../dist/ngneat/cashew",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "allowedNonPeerDependencies": ["debug"]
 }
