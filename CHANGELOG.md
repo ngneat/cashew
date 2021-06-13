@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/ngneat/cashew/compare/v1.3.2...v2.0.0) (2021-06-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* **lib:** - Use `context` instead of `params`
+- Remove `parameterCodec`
+- Remove the `$` postfix
+- Remove `RegExp` support
+- Remove `localStorageKey`
+
+### Features
+
+* **lib:** migrate to angular v12 and use context ([3a5812a](https://github.com/ngneat/cashew/commit/3a5812ae75bed9a2c01fbc59ed680d1fb9f8570c))
+* 🎸 add clearCachePredicate ([f1d3d02](https://github.com/ngneat/cashew/commit/f1d3d02791b26a19f47b6089d1b9b91ad5c6bbfe))
+* 🎸 add utils ([7f5b898](https://github.com/ngneat/cashew/commit/7f5b898f1bba6d994470d7b46b3580e2d0ca6539))
+
+
+### Tests
+
+* 💍 refactor specs ([a602834](https://github.com/ngneat/cashew/commit/a6028348a39cfff4d44f1da196bb84e042729d75))
+
 ### [1.3.2](https://github.com/ngneat/cashew/compare/v1.3.1...v1.3.2) (2020-12-29)
 
 
