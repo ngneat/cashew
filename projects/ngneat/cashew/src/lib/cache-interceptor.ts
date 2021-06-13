@@ -8,6 +8,14 @@ import { HttpCacheManager } from './cache-manager.service';
 import { KeySerializer } from './key-serializer';
 import { CACHE_CONTEXT } from './cache-context';
 
+let log: any;
+
+// @ts-ignore
+if (process.env.NODE_ENV === 'development') {
+  // @ts-ignore
+  log = require('debug')('http-cache:');
+}
+
 @Injectable()
 export class HttpCacheInterceptor implements HttpInterceptor {
   constructor(
@@ -36,7 +44,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
 
         // @ts-ignore
         if (process.env.NODE_ENV === 'development') {
-          console.log(`%c new version for key: ${key}`, 'background: #add8e6; color: #3e3c3c; padding: 5px');
+          log(`New version for key: ${key}`);
         }
       }
 
@@ -52,10 +60,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
 
         // @ts-ignore
         if (process.env.NODE_ENV === 'development') {
-          console.log(
-            `%c clearCachePredicate is true for key: ${key}`,
-            'background: #add8e6; color: #3e3c3c; padding: 5px'
-          );
+          log(`clearCachePredicate is true for key: ${key}`);
         }
       }
     }
@@ -70,7 +75,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
       if (queue.has(key)) {
         // @ts-ignore
         if (process.env.NODE_ENV === 'development') {
-          console.log(`%c ${key} was returned from the queue`, 'background: #add8e6; color: #3e3c3c; padding: 5px');
+          log(`${key} was returned from the queue`);
         }
 
         return queue.get(key)!;
@@ -79,7 +84,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
       if (this.httpCacheManager.validate(key)) {
         // @ts-ignore
         if (process.env.NODE_ENV === 'development') {
-          console.log(`%c ${key} was returned from the cache`, 'background: #add8e6; color: #3e3c3c; padding: 5px');
+          log(`${key} was returned from the cache`);
         }
 
         return of(this.httpCacheManager.get(key));

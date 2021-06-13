@@ -50,8 +50,6 @@ export class AppModule {}
 And you're done! Now, when using Angular `HttpClient`, you can pass the `withCache` function as context, and it'll cache the response:
 
 ```ts
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
 import { withCache } from '@ngneat/cashew';
 
 @Injectable()
@@ -73,7 +71,10 @@ It's as simple as that.
 By default, caching is done to app memory. To switch to using local storage instead simply add:
 
 ```ts
-import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
+import { 
+  HttpCacheInterceptorModule, 
+  useHttpCacheLocalStorage 
+} from '@ngneat/cashew';
 
 @NgModule({
   imports: [HttpClientModule, HttpCacheInterceptorModule.forRoot()],
@@ -84,6 +85,28 @@ export class AppModule {}
 ```
 
 To your `AppModule` providers list. Note that `ttl` will also be calculated via local storage in this instance.
+
+### Versioning 
+When working with `localstorage`, it's recommended to add a version:
+
+```ts
+import { withCache } from '@ngneat/cashew';
+
+@Injectable()
+export class UsersService {
+  constructor(private http: HttpClient) {}
+
+  getUsers() {
+    return this.http.get('api/users', {
+      context: withCache({
+        version: 'v1',
+        key: 'users'
+      })
+    });
+  }
+}
+```
+When you have a breaking change, change the version, and it'll delete the current cache automatically. 
 
 ## Config Options
 
@@ -105,16 +128,6 @@ Defines the caching behavior. The library supports two different strategies:
 ```ts
 HttpCacheInterceptorModule.forRoot({
   strategy: 'explicit'
-});
-```
-
-#### `localStorageKey`
-
-When using local storage for caching, this defines the key where the cache is stored (for ttl - with the "Ttl" suffix): (defaults to 'httpCache')
-
-```ts
-HttpCacheInterceptorModule.forRoot({
-  localStorageKey: string
 });
 ```
 
@@ -150,8 +163,11 @@ Currently, there is no way in Angular to pass `metadata` to an interceptor. The 
 - `ttl` - TTL that will override the global
 - `key` - Custom key. (defaults to the request URL including any query params)
 - `bucket` - The [bucket](#cachebucket) in which we save the keys
-
+- `clearCachePredicate(currentRequest, nextRequest)` - Return `true` to clear the cache for this key
+  
 ```ts
+import { requestDataChanged, withCache } from '@ngneat/cashew';
+
 @Injectable()
 export class UsersService {
   constructor(private http: HttpClient) {}
@@ -163,7 +179,8 @@ export class UsersService {
         context: withCache({
           withCache: false,
           ttl: 40000,
-          key: 'yourkey'
+          key: 'users',
+          clearCachePredicate: requestDataChanged
       })}
     );
   }
