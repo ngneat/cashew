@@ -5,6 +5,6 @@
     "types": []
   },
   "angularCompilerOptions": {
-    "compilationMode": "partial"
+    "enableIvy": false
   }
 }
