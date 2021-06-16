@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.3](https://github.com/ngneat/cashew/compare/v2.0.2...v2.0.3) (2021-06-16)
+
+
+### Bug Fixes
+
+* 🐛 fix default ttl ([991f078](https://github.com/ngneat/cashew/commit/991f0782fc321555a75c115f046ecbde747cbb9a))
+
 ### [2.0.2](https://github.com/ngneat/cashew/compare/v2.0.1...v2.0.2) (2021-06-16)
 
 
