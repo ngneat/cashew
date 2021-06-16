@@ -2,6 +2,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { finalize, share, tap } from 'rxjs/operators';
+import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './cache-config';
 
 import { HttpCacheManager } from './cache-manager.service';
 import { KeySerializer } from './key-serializer';
@@ -21,7 +22,8 @@ export class HttpCacheInterceptor implements HttpInterceptor {
   constructor(
     private httpCacheManager: HttpCacheManager,
     private keySerializer: KeySerializer,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -94,7 +96,7 @@ export class HttpCacheInterceptor implements HttpInterceptor {
         tap(event => {
           if (event instanceof HttpResponse) {
             const cache = this.httpCacheManager._resolveResponse(event);
-            this.httpCacheManager._set(key, cache, +ttl!);
+            this.httpCacheManager._set(key, cache, ttl || this.config.ttl);
           }
         }),
         finalize(() => queue.delete(key)),
