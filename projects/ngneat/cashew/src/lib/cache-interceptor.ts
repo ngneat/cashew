@@ -1,12 +1,12 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { finalize, share, tap } from 'rxjs/operators';
-import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './cache-config';
 
 import { HttpCacheManager } from './cache-manager.service';
 import { KeySerializer } from './key-serializer';
 import { CACHE_CONTEXT } from './cache-context';
+import { isPlatformServer } from '@angular/common';
 
 let log: any;
 
@@ -21,13 +21,13 @@ export class HttpCacheInterceptor implements HttpInterceptor {
   constructor(
     private httpCacheManager: HttpCacheManager,
     private keySerializer: KeySerializer,
-    @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const context = request.context.get(CACHE_CONTEXT);
 
-    if (context === undefined) {
+    if (context === undefined || isPlatformServer(this.platformId)) {
       return next.handle(request);
     }
 
