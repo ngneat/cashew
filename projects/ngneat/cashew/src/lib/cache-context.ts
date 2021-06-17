@@ -14,7 +14,7 @@ export interface ContextOptions {
   ): boolean;
 }
 
-export const CACHE_CONTEXT = new HttpContextToken<ContextOptions | undefined>(() => undefined);
+export const CACHE_CONTEXT = new HttpContextToken<ContextOptions>(() => ({}));
 
 export function withCache(options: ContextOptions = {}) {
   return new HttpContext().set(CACHE_CONTEXT, {

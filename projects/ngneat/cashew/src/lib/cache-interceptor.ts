@@ -29,13 +29,13 @@ export class HttpCacheInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const context = request.context.get(CACHE_CONTEXT);
 
-    if (context === undefined || isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this.platformId)) {
       return next.handle(request);
     }
 
     const key = this.keySerializer.serialize(request, context);
 
-    const { cache, ttl, bucket, clearCachePredicate, version } = context;
+    const { cache = this.config.strategy === 'implicit', ttl, bucket, clearCachePredicate, version } = context;
 
     if (version) {
       const versions = this.httpCacheManager._getVersions();

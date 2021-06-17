@@ -68,9 +68,9 @@ describe('HttpCacheInterceptor', () => {
       httpCacheManager({ ...config, strategy: 'implicit' }),
       keySerializer(),
       {},
-      config
+      { ...config, strategy: 'implicit' }
     );
-    call(request({}));
+    call(httpRequest('GET', {}, 'foo'));
     expect(handler.handle).toHaveBeenCalledTimes(1);
   });
 
@@ -79,9 +79,9 @@ describe('HttpCacheInterceptor', () => {
       httpCacheManager({ ...config, strategy: 'implicit' }),
       keySerializer(),
       {},
-      config
+      { ...config, strategy: 'implicit' }
     );
-    call(request({ cache: false }));
+    call(httpRequest('GET', { context: withCache({ cache: false }) }, 'foo'));
     expect(handler.handle).toHaveBeenCalledTimes(2);
   });
 
