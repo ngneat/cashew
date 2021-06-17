@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.4](https://github.com/ngneat/cashew/compare/v2.0.3...v2.0.4) (2021-06-17)
+
+
+### Bug Fixes
+
+* 🐛 fix implicit regression ([28eb351](https://github.com/ngneat/cashew/commit/28eb351d4adfe2f52c19d3589fb4903f2c3a7c9c)), closes [#40](https://github.com/ngneat/cashew/issues/40)
+
 ### [2.0.3](https://github.com/ngneat/cashew/compare/v2.0.2...v2.0.3) (2021-06-16)
 
 
