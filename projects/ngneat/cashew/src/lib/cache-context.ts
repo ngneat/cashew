@@ -16,8 +16,8 @@ export interface ContextOptions {
 
 export const CACHE_CONTEXT = new HttpContextToken<ContextOptions>(() => ({}));
 
-export function withCache(options: ContextOptions = {}) {
-  return new HttpContext().set(CACHE_CONTEXT, {
+export function withCache(options: ContextOptions = {}, existingHttpContext?: HttpContext) {
+  return (existingHttpContext ?? new HttpContext()).set(CACHE_CONTEXT, {
     cache: true,
     ...options
   });
