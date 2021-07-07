@@ -187,6 +187,27 @@ export class UsersService {
 }
 ```
 
+The `withCache` function accept a second optional argument that allows you to pass an existing `HttpContext`. This allows you to "chain" different functions that return a `HttpContext`.
+
+```ts
+import { withCache } from '@ngneat/cashew';
+import { withLoadingSpinner } from '../with-loading-spinner'; // <= function that adds data to HttpContext
+
+@Injectable()
+export class TodosService {
+  constructor(private http: HttpClient) {}
+
+  getTodos() {
+    return this.http.get(
+      'api/todos',
+      {
+        context: withCache({}, withLoadingSpinner('todos')),
+      }
+    );
+  }
+}
+```
+
 ### CacheManager
 
 The `CacheManager` provider, exposes an API to update and query the cache registry:
