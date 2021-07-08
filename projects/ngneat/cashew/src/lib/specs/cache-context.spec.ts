@@ -7,7 +7,7 @@ describe('withCache', () => {
   it('should reuse existing HttpContext when provided', () => {
     const existingContext = new HttpContext().set(token, 42);
 
-    const result = withCache({ cache: true, ttl: 60000 }, existingContext);
+    const result = withCache({ cache: true, ttl: 60000, context: existingContext });
     expect(result === existingContext).toBeTruthy();
     const allTokens = Array.from(result.keys());
     expect(allTokens.length).toEqual(2);
