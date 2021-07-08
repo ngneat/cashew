@@ -187,7 +187,7 @@ export class UsersService {
 }
 ```
 
-The `withCache` function accept a second optional argument that allows you to pass an existing `HttpContext`. This allows you to "chain" different functions that return a `HttpContext`.
+The `withCache` function accepts a second optional argument that allows you to pass an existing `HttpContext`. This allows you to "chain" different functions that return a `HttpContext`.
 
 ```ts
 import { withCache } from '@ngneat/cashew';
