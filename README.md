@@ -163,7 +163,7 @@ Currently, there is no way in Angular to pass `metadata` to an interceptor. The 
 - `ttl` - TTL that will override the global
 - `key` - Custom key. (defaults to the request URL including any query params)
 - `bucket` - The [bucket](#cachebucket) in which we save the keys
-- `version` - To use when working with `localStorage` (see [Versioning](###Versioning)).
+- `version` - To use when working with `localStorage` (see [Versioning](#Versioning)).
 - `clearCachePredicate(currentRequest, nextRequest)` - Return `true` to clear the cache for this key
 - `context` - Allow chaining function call that returns an `HttpContext`.
   
