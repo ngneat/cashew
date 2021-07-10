@@ -163,7 +163,9 @@ Currently, there is no way in Angular to pass `metadata` to an interceptor. The 
 - `ttl` - TTL that will override the global
 - `key` - Custom key. (defaults to the request URL including any query params)
 - `bucket` - The [bucket](#cachebucket) in which we save the keys
+- `version` - To use when working with `localStorage` (see [Versioning](###Versioning)).
 - `clearCachePredicate(currentRequest, nextRequest)` - Return `true` to clear the cache for this key
+- `context` - Allow chaining function call that returns an `HttpContext`.
   
 ```ts
 import { requestDataChanged, withCache } from '@ngneat/cashew';
@@ -181,17 +183,17 @@ export class UsersService {
           ttl: 40000,
           key: 'users',
           clearCachePredicate: requestDataChanged
-      })}
+        }),
+      }
     );
   }
 }
 ```
 
-The `withCache` function accepts a second optional argument that allows you to pass an existing `HttpContext`. This allows you to "chain" different functions that return a `HttpContext`.
-
+When you need to call another function that returns an `HttpContext`, you can provide the context option.
 ```ts
 import { withCache } from '@ngneat/cashew';
-import { withLoadingSpinner } from '../with-loading-spinner'; // <= function that adds data to HttpContext
+import { withLoadingSpinner } from '@another/library'; // <-- function that returns an HttpContext
 
 @Injectable()
 export class TodosService {
@@ -200,8 +202,10 @@ export class TodosService {
   getTodos() {
     return this.http.get(
       'api/todos',
-      {
-        context: withCache({}, withLoadingSpinner('todos')),
+      { 
+        context: withCache({
+          context: withLoadingSpinner(),
+        }),
       }
     );
   }
