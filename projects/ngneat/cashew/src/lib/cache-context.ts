@@ -12,13 +12,15 @@ export interface ContextOptions {
     nextRequest: HttpRequest<T>,
     key: string
   ): boolean;
+  context?: HttpContext;
 }
 
 export const CACHE_CONTEXT = new HttpContextToken<ContextOptions>(() => ({}));
 
 export function withCache(options: ContextOptions = {}) {
-  return new HttpContext().set(CACHE_CONTEXT, {
+  const { context, ...remainingOptions } = options;
+  return (context ?? new HttpContext()).set(CACHE_CONTEXT, {
     cache: true,
-    ...options
+    ...remainingOptions
   });
 }
