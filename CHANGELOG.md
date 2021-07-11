@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/ngneat/cashew/compare/v2.0.4...v2.1.0) (2021-07-11)
+
+
+### Features
+
+* add doc to readme ([bdfc4a1](https://github.com/ngneat/cashew/commit/bdfc4a1e03f8605cd3342d31e8641cc520ad595e))
+* add new argument to withCache to allow passing an existing context ([0d92fe9](https://github.com/ngneat/cashew/commit/0d92fe9a21871df3b449bc0860cbaeb82dde8450))
+* add unit test ([f4f2b1a](https://github.com/ngneat/cashew/commit/f4f2b1ad8a3660a2bdec1aea4bbc934d7fad36f2))
+
+
+### Bug Fixes
+
+* correct typo ([2c19d79](https://github.com/ngneat/cashew/commit/2c19d79e443d694167a234d1efd662f852e35912))
+
 ### [2.0.4](https://github.com/ngneat/cashew/compare/v2.0.3...v2.0.4) (2021-06-17)
 
 
