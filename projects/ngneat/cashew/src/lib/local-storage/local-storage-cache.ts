@@ -15,7 +15,7 @@ export class HttpCacheLocalStorage extends HttpCacheStorage {
     return super.has(createKey(key)) || !!storage.getItem(createKey(key));
   }
 
-  get(key: string): HttpResponse<any> {
+  get(key: string): HttpResponse<any> | boolean {
     const cacheValue = super.get(createKey(key));
 
     if (cacheValue) {

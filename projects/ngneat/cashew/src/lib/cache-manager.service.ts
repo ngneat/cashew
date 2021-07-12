@@ -33,7 +33,7 @@ export class HttpCacheManager {
   }
 
   get<T = any>(key: string): HttpResponse<T> {
-    return this._resolveResponse<T>(this.storage.get(key)!);
+    return this._resolveResponse<T>(this.storage.get(key)! as HttpResponse<any>);
   }
 
   has(key: string) {
@@ -113,7 +113,7 @@ export class HttpCacheManager {
     return false;
   }
 
-  _set(key: string, response: HttpResponse<any>, ttl: number) {
+  _set(key: string, response: HttpResponse<any> | boolean, ttl: number) {
     this.storage.set(key, response);
     this.ttlManager.set(key, ttl);
   }

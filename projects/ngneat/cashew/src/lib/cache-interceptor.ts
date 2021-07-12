@@ -35,7 +35,15 @@ export class HttpCacheInterceptor implements HttpInterceptor {
 
     const key = this.keySerializer.serialize(request, context);
 
-    const { cache = this.config.strategy === 'implicit', ttl, bucket, clearCachePredicate, version } = context;
+    const {
+      cache = this.config.strategy === 'implicit',
+      ttl,
+      bucket,
+      clearCachePredicate,
+      version,
+      mode,
+      returnSource
+    } = context;
 
     if (version) {
       const versions = this.httpCacheManager._getVersions();
@@ -89,14 +97,18 @@ export class HttpCacheInterceptor implements HttpInterceptor {
           log(`${key} was returned from the cache`);
         }
 
-        return of(this.httpCacheManager.get(key));
+        return mode === 'stateManagement' ? returnSource! : of(this.httpCacheManager.get(key));
       }
 
       const shared = next.handle(request).pipe(
         tap(event => {
           if (event instanceof HttpResponse) {
-            const cache = this.httpCacheManager._resolveResponse(event);
-            this.httpCacheManager._set(key, cache, ttl || this.config.ttl);
+            if (mode === 'stateManagement') {
+              this.httpCacheManager._set(key, true, ttl || this.config.ttl);
+            } else {
+              const cache = this.httpCacheManager._resolveResponse(event);
+              this.httpCacheManager._set(key, cache, ttl || this.config.ttl);
+            }
           }
         }),
         finalize(() => queue.delete(key)),

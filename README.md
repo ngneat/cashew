@@ -18,6 +18,7 @@
 ## Features
 
 ✅ HTTP Caching <br>
+✅ State Management Mode<br>
 ✅ Local Storage Support <br>
 ✅ Handles Simultaneous Requests<br>
 ✅ Automatic & Manual Cache Busting <br>
@@ -65,6 +66,28 @@ export class UsersService {
 ```
 
 It's as simple as that.
+
+## State Management Mode
+When working with state management like `Akita` or `ngrx`, there is no need to save the data both in the cache and in the store because the store is the single source of truth. In such a case, the only thing we want is an indication of whether the data is in the cache.
+
+We can change the mode option to `stateManagement`:
+```ts
+import { withCache } from '@ngneat/cashew';
+
+@Injectable()
+export class UsersService {
+  constructor(private http: HttpClient) {}
+
+  getUsers() {
+    return this.http.get('api/users', {
+      context: withCache({
+        mode: 'stateManagement'
+      })
+    });
+  }
+}
+```
+Now instead of saving the actual response in the cache, it'll save a `boolean` and will return by default an `EMPTY` observable when the `boolean` resolves to `true`. You can change the returned source by using the `returnSource` option.
 
 ## Local Storage
 

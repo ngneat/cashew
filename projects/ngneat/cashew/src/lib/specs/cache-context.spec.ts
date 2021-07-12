@@ -1,4 +1,5 @@
 import { HttpContext, HttpContextToken } from '@angular/common/http';
+import { EMPTY } from 'rxjs';
 import { CACHE_CONTEXT, withCache } from '../cache-context';
 
 describe('withCache', () => {
@@ -11,7 +12,7 @@ describe('withCache', () => {
     expect(result === existingContext).toBeTruthy();
     const allTokens = Array.from(result.keys());
     expect(allTokens.length).toEqual(2);
-    expect(result.get(CACHE_CONTEXT)).toEqual({ cache: true, ttl: 60000 });
+    expect(result.get(CACHE_CONTEXT)).toEqual({ cache: true, ttl: 60000, returnSource: EMPTY });
     expect(result.get(token)).toEqual(42);
   });
 
@@ -20,7 +21,7 @@ describe('withCache', () => {
     expect(result).toBeDefined();
     const allTokens = Array.from(result.keys());
     expect(allTokens.length).toEqual(1);
-    expect(result.get(CACHE_CONTEXT)).toEqual({ cache: true, ttl: 60000 });
+    expect(result.get(CACHE_CONTEXT)).toEqual({ cache: true, ttl: 60000, returnSource: EMPTY });
     expect(result.get(token)).toEqual(0);
   });
 });

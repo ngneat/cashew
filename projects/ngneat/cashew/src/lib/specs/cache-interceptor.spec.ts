@@ -164,6 +164,12 @@ describe('HttpCacheInterceptor', () => {
     expect(handler.handle).toHaveBeenCalledTimes(1);
   });
 
+  it('should work with mode stateManagement', () => {
+    call(request({ cache: true, key: 'foo', mode: 'stateManagement' }), 2);
+    expect(handler.handle).toHaveBeenCalledTimes(1);
+    expect((httpCacheInterceptor as any).httpCacheManager.storage.get('foo')).toEqual(true);
+  });
+
   describe('clearCachePredicate', () => {
     it('should NOT clear the cache when return false', () => {
       call(

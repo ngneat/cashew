@@ -108,6 +108,19 @@ export class TodosComponent {
       });
   }
 
+  stateManagement() {
+    this.http
+      .get('https://jsonplaceholder.typicode.com/todos', {
+        context: withCache({
+          key: 'testState',
+          mode: 'stateManagement'
+        })
+      })
+      .subscribe(res => {
+        console.log(`testState`, res);
+      });
+  }
+
   clearTodosCache() {
     this.manager.delete(this.todosBucket);
   }
