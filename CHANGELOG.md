@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/ngneat/cashew/compare/v2.1.0...v2.2.0) (2021-07-12)
+
+
+### Features
+
+* 🎸 add stateManagement mode ([61c59f8](https://github.com/ngneat/cashew/commit/61c59f8288cb4d27996be5091ec12a2165ae025a))
+
 ## [2.1.0](https://github.com/ngneat/cashew/compare/v2.0.4...v2.1.0) (2021-07-11)
 
 
