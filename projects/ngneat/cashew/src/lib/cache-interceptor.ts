@@ -9,14 +9,6 @@ import { KeySerializer } from './key-serializer';
 import { CACHE_CONTEXT } from './cache-context';
 import { isPlatformServer } from '@angular/common';
 
-let log: any;
-
-// @ts-ignore
-if (process.env.NODE_ENV === 'development') {
-  // @ts-ignore
-  log = require('debug')('http-cache:');
-}
-
 @Injectable()
 export class HttpCacheInterceptor implements HttpInterceptor {
   constructor(
@@ -51,11 +43,6 @@ export class HttpCacheInterceptor implements HttpInterceptor {
 
       if (currentVersion !== version) {
         this.httpCacheManager.delete(key);
-
-        // @ts-ignore
-        if (process.env.NODE_ENV === 'development') {
-          log(`New version for key: ${key}`);
-        }
       }
 
       versions.set(key, version);
@@ -67,11 +54,6 @@ export class HttpCacheInterceptor implements HttpInterceptor {
 
       if (clearCache) {
         this.httpCacheManager.delete(key, { deleteRequests: false, deleteVersions: false });
-
-        // @ts-ignore
-        if (process.env.NODE_ENV === 'development') {
-          log(`clearCachePredicate is true for key: ${key}`);
-        }
       }
     }
 
@@ -83,20 +65,10 @@ export class HttpCacheInterceptor implements HttpInterceptor {
       bucket && bucket.add(key);
 
       if (queue.has(key)) {
-        // @ts-ignore
-        if (process.env.NODE_ENV === 'development') {
-          log(`${key} was returned from the queue`);
-        }
-
         return queue.get(key)!;
       }
 
       if (this.httpCacheManager.validate(key)) {
-        // @ts-ignore
-        if (process.env.NODE_ENV === 'development') {
-          log(`${key} was returned from the cache`);
-        }
-
         return mode === 'stateManagement' ? returnSource! : of(this.httpCacheManager.get(key));
       }
 
