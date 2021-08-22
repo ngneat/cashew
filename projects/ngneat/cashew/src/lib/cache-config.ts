@@ -3,6 +3,7 @@ import { InjectionToken } from '@angular/core';
 export interface HttpCacheConfig {
   strategy: 'implicit' | 'explicit';
   mode: 'stateManagement' | 'cache';
+  skipInterceptorDeclaration?: boolean;
   ttl: number;
   responseSerializer?: (value: any) => any;
 }

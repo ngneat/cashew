@@ -22,7 +22,9 @@ export class HttpCacheInterceptorModule {
         { provide: TTLManager, useClass: DefaultTTLManager },
         { provide: HttpCacheGuard, useClass: DefaultHttpCacheGuard },
         { provide: HttpCacheVersions, useClass: DefaultHttpVersions },
-        { provide: HTTP_INTERCEPTORS, useClass: HttpCacheInterceptor, multi: true },
+        config.skipInterceptorDeclaration
+          ? []
+          : { provide: HTTP_INTERCEPTORS, useClass: HttpCacheInterceptor, multi: true },
         HttpCacheManager,
         RequestsQueue,
         RequestsCache
