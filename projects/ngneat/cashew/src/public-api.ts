@@ -8,3 +8,4 @@ export { CacheBucket } from './lib/cache-bucket';
 export { useHttpCacheLocalStorage } from './lib/local-storage/local-storage-providers';
 export { withCache } from './lib/cache-context';
 export { requestDataChanged } from './lib/utils';
+export { HttpCacheInterceptor } from './lib/cache-interceptor';
