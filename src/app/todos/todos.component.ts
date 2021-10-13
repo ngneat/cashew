@@ -95,7 +95,7 @@ export class TodosComponent {
         })
       })
       .pipe(
-        finalize(() => console.log('finalize called on request 1')),
+        finalize(() => console.log('Request 1 completed')),
         tap(res => {
           console.log(`Todos serial response 1`, res);
         }),
@@ -108,9 +108,13 @@ export class TodosComponent {
           });
         })
       )
-      .subscribe(res => {
-        console.log(`Todos serial response 2`, res);
-      });
+      .subscribe(
+        res => {
+          console.log(`Todos serial response 2`, res);
+        },
+        undefined,
+        () => console.log('Request 2 completed')
+      );
   }
 
   loadTodoFour() {
