@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CacheBucket, HttpCacheManager, withCache } from '@ngneat/cashew';
+import { finalize, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-todos',
@@ -82,6 +83,33 @@ export class TodosComponent {
       })
       .subscribe(res => {
         console.log(`Todos Simultaneous`, res);
+      });
+  }
+
+  loadSerially() {
+    console.log(`Calling serial todos request 1`);
+    this.http
+      .get('https://jsonplaceholder.typicode.com/todos', {
+        context: withCache({
+          key: 'Serial'
+        })
+      })
+      .pipe(
+        finalize(() => console.log('finalize called on request 1')),
+        tap(res => {
+          console.log(`Todos serial response 1`, res);
+        }),
+        switchMap(() => {
+          console.log(`Calling serial todos request 2`);
+          return this.http.get('https://jsonplaceholder.typicode.com/todos', {
+            context: withCache({
+              key: 'Serial'
+            })
+          });
+        })
+      )
+      .subscribe(res => {
+        console.log(`Todos serial response 2`, res);
       });
   }
 
