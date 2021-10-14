@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.3.2](https://github.com/ngneat/cashew/compare/v2.3.1...v2.3.2) (2021-10-14)
+
+
+### Bug Fixes
+
+* empty observable returned when request repeated inside subscriber ([cfb2871](https://github.com/ngneat/cashew/commit/cfb287131824c2ec0739088a3f6b151375c4df03)), closes [#48](https://github.com/ngneat/cashew/issues/48)
+* log completion of both observables ([50469b4](https://github.com/ngneat/cashew/commit/50469b4112fa5aa913a60d1bbe002adccadfb999))
+
+
+### Tests
+
+* empty observable returned when request repeated by subscriber ([382a726](https://github.com/ngneat/cashew/commit/382a726d62f1248d07b135c2033857f066dba142))
+
 ### [2.3.1](https://github.com/ngneat/cashew/compare/v2.3.0...v2.3.1) (2021-08-22)
 
 
