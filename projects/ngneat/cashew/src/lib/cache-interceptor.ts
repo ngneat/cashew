@@ -1,7 +1,7 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { finalize, share, tap } from 'rxjs/operators';
+import { share, tap } from 'rxjs/operators';
 import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './cache-config';
 
 import { HttpCacheManager } from './cache-manager.service';
@@ -73,17 +73,20 @@ export class HttpCacheInterceptor implements HttpInterceptor {
       }
 
       const shared = next.handle(request).pipe(
-        tap(event => {
-          if (event instanceof HttpResponse) {
-            if (mode === 'stateManagement') {
-              this.httpCacheManager._set(key, true, ttl || this.config.ttl);
-            } else {
-              const cache = this.httpCacheManager._resolveResponse(event);
-              this.httpCacheManager._set(key, cache, ttl || this.config.ttl);
+        tap(
+          event => {
+            if (event instanceof HttpResponse) {
+              if (mode === 'stateManagement') {
+                this.httpCacheManager._set(key, true, ttl || this.config.ttl);
+              } else {
+                const cache = this.httpCacheManager._resolveResponse(event);
+                this.httpCacheManager._set(key, cache, ttl || this.config.ttl);
+              }
+              queue.delete(key);
             }
-          }
-        }),
-        finalize(() => queue.delete(key)),
+          },
+          err => queue.delete(key)
+        ),
         share()
       );
 
