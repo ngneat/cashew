@@ -87,7 +87,6 @@ export class TodosComponent {
   }
 
   loadSerially() {
-    console.log(`Calling serial todos request 1`);
     this.http
       .get('https://jsonplaceholder.typicode.com/todos', {
         context: withCache({
@@ -95,12 +94,8 @@ export class TodosComponent {
         })
       })
       .pipe(
-        finalize(() => console.log('Request 1 completed')),
-        tap(res => {
-          console.log(`Todos serial response 1`, res);
-        }),
+        tap(res => console.log(`Todos serial response 1`, res)),
         switchMap(() => {
-          console.log(`Calling serial todos request 2`);
           return this.http.get('https://jsonplaceholder.typicode.com/todos', {
             context: withCache({
               key: 'Serial'
@@ -108,13 +103,7 @@ export class TodosComponent {
           });
         })
       )
-      .subscribe(
-        res => {
-          console.log(`Todos serial response 2`, res);
-        },
-        undefined,
-        () => console.log('Request 2 completed')
-      );
+      .subscribe(res => console.log(`Todos serial response 2`, res));
   }
 
   loadTodoFour() {
