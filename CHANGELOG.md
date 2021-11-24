@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/ngneat/cashew/compare/v2.3.2...v3.0.0) (2021-11-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* 🧨 Peer dep of Angular v13
+
+### Features
+
+* 🎸 upgrade to angular 13 ([b52d62e](https://github.com/ngneat/cashew/commit/b52d62ebb8f25554178013bc7134bb434e2e121b))
+
 ### [2.3.2](https://github.com/ngneat/cashew/compare/v2.3.1...v2.3.2) (2021-10-14)
 
 
