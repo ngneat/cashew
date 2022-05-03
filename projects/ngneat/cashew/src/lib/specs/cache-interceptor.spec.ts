@@ -174,7 +174,7 @@ describe('HttpCacheInterceptor', () => {
     it('should NOT clear the cache when return false', () => {
       call(
         request({
-          clearCachePredicate<T>(previousRequest: HttpRequest<T>, currentRequest: HttpRequest<T>): boolean {
+          clearCachePredicate<T>(previousRequest: HttpRequest<T> | undefined, currentRequest: HttpRequest<T>): boolean {
             expect(currentRequest).toBeInstanceOf(HttpRequest);
             return false;
           }
