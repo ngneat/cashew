@@ -10,8 +10,8 @@ export interface ContextOptions {
   bucket?: CacheBucket;
   version?: string;
   clearCachePredicate?<T>(
-    currentRequest: HttpRequest<T> | undefined,
-    nextRequest: HttpRequest<T>,
+    previousRequest: HttpRequest<T> | undefined,
+    currentRequest: HttpRequest<T>,
     key: string
   ): boolean;
   context?: HttpContext;
