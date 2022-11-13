@@ -45,8 +45,8 @@ export class HttpCacheLocalStorage extends HttpCacheStorage {
 
   clear() {
     super.forEach((value, key) => {
-      super.delete(createKey(key));
-      storage.clearItem(createKey(key));
+      super.delete(key);
+      storage.clearItem(key);
     });
   }
 }

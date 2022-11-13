@@ -52,8 +52,8 @@ export class LocalStorageTTLManager extends TTLManager {
 
   clear() {
     this.ttl.forEach((_: any, key: string) => {
-      this.ttl.delete(createKey(key));
-      storage.clearItem(createKey(key));
+      this.ttl.delete(key);
+      storage.clearItem(key);
     });
   }
 }

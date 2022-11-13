@@ -38,10 +38,12 @@ describe('localStorageTtlManager', () => {
 
   describe('delete', () => {
     it('should clear storage when call without a key', () => {
-      ttlManager.set('foo', 33);
+      const key = 'foo';
+      ttlManager.set(key, 33);
       jest.spyOn(localStorage, 'removeItem');
       ttlManager.clear();
       expect(localStorage.removeItem).toHaveBeenCalled();
+      expect(ttlManager.has(key)).toBeFalsy();
     });
 
     it('should call delete when given key', () => {
@@ -50,6 +52,7 @@ describe('localStorageTtlManager', () => {
       ttlManager.delete('key');
       expect((ttlManager as any).ttl.delete).toHaveBeenCalled();
       expect(localStorage.removeItem).toHaveBeenCalled();
+      expect(ttlManager.has('key')).toBeFalsy();
     });
   });
 });
