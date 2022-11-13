@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/ngneat/cashew/compare/v3.0.0...v3.1.0) (2022-11-13)
+
+
+### Features
+
+* 🎸 upgarde to ng14 ([19f878f](https://github.com/ngneat/cashew/commit/19f878f4b2816b2d2b933d1916557682c8b435b2)), closes [#79](https://github.com/ngneat/cashew/issues/79)
+* export cache storage ([735e1cb](https://github.com/ngneat/cashew/commit/735e1cb26f52a1a8f141ca1ef2b734d606e6d47c))
+
+
+### Bug Fixes
+
+* **http:** should allow undefined as type ([c31eff1](https://github.com/ngneat/cashew/commit/c31eff1349b5a9f48d67729023e944e0c1b30e01))
+* **local-storage:** removes duplicate createKey calls ([f97baa3](https://github.com/ngneat/cashew/commit/f97baa3ba640bfefdc209885724608b54052c6a1))
+
+
+### Tests
+
+* 💍 fix specs run ([43c4789](https://github.com/ngneat/cashew/commit/43c47895643204fa3ccc14907060842a02bd4fa2))
+
 ## [3.0.0](https://github.com/ngneat/cashew/compare/v2.3.2...v3.0.0) (2021-11-24)
 
 
