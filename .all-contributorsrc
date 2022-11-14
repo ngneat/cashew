@@ -87,6 +87,15 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "fasidOnGit",
+      "name": "Kader Fasid",
+      "avatar_url": "https://avatars.githubusercontent.com/u/27940795?v=4",
+      "profile": "https://github.com/fasidOnGit",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
