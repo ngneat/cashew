@@ -41,13 +41,11 @@ export class HttpCacheLocalStorage extends HttpCacheStorage {
     const generatedKey = createKey(key);
 
     const httpResponse: any = { ...response, headers: {} };
-    if (response.headers instanceof HttpHeaders) {
-      response.headers.keys().forEach(headerKey => {
-        httpResponse.headers[headerKey] = response.headers.get(headerKey);
-      });
-    }
+    response.headers.keys().forEach(headerKey => {
+      httpResponse.headers[headerKey] = response.headers.get(headerKey);
+    });
 
-    storage.setItem(generatedKey, response);
+    storage.setItem(generatedKey, httpResponse);
 
     return super.set(generatedKey, response);
   }

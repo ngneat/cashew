@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { CacheBucket } from '../cache-bucket';
 import { defaultConfig } from '../cache-config';
 import { DefaultHttpCacheGuard } from '../cache-guard';
@@ -16,11 +16,10 @@ export const ttl = config.ttl;
 
 export const httpRequest = (method: string = 'GET', options: any = {}, url: string = 'api/mock') =>
   new HttpRequest(method, url, {}, options);
-export const httpResponse = () => {
-  const response = new HttpResponse();
-  response.headers.set('test', 'test');
-  return response;
-};
+export const httpResponse = () =>
+  new HttpResponse({
+    headers: new HttpHeaders().set('test', 'test')
+  });
 export const requestQueue = () => new RequestsQueue();
 export const cacheBucket = () => new CacheBucket();
 export const httpCacheStorage = () => new DefaultHttpCacheStorage();
