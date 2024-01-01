@@ -16,7 +16,11 @@ export const ttl = config.ttl;
 
 export const httpRequest = (method: string = 'GET', options: any = {}, url: string = 'api/mock') =>
   new HttpRequest(method, url, {}, options);
-export const httpResponse = () => new HttpResponse();
+export const httpResponse = () => {
+  const response = new HttpResponse();
+  response.headers.set('test', 'test');
+  return response;
+};
 export const requestQueue = () => new RequestsQueue();
 export const cacheBucket = () => new CacheBucket();
 export const httpCacheStorage = () => new DefaultHttpCacheStorage();
