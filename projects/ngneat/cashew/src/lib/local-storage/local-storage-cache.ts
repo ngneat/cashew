@@ -30,6 +30,7 @@ export class HttpCacheLocalStorage extends HttpCacheStorage {
 
     if (value) {
       value.headers = new HttpHeaders(value.headers);
+      value.headers.init();
       const response = new HttpResponse(value);
       super.set(generatedKey, response);
     }
