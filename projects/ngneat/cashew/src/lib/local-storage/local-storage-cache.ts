@@ -1,4 +1,4 @@
-import { HttpResponse } from '@angular/common/http';
+import { HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HttpCacheStorage } from '../cache-storage';
 import { storage } from './local-storage';
@@ -12,35 +12,51 @@ function createKey(key: string) {
 @Injectable()
 export class HttpCacheLocalStorage extends HttpCacheStorage {
   has(key: string): boolean {
-    return super.has(createKey(key)) || !!storage.getItem(createKey(key));
+    const generatedKey = createKey(key);
+
+    return super.has(generatedKey) || !!storage.getItem(generatedKey);
   }
 
   get(key: string): HttpResponse<any> | boolean {
-    const cacheValue = super.get(createKey(key));
+    const generatedKey = createKey(key);
+
+    const cacheValue = super.get(generatedKey);
 
     if (cacheValue) {
       return cacheValue;
     }
 
-    const value = storage.getItem(createKey(key));
+    const value = storage.getItem(generatedKey);
 
     if (value) {
-      super.set(createKey(key), new HttpResponse(value));
+      value.headers = new HttpHeaders(value.headers);
+      value.headers.init();
+      const response = new HttpResponse(value);
+      super.set(generatedKey, response);
     }
 
-    return super.get(createKey(key))!;
+    return super.get(generatedKey)!;
   }
 
   set(key: string, response: HttpResponse<any>) {
-    storage.setItem(createKey(key), response);
+    const generatedKey = createKey(key);
 
-    return super.set(createKey(key), response);
+    const httpResponse: any = { ...response, headers: {} };
+    response.headers.keys().forEach(headerKey => {
+      httpResponse.headers[headerKey] = response.headers.get(headerKey);
+    });
+
+    storage.setItem(generatedKey, httpResponse);
+
+    return super.set(generatedKey, response);
   }
 
   delete(key: string) {
-    storage.clearItem(createKey(key));
+    const generatedKey = createKey(key);
 
-    return super.delete(createKey(key));
+    storage.clearItem(generatedKey);
+
+    return super.delete(generatedKey);
   }
 
   clear() {

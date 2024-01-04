@@ -1,5 +1,6 @@
 import { httpResponse, localStorageMock } from './mocks';
 import { HttpCacheLocalStorage } from '../local-storage/local-storage-cache';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 describe('httpCacheLocalStorage', () => {
   let storage: HttpCacheLocalStorage;
@@ -26,6 +27,12 @@ describe('httpCacheLocalStorage', () => {
   describe('get', () => {
     it('should get the cached response', () => {
       expect(storage.get(existingKey)).toBe(response);
+    });
+
+    it('should get the cached response headers', () => {
+      const { headers } = storage.get(existingKey) as HttpResponse<any>;
+      expect(headers).toBeInstanceOf(HttpHeaders);
+      expect(headers).toBe(response.headers);
     });
 
     it('should not access local storage when key is found in memory', () => {
