@@ -8,9 +8,16 @@ import { TodosComponent } from './todos/todos.component';
 import { HttpCacheInterceptorModule, useHttpCacheLocalStorage } from '@ngneat/cashew';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, TodosComponent],
+  declarations: [AppComponent],
   // providers: [useHttpCacheLocalStorage],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule, HttpCacheInterceptorModule.forRoot()],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    HttpCacheInterceptorModule.forRoot(),
+    HomeComponent,
+    TodosComponent
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -1,17 +1,21 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CacheBucket, HttpCacheManager, withCache } from '@ngneat/cashew';
-import { finalize, switchMap, tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-todos',
   templateUrl: './todos.component.html',
-  styleUrls: ['./todos.component.scss']
+  styleUrls: ['./todos.component.scss'],
+  standalone: true
 })
 export class TodosComponent {
   todosBucket = new CacheBucket();
 
-  constructor(private http: HttpClient, private manager: HttpCacheManager) {}
+  constructor(
+    private http: HttpClient,
+    private manager: HttpCacheManager
+  ) {}
 
   getById(id: number) {
     this.http
