@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/ngneat/cashew/compare/v3.1.0...v4.0.0) (2024-01-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* 🧨 The peer dependency is now Angular v17. See the docs to learn how to
+provide the new provide functions in your bootstrapApplication
+providers.
+
+### Features
+
+* 🎸 upgrade to ng17 ([3e92e8e](https://github.com/ngneat/cashew/commit/3e92e8e994e8919e5a4e013951d5a9e20ba6c75b))
+* 🎸 upgrade to ng17 ([6fa3808](https://github.com/ngneat/cashew/commit/6fa38082412f5e9f8caf83f659dea9c27e411f14))
+* **test:** add response headers tests ([77ee031](https://github.com/ngneat/cashew/commit/77ee031ce947489878ce689949d63dfa3839b640))
+
+
+### Bug Fixes
+
+* init must be called manually on headers when no getter is used ([34656f3](https://github.com/ngneat/cashew/commit/34656f343b96057f9e9a9c8845cd0cf71a4be105))
+* **local-storage:** set http headers correctly ([f2571c5](https://github.com/ngneat/cashew/commit/f2571c5c8d35ca2cb37c73b5146b68b27e793edd))
+* **test:** headers not correctly set in mock and saved in map storage ([fbc5840](https://github.com/ngneat/cashew/commit/fbc584026291c3cdacba2abbaf0617123f3fa4b4))
+
 ## [3.1.0](https://github.com/ngneat/cashew/compare/v3.0.0...v3.1.0) (2022-11-13)
 
 
