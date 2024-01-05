@@ -34,18 +34,14 @@ $ npm install @ngneat/cashew
 
 ## Usage
 
-Inject the `HttpCacheInterceptorModule` module along with `HttpClientModule` into you root module:
+Use the `provideHttpCache` provider along with `withHttpCacheInterceptor` in your application providers:
 
 ```ts
-import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpCacheInterceptorModule } from '@ngneat/cashew';
+import { provideHttpCache, withHttpCacheInterceptor } from '@ngneat/cashew';
 
-@NgModule({
-  imports: [HttpClientModule, HttpCacheInterceptorModule.forRoot()],
-  bootstrap: [AppComponent]
-})
-export class AppModule {}
+bootstrapApplication(AppComponent, {
+  providers: [provideHttpClient(withInterceptors([withHttpCacheInterceptor()])), provideHttpCache()]
+});
 ```
 
 And you're done! Now, when using Angular `HttpClient`, you can pass the `withCache` function as context, and it'll cache the response:
@@ -68,9 +64,11 @@ export class UsersService {
 It's as simple as that.
 
 ## State Management Mode
+
 When working with state management like `Akita` or `ngrx`, there is no need to save the data both in the cache and in the store because the store is the single source of truth. In such a case, the only thing we want is an indication of whether the data is in the cache.
 
 We can change the mode option to `stateManagement`:
+
 ```ts
 import { withCache } from '@ngneat/cashew';
 
@@ -87,6 +85,7 @@ export class UsersService {
   }
 }
 ```
+
 Now instead of saving the actual response in the cache, it'll save a `boolean` and will return by default an `EMPTY` observable when the `boolean` resolves to `true`. You can change the returned source by using the `returnSource` option.
 
 ## Local Storage
@@ -94,22 +93,21 @@ Now instead of saving the actual response in the cache, it'll save a `boolean` a
 By default, caching is done to app memory. To switch to using local storage instead simply add:
 
 ```ts
-import { 
-  HttpCacheInterceptorModule, 
-  useHttpCacheLocalStorage 
-} from '@ngneat/cashew';
+import { provideHttpCache, withHttpCacheInterceptor, provideHttpCacheLocalStorageStrategy } from '@ngneat/cashew';
 
-@NgModule({
-  imports: [HttpClientModule, HttpCacheInterceptorModule.forRoot()],
-  providers: [useHttpCacheLocalStorage],
-  bootstrap: [AppComponent]
-})
-export class AppModule {}
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideHttpClient(withInterceptors([withHttpCacheInterceptor()])),
+    provideHttpCache(),
+    provideHttpCacheLocalStorageStrategy()
+  ]
+});
 ```
 
-To your `AppModule` providers list. Note that `ttl` will also be calculated via local storage in this instance.
+To your providers list. Note that `ttl` will also be calculated via local storage in this instance.
 
-### Versioning 
+### Versioning
+
 When working with `localstorage`, it's recommended to add a version:
 
 ```ts
@@ -129,15 +127,18 @@ export class UsersService {
   }
 }
 ```
-When you have a breaking change, change the version, and it'll delete the current cache automatically. 
+
+When you have a breaking change, change the version, and it'll delete the current cache automatically.
 
 ## Config Options
 
-Using the library, you might need to change the default behavior of the caching mechanism. You could do that by passing a configuration (a partial `HttpCacheConfig` object) to the static `forRoot` method of the `HttpCacheInterceptorModule` module.
+Using the library, you might need to change the default behavior of the caching mechanism. You could do that by passing a configuration to the `provideHttpCache` function:
 
 ```ts
-{ provide: HTTP_CACHE_CONFIG, useValue: cashewConfig(config) }
-``` 
+bootstrapApplication(AppComponent, {
+  providers: [provideHttpClient(withInterceptors([withHttpCacheInterceptor()])), provideHttpCache(config)]
+});
+```
 
 Let's go over each of the configuration options:
 
@@ -149,8 +150,11 @@ Defines the caching behavior. The library supports two different strategies:
 - `implicit` - caches API requests that are of type `GET` and the response type is `JSON`. You can change this behavior by overriding the `HttpCacheGuard` provider. (See the [Hackable](#hack-the-library) section)
 
 ```ts
-HttpCacheInterceptorModule.forRoot({
-  strategy: 'explicit'
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideHttpClient(withInterceptors([withHttpCacheInterceptor()])),
+    provideHttpCache({ strategy: 'implicit' })
+  ]
 });
 ```
 
@@ -159,8 +163,8 @@ HttpCacheInterceptorModule.forRoot({
 Define the cache TTL (time to live) in milliseconds: (defaults to one hour)
 
 ```ts
-HttpCacheInterceptorModule.forRoot({
-  ttl: number
+bootstrapApplication(AppComponent, {
+  providers: [provideHttpClient(withInterceptors([withHttpCacheInterceptor()])), provideHttpCache({ ttl: number })]
 });
 ```
 
@@ -169,10 +173,15 @@ HttpCacheInterceptorModule.forRoot({
 By default, the registry returns the `original` response object. It can be dangerous if, for some reason, you mutate it. To change this behavior, you can clone the response before getting it:
 
 ```ts
-HttpCacheInterceptorModule.forRoot({
-  responseSerializer(body) {
-    return cloneDeep(body);
-  }
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideHttpClient(withInterceptors([withHttpCacheInterceptor()])),
+    provideHttpCache({
+      responseSerializer(body) {
+        return cloneDeep(body);
+      }
+    })
+  ]
 });
 ```
 
@@ -189,7 +198,7 @@ Currently, there is no way in Angular to pass `metadata` to an interceptor. The 
 - `version` - To use when working with `localStorage` (see [Versioning](#Versioning)).
 - `clearCachePredicate(previousRequest, currentRequest)` - Return `true` to clear the cache for this key
 - `context` - Allow chaining function call that returns an `HttpContext`.
-  
+
 ```ts
 import { requestDataChanged, withCache } from '@ngneat/cashew';
 
@@ -198,22 +207,20 @@ export class UsersService {
   constructor(private http: HttpClient) {}
 
   getUsers() {
-    return this.http.get(
-      'api/users',
-      { 
-        context: withCache({
-          withCache: false,
-          ttl: 40000,
-          key: 'users',
-          clearCachePredicate: requestDataChanged
-        }),
-      }
-    );
+    return this.http.get('api/users', {
+      context: withCache({
+        withCache: false,
+        ttl: 40000,
+        key: 'users',
+        clearCachePredicate: requestDataChanged
+      })
+    });
   }
 }
 ```
 
 When you need to call another function that returns an `HttpContext`, you can provide the context option.
+
 ```ts
 import { withCache } from '@ngneat/cashew';
 import { withLoadingSpinner } from '@another/library'; // <-- function that returns an HttpContext
@@ -223,14 +230,11 @@ export class TodosService {
   constructor(private http: HttpClient) {}
 
   getTodos() {
-    return this.http.get(
-      'api/todos',
-      { 
-        context: withCache({
-          context: withLoadingSpinner(),
-        }),
-      }
-    );
+    return this.http.get('api/todos', {
+      context: withCache({
+        context: withLoadingSpinner()
+      })
+    });
   }
 }
 ```
@@ -255,17 +259,17 @@ import { withCache, CacheBucket } from '@ngneat/cashew';
 export class TodosService {
   todosBucket = new CacheBucket();
 
-  constructor(private http: HttpClient, private manager: HttpCacheManager) {}
+  constructor(
+    private http: HttpClient,
+    private manager: HttpCacheManager
+  ) {}
 
   getTodo(id) {
-    return this.http.get(
-      `todos/${id}`,
-      {
-        context: withCache({
-          bucket: this.todosBucket
-        })
-      }
-    );
+    return this.http.get(`todos/${id}`, {
+      context: withCache({
+        bucket: this.todosBucket
+      })
+    });
   }
 
   invalidateTodos() {

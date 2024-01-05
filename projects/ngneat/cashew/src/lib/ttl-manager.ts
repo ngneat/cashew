@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@angular/core';
-import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './cache-config';
+import { Injectable } from '@angular/core';
+import { injectCacheConfig } from './cache-config';
 
 export abstract class TTLManager extends Map<string, number> {
   abstract isValid(key: string): boolean;
@@ -7,9 +7,7 @@ export abstract class TTLManager extends Map<string, number> {
 
 @Injectable()
 export class DefaultTTLManager extends TTLManager {
-  constructor(@Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig) {
-    super();
-  }
+  private config = injectCacheConfig();
 
   isValid(key: string): boolean {
     return this.get(key)! > new Date().getTime();

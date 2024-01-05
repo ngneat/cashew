@@ -1,6 +1,6 @@
 import { HttpRequest, HttpResponse } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { HTTP_CACHE_CONFIG, HttpCacheConfig } from './cache-config';
+import { Injectable, inject } from '@angular/core';
+import { injectCacheConfig } from './cache-config';
 import { HttpCacheStorage } from './cache-storage';
 import { TTLManager } from './ttl-manager';
 import { HttpCacheGuard } from './cache-guard';
@@ -11,15 +11,13 @@ import { HttpCacheVersions } from './versions';
 
 @Injectable()
 export class HttpCacheManager {
-  constructor(
-    private queue: RequestsQueue,
-    private storage: HttpCacheStorage,
-    private guard: HttpCacheGuard,
-    private ttlManager: TTLManager,
-    private requests: RequestsCache,
-    private version: HttpCacheVersions,
-    @Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig
-  ) {}
+  private config = injectCacheConfig();
+  private queue = inject(RequestsQueue);
+  private storage = inject(HttpCacheStorage);
+  private guard = inject(HttpCacheGuard);
+  private ttlManager = inject(TTLManager);
+  private requests = inject(RequestsCache);
+  private version = inject(HttpCacheVersions);
 
   validate(key: string) {
     const has = this.storage.has(key);

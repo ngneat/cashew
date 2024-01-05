@@ -1,14 +1,18 @@
 import { DefaultTTLManager, TTLManager } from '../ttl-manager';
+import * as cacheConfig from '../cache-config';
 import { config } from './mocks';
 
 jest.useFakeTimers();
 
 describe('ttlManager', () => {
   let ttlManager: TTLManager;
-  const ttl = 1000;
+
+  beforeAll(() => {
+    jest.spyOn(cacheConfig, 'injectCacheConfig').mockReturnValue(config);
+  });
 
   beforeEach(() => {
-    ttlManager = new DefaultTTLManager(config);
+    ttlManager = new DefaultTTLManager();
   });
 
   describe('valid', () => {
@@ -31,7 +35,7 @@ describe('ttlManager', () => {
 
     it('should use the config ttl if non has been passed', () => {
       jest.spyOn(Date.prototype, 'setMilliseconds');
-      ttlManager.set('key', undefined);
+      ttlManager.set('key', undefined as any);
       expect(Date.prototype.setMilliseconds).toHaveBeenCalledWith(config.ttl);
     });
   });

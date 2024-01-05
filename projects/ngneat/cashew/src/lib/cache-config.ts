@@ -1,9 +1,8 @@
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, inject, makeEnvironmentProviders } from '@angular/core';
 
 export interface HttpCacheConfig {
   strategy: 'implicit' | 'explicit';
   mode: 'stateManagement' | 'cache';
-  skipInterceptorDeclaration?: boolean;
   ttl: number;
   responseSerializer?: (value: any) => any;
 }
@@ -15,3 +14,7 @@ export const defaultConfig: HttpCacheConfig = {
 };
 
 export const HTTP_CACHE_CONFIG = new InjectionToken<HttpCacheConfig>('HTTP_CACHE_CONFIG');
+
+export function injectCacheConfig() {
+  return inject(HTTP_CACHE_CONFIG);
+}

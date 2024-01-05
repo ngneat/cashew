@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@angular/core';
-import { HTTP_CACHE_CONFIG, HttpCacheConfig } from '../cache-config';
+import { Injectable } from '@angular/core';
+import { injectCacheConfig } from '../cache-config';
 import { DefaultTTLManager, TTLManager } from '../ttl-manager';
 import { storage } from './local-storage';
 
@@ -11,12 +11,8 @@ function createKey(key: string) {
 
 @Injectable()
 export class LocalStorageTTLManager extends TTLManager {
-  private readonly ttl: DefaultTTLManager;
-
-  constructor(@Inject(HTTP_CACHE_CONFIG) private config: HttpCacheConfig) {
-    super();
-    this.ttl = new DefaultTTLManager(config);
-  }
+  private readonly ttl = new DefaultTTLManager();
+  private config = injectCacheConfig();
 
   isValid(key: string): boolean {
     const valid = this.ttl.isValid(createKey(key));

@@ -7,8 +7,6 @@ import { DefaultHttpCacheStorage } from '../cache-storage';
 import { DefaultKeySerializer } from '../key-serializer';
 import { RequestsQueue } from '../requests-queue';
 import { DefaultTTLManager } from '../ttl-manager';
-import { RequestsCache } from '../requests-cache';
-import { LocalStorageVersionsManager } from '../local-storage/local-storage-versions';
 
 export const frame = 1000;
 export const config = defaultConfig;
@@ -24,18 +22,9 @@ export const requestQueue = () => new RequestsQueue();
 export const cacheBucket = () => new CacheBucket();
 export const httpCacheStorage = () => new DefaultHttpCacheStorage();
 export const httpCacheGuard = () => new DefaultHttpCacheGuard();
-export const ttlManager = (conf = config) => new DefaultTTLManager(conf);
+export const ttlManager = (conf = config) => new DefaultTTLManager();
 export const keySerializer = () => new DefaultKeySerializer();
-export const httpCacheManager = (conf = config) =>
-  new HttpCacheManager(
-    requestQueue(),
-    httpCacheStorage(),
-    httpCacheGuard(),
-    ttlManager(conf),
-    new RequestsCache(),
-    new LocalStorageVersionsManager(),
-    conf
-  );
+export const httpCacheManager = (conf = config) => new HttpCacheManager();
 
 let store = {} as Record<any, any>;
 

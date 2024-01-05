@@ -1,12 +1,10 @@
 export { DefaultKeySerializer, KeySerializer } from './lib/key-serializer';
 export { HttpCacheManager } from './lib/cache-manager.service';
 export { HttpCacheGuard, DefaultHttpCacheGuard } from './lib/cache-guard';
-export { HTTP_CACHE_CONFIG } from './lib/cache-config';
 export { TTLManager, DefaultTTLManager } from './lib/ttl-manager';
-export { HttpCacheInterceptorModule } from './lib/cache-interceptor.module';
+export { provideHttpCache, withHttpCacheInterceptor } from './lib/cache-interceptor.providers';
 export { CacheBucket } from './lib/cache-bucket';
-export { useHttpCacheLocalStorage } from './lib/local-storage/local-storage-providers';
+export { provideHttpCacheLocalStorageStrategy } from './lib/local-storage/local-storage-providers';
 export { withCache } from './lib/cache-context';
 export { requestDataChanged } from './lib/utils';
-export { HttpCacheInterceptor } from './lib/cache-interceptor';
 export { HttpCacheStorage } from './lib/cache-storage';

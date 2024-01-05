@@ -1,5 +1,6 @@
 import { config, localStorageMock } from './mocks';
 import { LocalStorageTTLManager } from '../local-storage/local-storage-ttl';
+import * as cacheConfig from '../cache-config';
 
 jest.useFakeTimers();
 
@@ -7,8 +8,12 @@ describe('localStorageTtlManager', () => {
   let ttlManager: LocalStorageTTLManager;
   localStorageMock();
 
+  beforeAll(() => {
+    jest.spyOn(cacheConfig, 'injectCacheConfig').mockReturnValue(config);
+  });
+
   beforeEach(() => {
-    ttlManager = new LocalStorageTTLManager(config);
+    ttlManager = new LocalStorageTTLManager();
   });
 
   describe('valid', () => {
