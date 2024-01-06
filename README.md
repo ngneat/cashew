@@ -321,6 +321,16 @@ abstract class TTLManager {
 }
 ```
 
+## Compatability matrix
+
+| Cashew | Angular |
+|--------|---------|
+| ^4.0.0 | ^17.0.0 |
+| 3.1.0  | >13.0.0 < 17 |
+| 3.0.0  | ^13.0.0 |
+| ^2.0.0 | ^12.0.0 |
+| ^1.0.0 | ^10.0.0 |
+
 ## Contributors ✨
 
 Thanks go to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
