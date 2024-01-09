@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/ngneat/cashew/compare/v4.0.0...v4.1.0) (2024-01-09)
+
+
+### Features
+
+* allow numeric values as CacheContextKey ([1047971](https://github.com/ngneat/cashew/commit/1047971296fb4f7e705be34e75733424a264345e))
+
 ## [4.0.0](https://github.com/ngneat/cashew/compare/v3.1.0...v4.0.0) (2024-01-05)
 
 
