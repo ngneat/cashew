@@ -8,27 +8,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
-    strategy:
-      fail-fast: true
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/cache@v1
-        id: npm-cache
+      - name: Npm install
+        uses: actions/setup-node@v3
         with:
-          path: node_modules
-          key: ${{ runner.os }}-v1-npm-${{ hashFiles('./package-lock.json') }}
-          restore-keys: ${{ runner.os }}-v1-npm
-
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 14.15
-
-      - name: Install dependencies
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci
+          node-version: 18
+          cache: 'npm'
+      - run: npm i
 
       - name: Test
         run: npm run test:lib
