@@ -6,7 +6,7 @@
 
 <br />
 
-[![Build Status](https://img.shields.io/travis/datorama/akita.svg?style=flat-square)](https://travis-ci.org/ngneat/cashew)
+[![@ngneat/cashew](https://github.com/ngneat/cashew/actions/workflows/ci.yml/badge.svg)](https://github.com/ngneat/cashew/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat-square)]()
 [![coc-badge](https://img.shields.io/badge/codeof-conduct-ff69b4.svg?style=flat-square)]()
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
@@ -323,13 +323,13 @@ abstract class TTLManager {
 
 ## Compatability matrix
 
-| Cashew | Angular |
-|--------|---------|
-| ^4.0.0 | ^17.0.0 |
+| Cashew | Angular      |
+| ------ | ------------ |
+| ^4.0.0 | ^17.0.0      |
 | 3.1.0  | >13.0.0 < 17 |
-| 3.0.0  | ^13.0.0 |
-| ^2.0.0 | ^12.0.0 |
-| ^1.0.0 | ^10.0.0 |
+| 3.0.0  | ^13.0.0      |
+| ^2.0.0 | ^12.0.0      |
+| ^1.0.0 | ^10.0.0      |
 
 ## Contributors ✨
 
