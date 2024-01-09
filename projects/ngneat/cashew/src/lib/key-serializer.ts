@@ -10,7 +10,7 @@ export class DefaultKeySerializer extends KeySerializer {
     const { key } = context;
 
     if (key) {
-      return typeof key === 'function' ? key(request) : key;
+      return (typeof key === 'function' ? key(request) : key).toString();
     }
 
     return request.urlWithParams;

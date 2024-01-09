@@ -3,10 +3,12 @@ import { EMPTY, Observable } from 'rxjs';
 import { CacheBucket } from './cache-bucket';
 import { HttpCacheConfig } from './cache-config';
 
+export type CacheContextKey = string | number;
+
 export interface ContextOptions {
   cache?: boolean;
   ttl?: number;
-  key?: string | ((request: HttpRequest<any>) => string);
+  key?: CacheContextKey | ((request: HttpRequest<any>) => CacheContextKey);
   bucket?: CacheBucket;
   version?: string;
   clearCachePredicate?<T>(
