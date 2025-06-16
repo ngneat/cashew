@@ -1,16 +1,16 @@
 import { httpResponse, localStorageMock } from './mocks';
-import { HttpCacheLocalStorage } from '../local-storage/local-storage-cache';
+import { LocalStorageHttpCacheStorage } from '../local-storage/local-storage-cache';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 describe('httpCacheLocalStorage', () => {
-  let storage: HttpCacheLocalStorage;
+  let storage: LocalStorageHttpCacheStorage;
   const existingKey = 'existingKey';
   const notExistingKey = 'notExistingKey';
   const response = httpResponse();
   localStorageMock();
 
   beforeEach(() => {
-    storage = new HttpCacheLocalStorage();
+    storage = new LocalStorageHttpCacheStorage();
     storage.set(existingKey, response);
   });
 

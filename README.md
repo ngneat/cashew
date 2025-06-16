@@ -196,6 +196,7 @@ Currently, there is no way in Angular to pass `metadata` to an interceptor. The 
 - `key` - Custom key. (defaults to the request URL including any query params)
 - `bucket` - The [bucket](#cachebucket) in which we save the keys
 - `version` - To use when working with `localStorage` (see [Versioning](#Versioning)).
+- `storage` - Cache storage strategy for the request. Can be 'memory' or 'localStorage'. Overrides the global strategy.
 - `clearCachePredicate(previousRequest, currentRequest)` - Return `true` to clear the cache for this key
 - `context` - Allow chaining function call that returns an `HttpContext`.
 
@@ -212,6 +213,7 @@ export class UsersService {
         withCache: false,
         ttl: 40000,
         key: 'users',
+        storage: 'localStorage', // <-- Add this line for specific local storage caching
         clearCachePredicate: requestDataChanged
       })
     });

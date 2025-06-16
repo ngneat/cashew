@@ -3,6 +3,8 @@ import { EMPTY, Observable } from 'rxjs';
 import { CacheBucket } from './cache-bucket';
 import { HttpCacheConfig } from './cache-config';
 
+export type CacheStorageStrategy = 'memory' | 'localStorage';
+
 export type CacheContextKey = string | number;
 
 export interface ContextOptions {
@@ -19,6 +21,7 @@ export interface ContextOptions {
   context?: HttpContext;
   mode?: HttpCacheConfig['mode'];
   returnSource?: Observable<HttpResponse<any>>;
+  storage?: CacheStorageStrategy;
 }
 
 export const CACHE_CONTEXT = new HttpContextToken<ContextOptions>(() => ({}));

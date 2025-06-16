@@ -10,7 +10,7 @@ function createKey(key: string) {
 }
 
 @Injectable()
-export class HttpCacheLocalStorage extends HttpCacheStorage {
+export class LocalStorageHttpCacheStorage extends HttpCacheStorage {
   has(key: string): boolean {
     const generatedKey = createKey(key);
 

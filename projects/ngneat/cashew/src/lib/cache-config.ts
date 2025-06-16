@@ -1,7 +1,9 @@
-import { InjectionToken, inject, makeEnvironmentProviders } from '@angular/core';
+import { InjectionToken, inject } from '@angular/core';
+import { CacheStorageStrategy } from './cache-context';
 
 export interface HttpCacheConfig {
   strategy: 'implicit' | 'explicit';
+  storage: CacheStorageStrategy;
   mode: 'stateManagement' | 'cache';
   ttl: number;
   responseSerializer?: (value: any) => any;
@@ -10,6 +12,7 @@ export interface HttpCacheConfig {
 export const defaultConfig: HttpCacheConfig = {
   strategy: 'explicit',
   mode: 'cache',
+  storage: 'memory',
   ttl: 3_600_000 // One hour
 };
 

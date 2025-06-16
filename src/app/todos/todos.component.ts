@@ -146,6 +146,35 @@ export class TodosComponent {
       });
   }
 
+  dynamicCacheStorage1() {
+    this.http
+      .get('https://jsonplaceholder.typicode.com/todos', {
+        params: { id: 13 },
+        context: withCache({
+          key: 'my-id-13',
+          storage: 'localStorage',
+          version: 'v2'
+        })
+      })
+      .subscribe(res => {
+        console.log(`localStorage`, res);
+      });
+  }
+
+  dynamicCacheStorage2() {
+    this.http
+      .get('https://jsonplaceholder.typicode.com/todos', {
+        params: { id: 13 },
+        context: withCache({
+          key: 'my-id-13',
+          storage: 'memory'
+        })
+      })
+      .subscribe(res => {
+        console.log(`memory`, res);
+      });
+  }
+
   clearTodosCache() {
     this.manager.delete(this.todosBucket);
   }

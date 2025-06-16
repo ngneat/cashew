@@ -1,44 +1,89 @@
 import { HttpRequest, HttpResponse } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, Injector } from '@angular/core';
 import { injectCacheConfig } from './cache-config';
-import { HttpCacheStorage } from './cache-storage';
-import { TTLManager } from './ttl-manager';
+import { DefaultHttpCacheStorage, HttpCacheStorage } from './cache-storage';
+import { DefaultTTLManager, TTLManager } from './ttl-manager';
 import { HttpCacheGuard } from './cache-guard';
 import { RequestsQueue } from './requests-queue';
 import { CacheBucket } from './cache-bucket';
 import { RequestsCache } from './requests-cache';
 import { HttpCacheVersions } from './versions';
+import { CacheStorageStrategy } from './cache-context';
+import { LocalStorageHttpCacheStorage } from './local-storage/local-storage-cache';
+import { LocalStorageTTLManager } from './local-storage/local-storage-ttl';
+import { LocalStorageVersionsManager } from './local-storage/local-storage-versions';
+
+interface ResolvedCacheServices {
+  storage: HttpCacheStorage;
+  ttlManager: TTLManager;
+  versions: HttpCacheVersions;
+}
 
 @Injectable()
 export class HttpCacheManager {
   private config = injectCacheConfig();
   private queue = inject(RequestsQueue);
-  private storage = inject(HttpCacheStorage);
   private guard = inject(HttpCacheGuard);
-  private ttlManager = inject(TTLManager);
   private requests = inject(RequestsCache);
-  private version = inject(HttpCacheVersions);
+  private injector = inject(Injector);
 
-  validate(key: string) {
-    const has = this.storage.has(key);
-    const isValid = this.ttlManager.isValid(key);
+  private _getCacheServices(storageStrategy: CacheStorageStrategy = this.config.storage): ResolvedCacheServices {
+    let effectiveStrategy = storageStrategy;
+
+    if (!effectiveStrategy) {
+      const globalTtl = this.injector.get(TTLManager); // Use TTLManager as a proxy for global strategy
+      effectiveStrategy = globalTtl instanceof LocalStorageTTLManager ? 'localStorage' : 'memory';
+    }
+
+    if (effectiveStrategy === 'localStorage') {
+      const lsStorage = this.injector.get(LocalStorageHttpCacheStorage, null, { optional: true });
+      const lsTtl = this.injector.get(LocalStorageTTLManager, null, { optional: true });
+      const lsVersions = this.injector.get(LocalStorageVersionsManager, null, { optional: true });
+
+      if (lsStorage && lsTtl && lsVersions) {
+        return { storage: lsStorage, ttlManager: lsTtl, versions: lsVersions };
+      } else {
+        console.warn(
+          'HttpCacheManager: LocalStorage strategy chosen, but not all LocalStorage services are available. Falling back to memory. Ensure HttpCacheLocalStorage, LocalStorageTTLManager, and LocalStorageVersionsManager are provided if localStorage is intended.'
+        );
+      }
+    }
+
+    // Memory strategy
+    return {
+      storage: this.injector.get(DefaultHttpCacheStorage),
+      ttlManager: this.injector.get(DefaultTTLManager),
+      versions: this.injector.get(HttpCacheVersions)
+    };
+  }
+
+  validate(key: string, strategy?: CacheStorageStrategy) {
+    const { storage, ttlManager } = this._getCacheServices(strategy);
+    const has = storage.has(key);
+    const isValid = ttlManager.isValid(key);
 
     if (has && isValid) return true;
 
-    this.storage.delete(key);
+    storage.delete(key);
 
     return false;
   }
 
-  get<T = any>(key: string): HttpResponse<T> {
-    return this._resolveResponse<T>(this.storage.get(key)! as HttpResponse<any>);
+  get<T = any>(key: string, strategy?: CacheStorageStrategy): HttpResponse<T> {
+    const { storage } = this._getCacheServices(strategy);
+    return this._resolveResponse<T>(storage.get(key)! as HttpResponse<any>);
   }
 
-  has(key: string) {
-    return this.storage.has(key);
+  has(key: string, strategy?: CacheStorageStrategy) {
+    const { storage } = this._getCacheServices(strategy);
+    return storage.has(key);
   }
 
-  set(key: string, body: HttpResponse<any> | any, { ttl, bucket }: { ttl?: number; bucket?: CacheBucket } = {}) {
+  set(
+    key: string,
+    body: HttpResponse<any> | any,
+    { ttl, bucket, strategy }: { ttl?: number; bucket?: CacheBucket; strategy?: CacheStorageStrategy } = {}
+  ) {
     let response = body;
 
     if (!(body instanceof HttpResponse)) {
@@ -49,39 +94,68 @@ export class HttpCacheManager {
       });
     }
 
-    this._set(key, response, ttl!);
+    this._set(key, response, ttl ?? this.config.ttl, strategy);
     bucket && bucket.add(key);
   }
 
   delete(
     key: string | CacheBucket,
-    { deleteRequests, deleteVersions }: { deleteVersions?: boolean; deleteRequests?: boolean } = {}
+    {
+      deleteRequests,
+      deleteVersions,
+      strategy
+    }: { deleteVersions?: boolean; deleteRequests?: boolean; strategy?: CacheStorageStrategy } = {}
   ): void {
     if (key instanceof CacheBucket) {
-      key.forEach(value => this.delete(value));
+      key.forEach(value => this.delete(value, { deleteRequests, deleteVersions, strategy }));
       key.clear();
-
       return;
     }
 
-    this.storage.delete(key);
-    this.ttlManager.delete(key);
+    const { storage, ttlManager, versions: versionsManager } = this._getCacheServices(strategy);
+
+    storage.delete(key);
+    ttlManager.delete(key);
     this.queue.delete(key);
 
-    if (deleteRequests !== false) {
+    if (deleteRequests) {
       this._getRequests().delete(key);
     }
 
-    if (deleteVersions !== false) {
-      this._getVersions().delete(key);
+    if (deleteVersions) {
+      versionsManager.delete(key);
     }
   }
 
-  clear() {
-    this.storage.clear();
-    this.ttlManager.clear();
+  /**
+   * If a strategy is provided, will clear the cache for that specific storage strategy.
+   * Defaults to clear all storages.
+   * @param strategy - The storage strategy to clear (memory or localStorage).
+   */
+  clear(strategy?: CacheStorageStrategy) {
+    if (strategy) {
+      const { storage, ttlManager, versions: versionsManager } = this._getCacheServices(strategy);
+      storage.clear();
+      ttlManager.clear();
+      versionsManager.clear();
+    } else {
+      // Clear all storages (memory and localStorage if available)
+      // Memory
+      const { storage, ttlManager, versions: versionsManager } = this._getCacheServices('memory');
+      storage.clear();
+      ttlManager.clear();
+      versionsManager.clear();
+      // LocalStorage (if available)
+      try {
+        const { storage, ttlManager, versions: versionsManager } = this._getCacheServices('localStorage');
+        storage.clear();
+        ttlManager.clear();
+        versionsManager.clear();
+      } catch {
+        // Ignore if localStorage services are not available
+      }
+    }
     this.queue.clear();
-    this._getVersions().clear();
     this._getRequests().clear();
   }
 
@@ -93,8 +167,8 @@ export class HttpCacheManager {
     return this.requests;
   }
 
-  _getVersions() {
-    return this.version;
+  _getVersions(strategy?: CacheStorageStrategy): HttpCacheVersions {
+    return this._getCacheServices(strategy).versions;
   }
 
   _isCacheable(canActivate: boolean, cache: boolean) {
@@ -105,15 +179,16 @@ export class HttpCacheManager {
     }
 
     if (canActivate && strategy === 'implicit') {
-      return cache !== false;
+      return cache;
     }
 
     return false;
   }
 
-  _set(key: string, response: HttpResponse<any> | boolean, ttl: number) {
-    this.storage.set(key, response);
-    this.ttlManager.set(key, ttl);
+  _set(key: string, response: HttpResponse<any> | boolean, ttl: number, strategy?: CacheStorageStrategy) {
+    const { storage, ttlManager } = this._getCacheServices(strategy);
+    storage.set(key, response);
+    ttlManager.set(key, ttl);
   }
 
   _canActivate(request: HttpRequest<any>) {
