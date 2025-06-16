@@ -16,23 +16,23 @@
     "pre-commit": "lint-staged --allow-empty"
   },
   "dependencies": {
-    "@angular/animations": "^17.0.8",
-    "@angular/common": "^17.0.8",
-    "@angular/compiler": "^17.0.8",
-    "@angular/core": "^17.0.8",
-    "@angular/forms": "^17.0.8",
-    "@angular/platform-browser": "^17.0.8",
-    "@angular/platform-browser-dynamic": "^17.0.8",
-    "@angular/router": "^17.0.8",
+    "@angular/animations": "^18.2.13",
+    "@angular/common": "^18.2.13",
+    "@angular/compiler": "^18.2.13",
+    "@angular/core": "^18.2.13",
+    "@angular/forms": "^18.2.13",
+    "@angular/platform-browser": "^18.2.13",
+    "@angular/platform-browser-dynamic": "^18.2.13",
+    "@angular/router": "^18.2.13",
     "rxjs": "7.8.1",
     "tslib": "2.6.2",
-    "zone.js": "0.14.2"
+    "zone.js": "0.14.10"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^17.0.9",
-    "@angular/cli": "^17.0.9",
-    "@angular/compiler-cli": "^17.0.8",
-    "@angular/language-service": "^17.0.8",
+    "@angular-devkit/build-angular": "^18.2.20",
+    "@angular/cli": "^18.2.20",
+    "@angular/compiler-cli": "^18.2.13",
+    "@angular/language-service": "^18.2.13",
     "@commitlint/cli": "18.4.4",
     "@commitlint/config-angular": "18.4.4",
     "@commitlint/config-conventional": "18.4.4",
@@ -43,12 +43,12 @@
     "jest-environment-jsdom": "29.7.0",
     "jest-preset-angular": "14.6.0",
     "lint-staged": "15.2.0",
-    "ng-packagr": "^17.0.3",
+    "ng-packagr": "^18.2.1",
     "prettier": "3.1.1",
     "standard-version": "9.5.0",
     "ts-jest": "29.1.1",
     "ts-node": "10.9.2",
-    "typescript": "~5.2.2"
+    "typescript": "~5.5.4"
   },
   "config": {
     "commitizen": {
