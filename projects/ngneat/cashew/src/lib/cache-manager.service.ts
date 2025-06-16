@@ -28,14 +28,7 @@ export class HttpCacheManager {
   private injector = inject(Injector);
 
   private _getCacheServices(storageStrategy: CacheStorageStrategy = this.config.storage): ResolvedCacheServices {
-    let effectiveStrategy = storageStrategy;
-
-    if (!effectiveStrategy) {
-      const globalTtl = this.injector.get(TTLManager); // Use TTLManager as a proxy for global strategy
-      effectiveStrategy = globalTtl instanceof LocalStorageTTLManager ? 'localStorage' : 'memory';
-    }
-
-    if (effectiveStrategy === 'localStorage') {
+    if (storageStrategy === 'localStorage') {
       const lsStorage = this.injector.get(LocalStorageHttpCacheStorage, null, { optional: true });
       const lsTtl = this.injector.get(LocalStorageTTLManager, null, { optional: true });
       const lsVersions = this.injector.get(LocalStorageVersionsManager, null, { optional: true });
@@ -49,7 +42,7 @@ export class HttpCacheManager {
       }
     }
 
-    // Memory strategy
+    // default to memory strategy
     return {
       storage: this.injector.get(DefaultHttpCacheStorage),
       ttlManager: this.injector.get(DefaultTTLManager),
