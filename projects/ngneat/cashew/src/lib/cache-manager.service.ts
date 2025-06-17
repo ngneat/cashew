@@ -2,6 +2,9 @@ import { HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable, inject, Injector } from '@angular/core';
 import { injectCacheConfig } from './cache-config';
 import { DefaultHttpCacheStorage, HttpCacheStorage } from './cache-storage';
+import { SessionStorageHttpCacheStorage } from './session-storage/session-storage-cache';
+import { SessionStorageTTLManager } from './session-storage/session-storage-ttl';
+import { SessionStorageVersionsManager } from './session-storage/session-storage-versions';
 import { DefaultTTLManager, TTLManager } from './ttl-manager';
 import { HttpCacheGuard } from './cache-guard';
 import { RequestsQueue } from './requests-queue';
@@ -40,6 +43,26 @@ export class HttpCacheManager {
           'HttpCacheManager: LocalStorage strategy chosen, but not available. Did you forget to configure it via `withLocalStorage()`?'
         );
       }
+    }
+
+    if (storageStrategy === 'sessionStorage') {
+      const ssStorage = this.injector.get(SessionStorageHttpCacheStorage, null, { optional: true });
+      const ssTtl = this.injector.get(SessionStorageTTLManager, null, { optional: true });
+      const ssVersions = this.injector.get(SessionStorageVersionsManager, null, { optional: true });
+
+      if (ssStorage && ssTtl && ssVersions) {
+        return { storage: ssStorage, ttlManager: ssTtl, versions: ssVersions };
+      } else {
+        throw new Error(
+          'HttpCacheManager: SessionStorage strategy chosen, but not available. Did you forget to configure it via `withSessionStorage()`?'
+        );
+      }
+    }
+
+    if (storageStrategy && storageStrategy !== 'memory') {
+      console.warn(
+        `HttpCacheManager: Storage strategy '${storageStrategy}' not supported, defaulting to memory strategy.`
+      );
     }
 
     // default to memory strategy

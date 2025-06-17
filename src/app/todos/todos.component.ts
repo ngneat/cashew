@@ -152,12 +152,11 @@ export class TodosComponent {
         params: { id: 13 },
         context: withCache({
           key: 'my-id-13',
-          storage: 'localStorage',
-          version: 'v2'
+          storage: 'memory'
         })
       })
       .subscribe(res => {
-        console.log(`localStorage`, res);
+        console.log(`memory`, res);
       });
   }
 
@@ -167,11 +166,27 @@ export class TodosComponent {
         params: { id: 13 },
         context: withCache({
           key: 'my-id-13',
-          storage: 'memory'
+          storage: 'localStorage',
+          version: 'v2'
         })
       })
       .subscribe(res => {
-        console.log(`memory`, res);
+        console.log(`localStorage`, res);
+      });
+  }
+
+  dynamicCacheStorage3() {
+    this.http
+      .get('https://jsonplaceholder.typicode.com/todos', {
+        params: { id: 13 },
+        context: withCache({
+          key: 'my-id-13',
+          storage: 'sessionStorage',
+          version: 'v3'
+        })
+      })
+      .subscribe(res => {
+        console.log(`sessionStorage`, res);
       });
   }
 

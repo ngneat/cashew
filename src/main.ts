@@ -1,5 +1,6 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { withLocalStorage } from '../projects/ngneat/cashew/src/lib/local-storage/local-storage-providers';
+import { withSessionStorage } from '../projects/ngneat/cashew/src/lib/session-storage/session-storage-providers';
 import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
 import { HomeComponent } from './app/home/home.component';
@@ -10,7 +11,7 @@ import { provideHttpCache, provideHttpCacheLocalStorageStrategy, withHttpCacheIn
 bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(withInterceptors([withHttpCacheInterceptor()])),
-    provideHttpCache(withLocalStorage()),
+    provideHttpCache(withLocalStorage(), withSessionStorage()),
     provideRouter([
       {
         path: '',
