@@ -20,6 +20,8 @@
 ✅ HTTP Caching <br>
 ✅ State Management Mode<br>
 ✅ Local Storage Support <br>
+✅ Session Storage Support <br>
+✅ Dynamic Storage Strategy <br>
 ✅ Handles Simultaneous Requests<br>
 ✅ Automatic & Manual Cache Busting <br>
 ✅ Hackable <br>

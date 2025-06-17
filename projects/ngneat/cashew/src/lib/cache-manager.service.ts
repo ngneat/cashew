@@ -27,7 +27,7 @@ export class HttpCacheManager {
   private requests = inject(RequestsCache);
   private injector = inject(Injector);
 
-  private _getCacheServices(storageStrategy: CacheStorageStrategy = this.config.storage): ResolvedCacheServices {
+  private _getCacheServices(storageStrategy?: CacheStorageStrategy): ResolvedCacheServices {
     if (storageStrategy === 'localStorage') {
       const lsStorage = this.injector.get(LocalStorageHttpCacheStorage, null, { optional: true });
       const lsTtl = this.injector.get(LocalStorageTTLManager, null, { optional: true });
@@ -36,8 +36,8 @@ export class HttpCacheManager {
       if (lsStorage && lsTtl && lsVersions) {
         return { storage: lsStorage, ttlManager: lsTtl, versions: lsVersions };
       } else {
-        console.warn(
-          'HttpCacheManager: LocalStorage strategy chosen, but not all LocalStorage services are available. Falling back to memory. Ensure HttpCacheLocalStorage, LocalStorageTTLManager, and LocalStorageVersionsManager are provided if localStorage is intended.'
+        throw new Error(
+          'HttpCacheManager: LocalStorage strategy chosen, but not available. Did you forget to configure it via `withLocalStorage()`?'
         );
       }
     }
