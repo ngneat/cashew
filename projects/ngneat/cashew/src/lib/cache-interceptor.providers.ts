@@ -22,7 +22,6 @@ export function provideHttpCache(
   ...extensions: Array<ReturnType<typeof makeEnvironmentProviders>>
 ): ReturnType<typeof makeEnvironmentProviders>;
 
-// Implementation
 export function provideHttpCache(
   configOrExtension?: Partial<HttpCacheConfig> | ReturnType<typeof makeEnvironmentProviders>,
   ...extensions: Array<ReturnType<typeof makeEnvironmentProviders>>

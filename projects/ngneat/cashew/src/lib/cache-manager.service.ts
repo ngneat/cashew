@@ -155,7 +155,7 @@ export class HttpCacheManager {
       ttlManager.clear();
       versionsManager.clear();
     } else {
-      // Clear all storages (memory and localStorage if available)
+      // Clear all storages (memory, localStorage and sessionStorage if available)
       // Memory
       const { storage, ttlManager, versions: versionsManager } = this._getCacheServices('memory');
       storage.clear();
@@ -169,6 +169,16 @@ export class HttpCacheManager {
         versionsManager.clear();
       } catch {
         // Ignore if localStorage services are not available
+      }
+
+      // SessionStorage (if available)
+      try {
+        const { storage, ttlManager, versions: versionsManager } = this._getCacheServices('sessionStorage');
+        storage.clear();
+        ttlManager.clear();
+        versionsManager.clear();
+      } catch {
+        // Ignore if sessionStorage services are not available
       }
     }
     this.queue.clear();
