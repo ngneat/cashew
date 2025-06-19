@@ -1,16 +1,18 @@
-import { httpResponse, localStorageMock } from './mocks';
-import { LocalStorageHttpCacheStorage } from '../local-storage/local-storage-cache';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { storage as localStorage } from '../local-storage/local-storage';
+import { BrowserStorageHttpCacheStorage } from '../storage/browser-storage-cache';
+import { httpResponse, localStorageMock } from './mocks';
 
 describe('httpCacheLocalStorage', () => {
-  let storage: LocalStorageHttpCacheStorage;
+  let storage: BrowserStorageHttpCacheStorage;
   const existingKey = 'existingKey';
   const notExistingKey = 'notExistingKey';
   const response = httpResponse();
   localStorageMock();
+  const mockStorage = localStorage;
 
   beforeEach(() => {
-    storage = new LocalStorageHttpCacheStorage();
+    storage = new BrowserStorageHttpCacheStorage(mockStorage);
     storage.set(existingKey, response);
   });
 
@@ -36,27 +38,27 @@ describe('httpCacheLocalStorage', () => {
     });
 
     it('should not access local storage when key is found in memory', () => {
-      jest.spyOn(localStorage, 'setItem');
+      jest.spyOn(mockStorage, 'getItem');
       const value = storage.get(existingKey);
       expect(value).toEqual(response);
-      expect(localStorage.setItem).not.toHaveBeenCalled();
+      expect(mockStorage.getItem).not.toHaveBeenCalled();
     });
   });
 
   describe('delete', () => {
     it('should clear storage when call without a key', () => {
       expect(storage.has(existingKey)).toBeTruthy();
-      jest.spyOn(localStorage, 'removeItem');
+      jest.spyOn(mockStorage, 'clearItem');
       storage.clear();
-      expect(localStorage.removeItem).toHaveBeenCalled();
+      expect(mockStorage.clearItem).toHaveBeenCalled();
       expect(storage.has(existingKey)).toBeFalsy();
     });
 
     it('should call delete when given key', () => {
       expect(storage.has(existingKey)).toBeTruthy();
-      jest.spyOn(localStorage, 'removeItem');
+      jest.spyOn(mockStorage, 'clearItem');
       storage.delete(existingKey);
-      expect(localStorage.removeItem).toHaveBeenCalled();
+      expect(mockStorage.clearItem).toHaveBeenCalled();
       expect(storage.has(existingKey)).toBeFalsy();
     });
   });
