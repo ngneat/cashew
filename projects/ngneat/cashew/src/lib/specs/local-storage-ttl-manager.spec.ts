@@ -1,11 +1,12 @@
+import { storage } from '../local-storage/local-storage';
+import { BrowserStorageTTLManager } from '../storage/browser-storage-ttl';
 import { config, localStorageMock } from './mocks';
-import { LocalStorageTTLManager } from '../local-storage/local-storage-ttl';
 import * as cacheConfig from '../cache-config';
 
 jest.useFakeTimers();
 
 describe('localStorageTtlManager', () => {
-  let ttlManager: LocalStorageTTLManager;
+  let ttlManager: BrowserStorageTTLManager;
   localStorageMock();
 
   beforeAll(() => {
@@ -13,7 +14,7 @@ describe('localStorageTtlManager', () => {
   });
 
   beforeEach(() => {
-    ttlManager = new LocalStorageTTLManager();
+    ttlManager = new BrowserStorageTTLManager(storage);
   });
 
   describe('valid', () => {
@@ -36,7 +37,7 @@ describe('localStorageTtlManager', () => {
 
     it('should use the config ttl if non has been passed', () => {
       jest.spyOn(Date.prototype, 'setMilliseconds');
-      ttlManager.set('key', undefined);
+      ttlManager.set('key');
       expect(Date.prototype.setMilliseconds).toHaveBeenCalledWith(config.ttl);
     });
   });

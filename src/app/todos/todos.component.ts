@@ -167,7 +167,7 @@ export class TodosComponent {
         context: withCache({
           key: 'my-id-13',
           storage: 'localStorage',
-          version: 'v2'
+          version: 'v1'
         })
       })
       .subscribe(res => {
@@ -182,7 +182,7 @@ export class TodosComponent {
         context: withCache({
           key: 'my-id-13',
           storage: 'sessionStorage',
-          version: 'v3'
+          version: 'v1'
         })
       })
       .subscribe(res => {

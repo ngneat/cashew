@@ -1,4 +1,7 @@
-export const storage = {
+import { BrowserStorage } from '../storage';
+
+export const storage: BrowserStorage = {
+  type: 'sessionStorage',
   clearItem(key: string) {
     sessionStorage.removeItem(key);
   },

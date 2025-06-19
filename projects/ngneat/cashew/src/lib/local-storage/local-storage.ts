@@ -1,4 +1,7 @@
-export const storage = {
+import { BrowserStorage } from '../storage';
+
+export const storage: BrowserStorage = {
+  type: 'localStorage',
   clearItem(key: string) {
     localStorage.removeItem(key);
   },

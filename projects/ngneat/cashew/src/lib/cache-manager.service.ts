@@ -2,9 +2,14 @@ import { HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable, inject, Injector } from '@angular/core';
 import { injectCacheConfig } from './cache-config';
 import { DefaultHttpCacheStorage, HttpCacheStorage } from './cache-storage';
-import { SessionStorageHttpCacheStorage } from './session-storage/session-storage-cache';
-import { SessionStorageTTLManager } from './session-storage/session-storage-ttl';
-import { SessionStorageVersionsManager } from './session-storage/session-storage-versions';
+import {
+  LocalStorageHttpCacheStorage,
+  LocalStorageTTLManager,
+  LocalStorageVersionsManager,
+  SessionStorageHttpCacheStorage,
+  SessionStorageTTLManager,
+  SessionStorageVersionsManager
+} from './storage/tokens';
 import { DefaultTTLManager, TTLManager } from './ttl-manager';
 import { HttpCacheGuard } from './cache-guard';
 import { RequestsQueue } from './requests-queue';
@@ -12,9 +17,6 @@ import { CacheBucket } from './cache-bucket';
 import { RequestsCache } from './requests-cache';
 import { HttpCacheVersions } from './versions';
 import { CacheStorageStrategy } from './cache-context';
-import { LocalStorageHttpCacheStorage } from './local-storage/local-storage-cache';
-import { LocalStorageTTLManager } from './local-storage/local-storage-ttl';
-import { LocalStorageVersionsManager } from './local-storage/local-storage-versions';
 
 interface ResolvedCacheServices {
   storage: HttpCacheStorage;
@@ -65,7 +67,7 @@ export class HttpCacheManager {
       );
     }
 
-    // default to memory strategy
+    // default strategy
     return {
       storage: this.injector.get(DefaultHttpCacheStorage),
       ttlManager: this.injector.get(DefaultTTLManager),
