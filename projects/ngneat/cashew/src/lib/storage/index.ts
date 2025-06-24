@@ -19,6 +19,13 @@ export interface CacheStorage {
   clear(): MaybeAsync<void>;
 }
 
+export type BrowserStorage = {
+  type: string;
+  clearItem(key: string): void;
+  setItem(key: string, value: any): void;
+  getItem(key: string): any;
+};
+
 export class InMemoryStorage extends Map<string, CacheValue> implements CacheStorage {}
 
 class BrowserStorageStorage implements CacheStorage {

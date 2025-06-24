@@ -20,6 +20,8 @@
 ✅ HTTP Caching <br>
 ✅ State Management Mode<br>
 ✅ Local Storage Support <br>
+✅ Session Storage Support <br>
+✅ Dynamic Storage Strategy <br>
 ✅ Handles Simultaneous Requests<br>
 ✅ Automatic & Manual Cache Busting <br>
 ✅ Hackable <br>
@@ -88,27 +90,59 @@ export class UsersService {
 
 Now instead of saving the actual response in the cache, it'll save a `boolean` and will return by default an `EMPTY` observable when the `boolean` resolves to `true`. You can change the returned source by using the `returnSource` option.
 
-## Local Storage
+## Browser Storage
 
-By default, caching is done to app memory. To switch to using local storage instead simply add:
+By default, caching is done to app memory. To switch to using, for instance, local storage instead simply add `withLocalStorage()`:
+
+> Keep in mind that the local storage has a size limit of 5-10MB depending on the browser, so it is not recommended to cache large responses.
 
 ```ts
 import { provideHttpCache, withHttpCacheInterceptor, provideHttpCacheLocalStorageStrategy } from '@ngneat/cashew';
 
 bootstrapApplication(AppComponent, {
-  providers: [
-    provideHttpClient(withInterceptors([withHttpCacheInterceptor()])),
-    provideHttpCache(),
-    provideHttpCacheLocalStorageStrategy()
-  ]
+  providers: [provideHttpClient(withInterceptors([withHttpCacheInterceptor()])), provideHttpCache(withLocalStorage())]
 });
 ```
 
-To your providers list. Note that `ttl` will also be calculated via local storage in this instance.
+and then configure your requests to use the local storage strategy:
+
+```ts
+getUsers() {
+    return this.http.get('api/users', {
+      context: withCache({
+        storage: 'localStorage'
+      })
+    });
+}
+```
+
+Note that `ttl` will also be calculated via local storage in this instance.
+
+### Session Storage
+
+You can also use session storage by using `withSessionStorage()` and `storage: 'sessionStorage'` in the `withCache` function:
+
+```ts
+import { provideHttpCache, withHttpCacheInterceptor, provideHttpCacheLocalStorageStrategy } from '@ngneat/cashew';
+
+bootstrapApplication(AppComponent, {
+  providers: [provideHttpClient(withInterceptors([withHttpCacheInterceptor()])), provideHttpCache(withSessionStorage())]
+});
+```
+
+```ts
+getUsers() {
+    return this.http.get('api/users', {
+      context: withCache({
+        storage: 'sessionStorage'
+      })
+    });
+}
+```
 
 ### Versioning
 
-When working with `localstorage`, it's recommended to add a version:
+When working with `localStorage` or `sessionStorage`, it's recommended to add a version:
 
 ```ts
 import { withCache } from '@ngneat/cashew';
@@ -120,6 +154,7 @@ export class UsersService {
   getUsers() {
     return this.http.get('api/users', {
       context: withCache({
+        storage: 'localStorage', // or 'sessionStorage'
         version: 'v1',
         key: 'users'
       })
@@ -185,6 +220,19 @@ bootstrapApplication(AppComponent, {
 });
 ```
 
+#### Additional Providers
+
+You can also provide additional providers to the `provideHttpCache` function. For example, if you want to use a custom storage strategy:
+
+```ts
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideHttpClient(withInterceptors([withHttpCacheInterceptor()])),
+    provideHttpCache(withLocalStorage(), withSessionStorage())
+  ]
+});
+```
+
 ## API
 
 ### WithCache
@@ -196,6 +244,7 @@ Currently, there is no way in Angular to pass `metadata` to an interceptor. The 
 - `key` - Custom key. (defaults to the request URL including any query params)
 - `bucket` - The [bucket](#cachebucket) in which we save the keys
 - `version` - To use when working with `localStorage` (see [Versioning](#Versioning)).
+- `storage` - Cache storage strategy for the request. Can be 'memory' or 'localStorage'. Overrides the global strategy.
 - `clearCachePredicate(previousRequest, currentRequest)` - Return `true` to clear the cache for this key
 - `context` - Allow chaining function call that returns an `HttpContext`.
 
@@ -212,6 +261,7 @@ export class UsersService {
         withCache: false,
         ttl: 40000,
         key: 'users',
+        storage: 'localStorage', // <-- Add this line for local storage caching
         clearCachePredicate: requestDataChanged
       })
     });

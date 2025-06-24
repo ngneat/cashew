@@ -1,4 +1,4 @@
-import { InjectionToken, inject, makeEnvironmentProviders } from '@angular/core';
+import { InjectionToken, inject } from '@angular/core';
 
 export interface HttpCacheConfig {
   strategy: 'implicit' | 'explicit';

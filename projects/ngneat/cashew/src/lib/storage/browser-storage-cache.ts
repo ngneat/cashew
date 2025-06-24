@@ -1,7 +1,6 @@
 import { HttpResponse, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
 import { HttpCacheStorage } from '../cache-storage';
-import { storage } from './local-storage';
+import { BrowserStorage } from './index';
 
 const KEY = `@cache`;
 
@@ -9,12 +8,15 @@ function createKey(key: string) {
   return `${KEY}-${key}`;
 }
 
-@Injectable()
-export class HttpCacheLocalStorage extends HttpCacheStorage {
+export class BrowserStorageHttpCacheStorage extends HttpCacheStorage {
+  constructor(private storage: BrowserStorage) {
+    super();
+  }
+
   has(key: string): boolean {
     const generatedKey = createKey(key);
 
-    return super.has(generatedKey) || !!storage.getItem(generatedKey);
+    return super.has(generatedKey) || !!this.storage.getItem(generatedKey);
   }
 
   get(key: string): HttpResponse<any> | boolean {
@@ -26,7 +28,7 @@ export class HttpCacheLocalStorage extends HttpCacheStorage {
       return cacheValue;
     }
 
-    const value = storage.getItem(generatedKey);
+    const value = this.storage.getItem(generatedKey);
 
     if (value) {
       value.headers = new HttpHeaders(value.headers);
@@ -46,7 +48,7 @@ export class HttpCacheLocalStorage extends HttpCacheStorage {
       httpResponse.headers[headerKey] = response.headers.get(headerKey);
     });
 
-    storage.setItem(generatedKey, httpResponse);
+    this.storage.setItem(generatedKey, httpResponse);
 
     return super.set(generatedKey, response);
   }
@@ -54,15 +56,15 @@ export class HttpCacheLocalStorage extends HttpCacheStorage {
   delete(key: string) {
     const generatedKey = createKey(key);
 
-    storage.clearItem(generatedKey);
+    this.storage.clearItem(generatedKey);
 
     return super.delete(generatedKey);
   }
 
   clear() {
-    super.forEach((value, key) => {
+    super.forEach((_value, key) => {
       super.delete(key);
-      storage.clearItem(key);
+      this.storage.clearItem(key);
     });
   }
 }

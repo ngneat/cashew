@@ -5,13 +5,7 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "lib": [
-      "dom",
-      "es2018"
-    ]
+    "lib": ["dom", "ES2022"]
   },
-  "exclude": [
-    "src/test.ts",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["src/test.ts", "**/*.spec.ts"]
 }

@@ -1,135 +1,187 @@
-// import { HttpCacheGuard } from '../cache-guard';
-// import { HttpCacheManager } from '../cache-manager.service';
-// import { HttpCacheStorage } from '../cache-storage';
-// import { RequestsQueue } from '../requests-queue';
-// import { TTLManager } from '../ttl-manager';
-// import { requestQueue, httpCacheStorage, httpCacheGuard, ttlManager as makeTTL, cacheBucket, config } from './mocks';
-// import SpyInstance = jest.SpyInstance;
-// import * as cacheConfig from '../cache-config';
-// import * as core from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { CacheBucket } from '../cache-bucket';
+import { HTTP_CACHE_CONFIG, HttpCacheConfig } from '../cache-config';
+import { HttpCacheGuard } from '../cache-guard';
+import { HttpCacheManager } from '../cache-manager.service';
+import { DefaultHttpCacheStorage } from '../cache-storage';
+import { RequestsCache } from '../requests-cache';
+import { RequestsQueue } from '../requests-queue';
+import { DefaultTTLManager } from '../ttl-manager';
+import { HttpCacheVersions } from '../versions';
 
-test('todo fix tests', () => expect(true).toBeTruthy());
+const configMock: HttpCacheConfig = {
+  ttl: 1000,
+  strategy: 'implicit',
+  mode: 'cache'
+};
 
-// describe('HttpCacheManager', () => {
-//   let httpCache: HttpCacheManager;
-//   let queue: RequestsQueue;
-//   let storage: HttpCacheStorage;
-//   let guard: HttpCacheGuard;
-//   let ttlManager: TTLManager;
+describe('HttpCacheManager (memory strategy)', () => {
+  let httpCache: HttpCacheManager;
+  let queue: RequestsQueue;
+  let storage: DefaultHttpCacheStorage;
+  let guard: HttpCacheGuard;
+  let ttlManager: DefaultTTLManager;
+  let requests: RequestsCache;
 
-//   beforeAll(() => {
-//     jest.spyOn(cacheConfig, 'injectCacheConfig').mockReturnValue(config);
-//   });
+  beforeEach(() => {
+    queue = { clear: jest.fn(), delete: jest.fn() } as any;
+    storage = {
+      has: jest.fn(),
+      get: jest.fn(),
+      set: jest.fn(),
+      delete: jest.fn(),
+      clear: jest.fn()
+    } as any;
+    guard = { canActivate: jest.fn() } as any;
+    ttlManager = {
+      isValid: jest.fn(),
+      set: jest.fn(),
+      delete: jest.fn(),
+      clear: jest.fn()
+    } as any;
+    requests = { clear: jest.fn(), delete: jest.fn() } as any;
 
-//   beforeEach(() => {
-//     queue = requestQueue();
-//     storage = httpCacheStorage();
-//     guard = httpCacheGuard();
-//     ttlManager = makeTTL();
+    TestBed.configureTestingModule({
+      providers: [
+        HttpCacheManager,
+        HttpCacheVersions,
+        { provide: RequestsQueue, useValue: queue },
+        { provide: DefaultHttpCacheStorage, useValue: storage },
+        { provide: DefaultTTLManager, useValue: ttlManager },
+        { provide: HttpCacheGuard, useValue: guard },
+        { provide: RequestsCache, useValue: requests },
+        { provide: HTTP_CACHE_CONFIG, useValue: configMock }
+      ]
+    });
 
-//     httpCache = new HttpCacheManager();
-//   });
+    httpCache = TestBed.inject(HttpCacheManager);
+  });
 
-//   afterEach(() => {
-//     jest.clearAllMocks();
-//   });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-//   describe('validate', () => {
-//     let has: SpyInstance;
-//     let isValid: SpyInstance;
-//     let storageDelete: SpyInstance;
+  describe('validate', () => {
+    it('should return true when cache is valid', () => {
+      (storage.has as jest.Mock).mockReturnValue(true);
+      (ttlManager.isValid as jest.Mock).mockReturnValue(true);
+      expect(httpCache.validate('valid key')).toBeTruthy();
+    });
 
-//     beforeEach(() => {
-//       has = jest.spyOn(storage, 'has');
-//       isValid = jest.spyOn(ttlManager, 'isValid');
-//       storageDelete = jest.spyOn(storage, 'delete');
-//     });
+    it('should return false when cache is invalid', () => {
+      (storage.has as jest.Mock).mockReturnValue(true);
+      (ttlManager.isValid as jest.Mock).mockReturnValue(false);
+      expect(httpCache.validate('invalid key')).toBeFalsy();
+    });
 
-//     it('should return true when cache is valid', () => {
-//       has.mockImplementation(() => true);
-//       isValid.mockImplementation(() => true);
-//       expect(httpCache.validate('valid key')).toBeTruthy();
-//     });
+    it('should return false when key does not exist', () => {
+      (storage.has as jest.Mock).mockReturnValue(false);
+      (ttlManager.isValid as jest.Mock).mockReturnValue(true);
+      expect(httpCache.validate('invalid key')).toBeFalsy();
+    });
 
-//     it('should return false when cache is invalid', () => {
-//       has.mockImplementation(() => true);
-//       isValid.mockImplementation(() => false);
-//       expect(httpCache.validate('invalid key')).toBeFalsy();
-//     });
+    it('should call delete from storage when key is not valid', () => {
+      (storage.has as jest.Mock).mockReturnValue(false);
+      (ttlManager.isValid as jest.Mock).mockReturnValue(false);
+      httpCache.validate('valid key');
+      expect(storage.delete).toHaveBeenCalledWith('valid key');
+    });
+  });
 
-//     it('should return false when key is not exist', () => {
-//       has.mockImplementation(() => false);
-//       isValid.mockImplementation(() => true);
-//       expect(httpCache.validate('invalid key')).toBeFalsy();
-//     });
+  describe('set', () => {
+    it('should add key to bucket', () => {
+      const bucket = new CacheBucket();
+      jest.spyOn(bucket, 'add');
+      httpCache.set('key', {}, { bucket });
+      expect(bucket.add).toHaveBeenCalledWith('key');
+    });
 
-//     it('should call delete from storage when key is valid', () => {
-//       has.mockImplementation(() => false);
-//       isValid.mockImplementation(() => false);
-//       httpCache.validate('valid key');
-//       expect(storage.delete).toHaveBeenCalledWith('valid key');
-//     });
-//   });
+    it('should set the key', () => {
+      httpCache.set('key', 'body');
+      expect(storage.set).toHaveBeenCalled();
+      expect(ttlManager.set).toHaveBeenCalled();
+    });
+  });
 
-//   describe('add', () => {
-//     it('should add key to bucket', () => {
-//       const bucket = cacheBucket();
-//       jest.spyOn(bucket, 'add');
-//       httpCache.set('key', {}, { bucket: bucket });
-//       expect(bucket.add).toHaveBeenCalledWith('key');
-//     });
+  describe('delete', () => {
+    it('should delete the key from storage and ttl', () => {
+      httpCache.delete('key');
+      expect(storage.delete).toHaveBeenCalledWith('key');
+      expect(ttlManager.delete).toHaveBeenCalledWith('key');
+    });
 
-//     it('should set the key', () => {
-//       jest.spyOn(storage, 'set');
-//       jest.spyOn(ttlManager, 'set');
-//       httpCache.set('key', {}, {});
-//       expect(storage.set).toHaveBeenCalled();
-//       expect(ttlManager.set).toHaveBeenCalled();
-//     });
-//   });
+    it('should clear a given cache bucket', () => {
+      const bucket = new CacheBucket();
+      jest.spyOn(bucket, 'clear');
+      httpCache.delete(bucket);
+      expect(bucket.clear).toHaveBeenCalled();
+    });
 
-//   describe('delete', () => {
-//     it('should delete the key from storage and ttl', () => {
-//       jest.spyOn(storage, 'delete');
-//       jest.spyOn(ttlManager, 'delete');
-//       httpCache.delete('key');
-//       expect(storage.delete).toHaveBeenCalledWith('key');
-//       expect(ttlManager.delete).toHaveBeenCalledWith('key');
-//     });
+    it('should delete every key of the bucket', () => {
+      const bucket = new CacheBucket();
+      jest.spyOn(httpCache, 'delete');
+      bucket.add('a');
+      bucket.add('b');
+      bucket.add('c');
+      httpCache.delete(bucket);
+      // 3 keys + 1 call for the bucket itself
+      expect((httpCache.delete as jest.Mock).mock.calls.length).toBe(4);
+    });
+  });
 
-//     it('should clear a given cache bucket', () => {
-//       const bucket = cacheBucket();
-//       jest.spyOn(bucket, 'clear');
-//       httpCache.delete(bucket);
-//       expect(bucket.clear).toHaveBeenCalled();
-//     });
+  describe('get', () => {
+    it('should return the cached value by default', () => {
+      const response = new HttpResponse({ body: 'value', status: 200 });
+      (storage.get as jest.Mock).mockReturnValue(response);
+      expect(httpCache.get('a').body).toBe('value');
+    });
 
-//     it('should delete every key of the bucket', () => {
-//       jest.spyOn(httpCache, 'delete');
-//       const bucket = cacheBucket();
-//       bucket.add('a');
-//       bucket.add('b');
-//       bucket.add('c');
-//       httpCache.delete(bucket);
-//       expect(httpCache.delete).toHaveBeenCalledTimes(4);
-//     });
-//   });
+    it('should pass the cached value through the serializer', () => {
+      const responseSerializer = jest.fn(() => 'serialized');
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          HttpCacheManager,
+          HttpCacheVersions,
+          { provide: RequestsQueue, useValue: queue },
+          { provide: DefaultHttpCacheStorage, useValue: storage },
+          { provide: DefaultTTLManager, useValue: ttlManager },
+          { provide: HttpCacheGuard, useValue: guard },
+          { provide: RequestsCache, useValue: requests },
+          { provide: HTTP_CACHE_CONFIG, useValue: { ...configMock, responseSerializer } }
+        ]
+      });
+      httpCache = TestBed.inject(HttpCacheManager);
 
-//   describe('get', () => {
-//     it('should return the cached value by default', () => {
-//       httpCache.set('a', 'value');
-//       expect(httpCache.get('a').body).toBe('value');
-//     });
+      const response = new HttpResponse({ body: 'value', status: 200 });
+      (storage.get as jest.Mock).mockReturnValue(response);
+      const serialized = httpCache.get('a');
+      expect(responseSerializer).toHaveBeenCalledTimes(1);
+      expect(serialized.body).toBe('serialized');
+      expect(serialized).not.toBe(response);
+    });
+  });
 
-//     it('should pass the cached value through the serializer', () => {
-//       const responseSerializer = jest.fn(v => 'serialized');
-//       const httpCache: any = new HttpCacheManager();
-//       httpCache.set('a', 'value');
-//       const serialized = httpCache.get('a');
-//       const newResponse = serialized !== httpCache.storage.get('a');
-//       expect(responseSerializer).toHaveBeenCalledTimes(1);
-//       expect(serialized.body).toBe('serialized');
-//       expect(newResponse).toBe(true);
-//     });
-//   });
-// });
+  describe('has', () => {
+    it('should return true if the key exists in storage', () => {
+      (storage.has as jest.Mock).mockReturnValue(true);
+      expect(httpCache.has('some-key')).toBe(true);
+    });
+
+    it('should return false if the key does not exist in storage', () => {
+      (storage.has as jest.Mock).mockReturnValue(false);
+      expect(httpCache.has('missing-key')).toBe(false);
+    });
+  });
+
+  describe('clear', () => {
+    it('should clear storage, ttlManager, versions, queue, and requests for memory strategy', () => {
+      httpCache.clear('memory');
+      expect(storage.clear).toHaveBeenCalled();
+      expect(ttlManager.clear).toHaveBeenCalled();
+      expect(queue.clear).toHaveBeenCalled();
+      expect(requests.clear).toHaveBeenCalled();
+    });
+  });
+});

@@ -1,15 +1,15 @@
 import { BrowserStorage } from '../storage';
 
 export const storage: BrowserStorage = {
-  type: 'localStorage',
+  type: 'sessionStorage',
   clearItem(key: string) {
-    localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
   },
   setItem(key: string, value: any) {
-    localStorage.setItem(key, JSON.stringify(value));
+    sessionStorage.setItem(key, JSON.stringify(value));
   },
   getItem(key: string): any {
-    const value = localStorage.getItem(key);
+    const value = sessionStorage.getItem(key);
 
     if (!value) {
       return undefined;
