@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://github.com/ngneat/cashew/compare/v4.1.0...v5.0.0) (2025-07-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* update TypeScript lib target to ES2022
+* migrate to angular@20
+
+### Features
+
+* add dynamic cache storage strategy support ([6b5aa0c](https://github.com/ngneat/cashew/commit/6b5aa0c06182cd4da57668f55566f14d0ffce514))
+* add session storage strategy ([2fb1194](https://github.com/ngneat/cashew/commit/2fb119421e80268a0a20f9e65aa5af014409dd55))
+* add session storage strategy ([9fccf9d](https://github.com/ngneat/cashew/commit/9fccf9d9f466214571fa6bc039a06b2295980938))
+
+
+* migrate to angular@20 ([f623b4e](https://github.com/ngneat/cashew/commit/f623b4e0453d97f4c81cc3f5c8bf10adcc632135))
+* update TypeScript lib target to ES2022 ([af66c49](https://github.com/ngneat/cashew/commit/af66c492a27f71e93b1a268451491ac211decdd0))
+
 ## [4.1.0](https://github.com/ngneat/cashew/compare/v4.0.0...v4.1.0) (2024-01-09)
 
 ### Features
