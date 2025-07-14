@@ -97,7 +97,7 @@ By default, caching is done to app memory. To switch to using, for instance, loc
 > Keep in mind that the local storage has a size limit of 5-10MB depending on the browser, so it is not recommended to cache large responses.
 
 ```ts
-import { provideHttpCache, withHttpCacheInterceptor, provideHttpCacheLocalStorageStrategy } from '@ngneat/cashew';
+import { provideHttpCache, withHttpCacheInterceptor, withLocalStorage } from '@ngneat/cashew';
 
 bootstrapApplication(AppComponent, {
   providers: [provideHttpClient(withInterceptors([withHttpCacheInterceptor()])), provideHttpCache(withLocalStorage())]
@@ -123,7 +123,7 @@ Note that `ttl` will also be calculated via local storage in this instance.
 You can also use session storage by using `withSessionStorage()` and `storage: 'sessionStorage'` in the `withCache` function:
 
 ```ts
-import { provideHttpCache, withHttpCacheInterceptor, provideHttpCacheLocalStorageStrategy } from '@ngneat/cashew';
+import { provideHttpCache, withHttpCacheInterceptor, provideHttpCacheLocalStorageStrategy, withSessionStorage } from '@ngneat/cashew';
 
 bootstrapApplication(AppComponent, {
   providers: [provideHttpClient(withInterceptors([withHttpCacheInterceptor()])), provideHttpCache(withSessionStorage())]
