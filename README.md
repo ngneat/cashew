@@ -123,7 +123,7 @@ Note that `ttl` will also be calculated via local storage in this instance.
 You can also use session storage by using `withSessionStorage()` and `storage: 'sessionStorage'` in the `withCache` function:
 
 ```ts
-import { provideHttpCache, withHttpCacheInterceptor, provideHttpCacheLocalStorageStrategy, withSessionStorage } from '@ngneat/cashew';
+import { provideHttpCache, withHttpCacheInterceptor, withSessionStorage } from '@ngneat/cashew';
 
 bootstrapApplication(AppComponent, {
   providers: [provideHttpClient(withInterceptors([withHttpCacheInterceptor()])), provideHttpCache(withSessionStorage())]
