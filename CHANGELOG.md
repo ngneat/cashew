@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.1.0](https://github.com/ngneat/cashew/compare/v5.0.0...v5.1.0) (2025-07-14)
+
+
+### Features
+
+* add missing exports for local and session storage strategies ([e69c5ff](https://github.com/ngneat/cashew/commit/e69c5ffa29dfdd2d4743f29fc082ed1092ef382e)), closes [#108](https://github.com/ngneat/cashew/issues/108)
+
 ## [5.0.0](https://github.com/ngneat/cashew/compare/v4.1.0...v5.0.0) (2025-07-02)
 
 
