@@ -26,11 +26,11 @@ export function provideHttpCache(
   configOrExtension?: Partial<HttpCacheConfig> | ReturnType<typeof makeEnvironmentProviders>,
   ...extensions: Array<ReturnType<typeof makeEnvironmentProviders>>
 ) {
-  let config: Partial<HttpCacheConfig> = {};
+  let config: Partial<HttpCacheConfig> = defaultConfig;
   let extensionProviders: Array<ReturnType<typeof makeEnvironmentProviders>> = [];
 
   if (isHttpCacheConfig(configOrExtension)) {
-    config = { ...defaultConfig, ...configOrExtension };
+    config = { ...config, ...configOrExtension };
     extensionProviders = extensions;
   } else if (configOrExtension) {
     extensionProviders = [configOrExtension, ...extensions];
