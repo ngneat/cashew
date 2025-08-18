@@ -167,11 +167,36 @@ When you have a breaking change, change the version, and it'll delete the curren
 
 ## Config Options
 
-Using the library, you might need to change the default behavior of the caching mechanism. You could do that by passing a configuration to the `provideHttpCache` function:
+Using the library, you might need to change the default behavior of the caching mechanism. You could do that by passing a configuration to the `provideHttpCache` function as first argument:
 
 ```ts
 bootstrapApplication(AppComponent, {
   providers: [provideHttpClient(withInterceptors([withHttpCacheInterceptor()])), provideHttpCache(config)]
+});
+```
+
+```ts
+bootstrapApplication(AppComponent, {
+  providers: [provideHttpClient(withInterceptors([withHttpCacheInterceptor()])), provideHttpCache(config, withLocalStorage())]
+});
+```
+
+Or by using the `withCache` function:
+
+```ts
+import { withCache } from '@ngneat/cashew';
+```ts
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideHttpClient(withInterceptors([withHttpCacheInterceptor()])), 
+    provideHttpCache(
+        withConfig({
+          responseSerializer(value) {
+            return structuredClone(value);
+          }
+        })
+      ),
+  ]
 });
 ```
 

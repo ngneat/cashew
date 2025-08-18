@@ -1,5 +1,5 @@
 import { makeEnvironmentProviders } from '@angular/core';
-import { defaultConfig, HTTP_CACHE_CONFIG, HttpCacheConfig } from './cache-config';
+import { defaultConfig, HTTP_CACHE_CONFIG, HttpCacheConfig, isHttpCacheConfig } from './cache-config';
 import { DefaultHttpCacheGuard, HttpCacheGuard } from './cache-guard';
 import { httpCacheInterceptor } from './cache-interceptor';
 import { HttpCacheManager } from './cache-manager.service';
@@ -29,24 +29,17 @@ export function provideHttpCache(
   let config: Partial<HttpCacheConfig> = {};
   let extensionProviders: Array<ReturnType<typeof makeEnvironmentProviders>> = [];
 
-  // maybe improve via a dedicated `withConfig({...})` API
-  if (
-    configOrExtension &&
-    typeof configOrExtension === 'object' &&
-    !Array.isArray(configOrExtension) &&
-    // crude check: if it has any config keys, treat as config
-    ('cacheTime' in configOrExtension || 'cachePredicate' in configOrExtension || 'ttl' in configOrExtension)
-  ) {
-    config = configOrExtension as Partial<HttpCacheConfig>;
+  if (isHttpCacheConfig(configOrExtension)) {
+    config = { ...defaultConfig, ...configOrExtension };
     extensionProviders = extensions;
   } else if (configOrExtension) {
-    extensionProviders = [configOrExtension as ReturnType<typeof makeEnvironmentProviders>, ...extensions];
+    extensionProviders = [configOrExtension, ...extensions];
   }
 
   const flatProviders = extensionProviders.flatMap(p => p);
 
   return makeEnvironmentProviders([
-    { provide: HTTP_CACHE_CONFIG, useValue: { ...defaultConfig, ...config } },
+    { provide: HTTP_CACHE_CONFIG, useValue: config },
     { provide: KeySerializer, useClass: DefaultKeySerializer },
     { provide: DefaultHttpCacheStorage, useClass: DefaultHttpCacheStorage },
     { provide: DefaultTTLManager, useClass: DefaultTTLManager },

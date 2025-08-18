@@ -7,5 +7,6 @@ export { CacheBucket } from './lib/cache-bucket';
 export { provideHttpCacheLocalStorageStrategy, withLocalStorage } from './lib/local-storage/local-storage-providers';
 export { withSessionStorage } from './lib/session-storage/session-storage-providers';
 export { withCache } from './lib/cache-context';
+export { withConfig } from './lib/cache-config';
 export { requestDataChanged } from './lib/utils';
 export { HttpCacheStorage } from './lib/cache-storage';
