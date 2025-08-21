@@ -9,7 +9,15 @@ import { TodosComponent } from './app/todos/todos.component';
 bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(withInterceptors([withHttpCacheInterceptor()])),
-    provideHttpCache(withLocalStorage(), withSessionStorage()),
+    provideHttpCache(
+      {
+        responseSerializer(value) {
+          return structuredClone(value);
+        }
+      },
+      withLocalStorage(),
+      withSessionStorage()
+    ),
     provideRouter([
       {
         path: '',
