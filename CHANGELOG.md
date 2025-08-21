@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.3.0](https://github.com/ngneat/cashew/compare/v5.1.0...v5.3.0) (2025-08-21)
+
+
+### Features
+
+* add `withConfig` for customizable HTTP  configuration and fix config only setup ([9cc0a11](https://github.com/ngneat/cashew/commit/9cc0a11fd711099ebb749df45c687cae4f8f8454))
+
 ## [5.1.0](https://github.com/ngneat/cashew/compare/v5.0.0...v5.1.0) (2025-07-14)
 
 
